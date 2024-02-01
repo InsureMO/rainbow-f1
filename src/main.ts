@@ -42,9 +42,7 @@ const createMainWindow = (showImmediate: boolean): BrowserWindow => {
 	// Create the browser window.
 	const mainWindow = new BrowserWindow({
 		show: false,
-		webPreferences: {
-			preload: path.join(__dirname, 'preload.js')
-		}
+		webPreferences: {preload: path.join(__dirname, 'preload.js')}
 	});
 	// mainWindow.maximize();
 

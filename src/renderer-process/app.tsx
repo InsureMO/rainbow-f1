@@ -1,3 +1,4 @@
+import {Store} from '../shared/constants';
 import {GlobalStyles} from './global-styles';
 
 export const App = () => {
@@ -8,3 +9,5 @@ export const App = () => {
 		<div>Hello World</div>
 	</>;
 };
+
+console.log(window.electron);

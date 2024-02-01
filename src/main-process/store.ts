@@ -1,15 +1,22 @@
+import {ipcMain} from 'electron';
 import Store from 'electron-store';
-import {Theme} from '../shared/constants';
+import {Store as StoreEvent, Theme, ThemeSource} from '../shared/constants';
 
 const store = new Store();
 
 class ApplicationStore {
-	public getTheme(): Exclude<Theme, Theme.EVENT_NAME> {
-		return store.get('theme', Theme.SYSTEM) as Exclude<Theme, Theme.EVENT_NAME>;
+	constructor() {
+		ipcMain.on(StoreEvent.SET_EVENT_NAME, (_, key: string, value: any) => store.set(key, value));
+		ipcMain.on(StoreEvent.GET_EVENT_NAME, (event, key: string) => event.returnValue = store.get(key));
+		ipcMain.on(StoreEvent.GET_THEME, (event) => event.returnValue = this.getTheme());
 	}
 
-	public setTheme(theme: Exclude<Theme, Theme.EVENT_NAME>): void {
-		store.set('theme', theme);
+	public getTheme(): ThemeSource {
+		return store.get(StoreEvent.GET_THEME, Theme.SYSTEM) as ThemeSource;
+	}
+
+	public setTheme(theme: ThemeSource): void {
+		store.set(StoreEvent.GET_THEME, theme);
 	}
 }
 
