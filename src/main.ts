@@ -1,5 +1,6 @@
 import {app, BrowserWindow} from 'electron';
 import path from 'path';
+import {createAppMenu, createDockMenu} from './main-process/menu';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -35,6 +36,9 @@ const createSplashWindow = () => {
 };
 
 const createMainWindow = (showImmediate: boolean): BrowserWindow => {
+	createAppMenu();
+	createDockMenu();
+
 	// Create the browser window.
 	const mainWindow = new BrowserWindow({
 		show: false,
