@@ -59,6 +59,7 @@ export const createAppMenu = () => {
 				mac ? null : quitMenuItem
 			].filter(menu => menu != null)
 		},
+		{label: 'Edit', role: 'editMenu'} as MenuItemConstructorOptions,
 		{
 			label: 'Window',
 			submenu: [

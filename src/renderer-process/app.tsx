@@ -1,13 +1,10 @@
-import {Store} from '../shared/constants';
+import {RouterProvider} from 'react-router-dom';
 import {GlobalStyles} from './global-styles';
+import {router} from './router';
 
 export const App = () => {
 	return <>
 		<GlobalStyles/>
-		<div>你好世界</div>
-		<div>こんにちは世界</div>
-		<div>Hello World</div>
+		<RouterProvider router={router}/>
 	</>;
 };
-
-console.log(window.electron);
