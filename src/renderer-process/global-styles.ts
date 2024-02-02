@@ -23,6 +23,7 @@ export const GlobalStyles: any = createGlobalStyle`
         --f1-border: 1px solid #e9e9e9;
         --f1-border-radius: 4px;
         --d9-font-variant: none;
+        --d9-font-color: #444;
         --d9-primary-color: var(--f1-primary-color);
     }
 
@@ -31,6 +32,7 @@ export const GlobalStyles: any = createGlobalStyle`
             background: #020202;
             color: #fdfdfd;
             --f1-label-color: #c7c7c7;
+            --d9-font-color: #eee;
         }
     }
 

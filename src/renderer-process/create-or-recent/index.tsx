@@ -37,11 +37,13 @@ const CreateOrRecentContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or-
 
     > div[data-w=d9-tree] {
         border: 0;
+        border-radius: 0;
         width: 100%;
     }
 
     > div[data-w=d9-button-bar] {
         border-top: var(--f1-border);
+        border-radius: 0;
     }
 
     span[data-w=d9-tree-node-label] {
@@ -118,7 +120,7 @@ const CreateOrRecentContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or-
 
             > span[data-path] {
                 flex-grow: 1;
-                opacity: 0.5;
+                opacity: 0.7;
                 font-size: 0.85em;
                 margin-left: 12px;
                 margin-top: 2px;
