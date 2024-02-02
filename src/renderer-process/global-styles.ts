@@ -12,6 +12,7 @@ export const GlobalStyles: any = createGlobalStyle`
         background-color: #fdfdfd;
         color: #020202;
         --f1-row-height: 32px;
+        --f1-font-color: #444;
         --f1-label-color: #808080;
         --f1-label-ligther-color: #c0c0c0;
         --f1-primary-color: #5f88d6;
@@ -23,16 +24,18 @@ export const GlobalStyles: any = createGlobalStyle`
         --f1-border: 1px solid #e9e9e9;
         --f1-border-radius: 4px;
         --d9-font-variant: none;
-        --d9-font-color: #444;
+        --d9-font-color: var(--f1-font-color);
         --d9-primary-color: var(--f1-primary-color);
+        --d9-hover-color: var(--f1-hover-color);
     }
 
     @media (prefers-color-scheme: dark) {
         body {
             background: #020202;
             color: #fdfdfd;
+            --f1-font-color: #eee;
             --f1-label-color: #c7c7c7;
-            --d9-font-color: #eee;
+            --f1-hover-color: rgb(160, 77, 58);
         }
     }
 
