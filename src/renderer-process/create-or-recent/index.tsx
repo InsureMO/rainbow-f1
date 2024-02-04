@@ -9,8 +9,15 @@ import {
 	UnwrappedButtonBar,
 	UnwrappedTree
 } from '@rainbow-d9/n2';
+import {MouseEvent} from 'react';
 import styled from 'styled-components';
-import {RecentProjectHolder, RecentProjectRoot} from '../../shared/constants';
+import {
+	ContextMenuEvent,
+	ContextMenuTemplateItem,
+	RecentProjectCategory,
+	RecentProjectHolder,
+	RecentProjectRoot
+} from '../../shared/constants';
 import {EllipsisVertical, FolderClosed, FolderClosedEmpty, FolderOpen} from '../icons';
 
 const CreateOrRecentContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or-recent-container'})`
@@ -173,6 +180,48 @@ const computeShortName = (name: string): string => {
 const RecentProjectTree = (props: { root: RecentProjectRoot }) => {
 	const {root} = props;
 
+	const createSubCategory = (category: RecentProjectCategory) => {
+		// TODO CREATE SUB CATEGORY
+		console.log('create-sub-category');
+	};
+	const renameCategory = (category: RecentProjectCategory) => {
+		// TODO RENAME CATEGORY
+		console.log('rename-category');
+	};
+	const moveCategory = (category: RecentProjectCategory) => {
+		// TODO RENAME CATEGORY
+		console.log('move-category');
+	};
+	const onCategoryOperatorClicked = (category: RecentProjectCategory) => (event: MouseEvent<HTMLSpanElement>) => {
+		event.stopPropagation();
+		event.preventDefault();
+		window.ipcRenderer.once(ContextMenuEvent.CLICK, (e, command) => {
+			switch (true) {
+				case command === 'create-sub-category':
+					createSubCategory(category);
+					break;
+				case command === 'rename-category':
+					renameCategory(category);
+					break;
+				case command === 'move-category':
+					moveCategory(category);
+					break;
+				default:
+				// do nothing
+			}
+		});
+		const contextTemplate: Array<ContextMenuTemplateItem> = [
+			{label: 'Create sub category', click: 'create-sub-category'},
+			{type: 'separator'},
+			{label: 'Rename', click: 'rename-category'},
+			{label: 'Move to...', click: 'move-category'}
+		];
+		window.ipcRenderer.send(ContextMenuEvent.SHOW, contextTemplate);
+	};
+	const onProjectOperatorClicked = (event: MouseEvent<HTMLSpanElement>) => {
+		event.stopPropagation();
+		event.preventDefault();
+	};
 	const detective = (parentNode: Undefinable<TreeNodeDef>): Array<TreeNodeDef> => {
 		// the first "value" is given by UnwrappedTree, the second "value" is given by Tree
 		// only root node will have two "value"
@@ -189,7 +238,7 @@ const RecentProjectTree = (props: { root: RecentProjectRoot }) => {
 					{hasChild ? <FolderClosed/> : <FolderClosedEmpty/>}
 					<FolderOpen/>
 					<span data-name={true}>{category.name}</span>
-					<span data-operator={true}><EllipsisVertical/></span>
+					<span data-operator={true} onClick={onCategoryOperatorClicked(category)}><EllipsisVertical/></span>
 				</span>,
 				value: category as unknown as PropValue,
 				$ip2r: PROPERTY_PATH_ME, $ip2p: `category-${category.id}`, leaf: false
@@ -202,7 +251,7 @@ const RecentProjectTree = (props: { root: RecentProjectRoot }) => {
 					<span data-short-name={true}>{computeShortName(project.name)}</span>
 					<span data-name={true}>{project.name}</span>
 					<span data-path={true}>{project.path}</span>
-					<span data-operator={true}><EllipsisVertical/></span>
+					<span data-operator={true} onClick={onProjectOperatorClicked}><EllipsisVertical/></span>
 				</span>,
 				value: project as unknown as PropValue,
 				$ip2r: PROPERTY_PATH_ME, $ip2p: `project-${project.id}`, leaf: true
@@ -239,8 +288,10 @@ export const CreateOrRecentPage = () => {
 	const hasRecentProjects = (recentProjectsRoot.categories ?? []).length !== 0 || (recentProjectsRoot.projects ?? []).length !== 0;
 
 	const onCreateClicked = () => {
+		// TODO CREATE PROJECT
 	};
 	const onOpenClicked = () => {
+		// TODO OPEN FOLDER
 	};
 
 	return <CreateOrRecentContainer>

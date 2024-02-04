@@ -17,7 +17,16 @@ declare global {
 		removeRecentCategory: (categoryId: string) => void;
 	}
 
+	interface WindowIpcRenderer {
+		on: (channel: string, listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => void;
+		off: (channel: string, listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => void;
+		once: (channel: string, listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => void;
+		send: (channel: string, ...args: any[]) => void;
+		sendSync: (channel: string, ...args: any[]) => any;
+	}
+
 	interface Window {
 		electron: WindowElectronHandler;
+		ipcRenderer: WindowIpcRenderer;
 	}
 }

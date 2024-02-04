@@ -9,6 +9,7 @@ import {
 	StoreEvent as StoreEvent,
 	ThemeSource
 } from './shared/constants';
+import IpcRendererEvent = Electron.IpcRendererEvent;
 
 contextBridge.exposeInMainWorld('electron', {
 	store: {
@@ -23,3 +24,17 @@ contextBridge.exposeInMainWorld('electron', {
 	addRecentCategory: (category: RecentProjectCategory, parentCategoryId?: string) => ipcRenderer.send(StoreEvent.ADD_RECENT_PROJECT_CATEGORY, category),
 	removeRecentCategory: (categoryId: string) => ipcRenderer.send(StoreEvent.REMOVE_RECENT_PROJECT_CATEGORY, categoryId)
 } as WindowElectronHandler);
+
+contextBridge.exposeInMainWorld('ipcRenderer', {
+	on: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => {
+		ipcRenderer.on(channel, listener);
+	},
+	off: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => {
+		ipcRenderer.off(channel, listener);
+	},
+	once: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => {
+		ipcRenderer.once(channel, listener);
+	},
+	send: (channel: string, ...args: any[]) => ipcRenderer.send(channel, ...args),
+	sendSync: (channel: string, ...args: any[]) => ipcRenderer.sendSync(channel, ...args)
+});

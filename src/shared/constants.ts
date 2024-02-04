@@ -1,3 +1,5 @@
+import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
+
 export enum Theme {
 	EVENT_NAME = 'theme-changed', LIGHT = 'light', DARK = 'dark', SYSTEM = 'system'
 }
@@ -45,4 +47,14 @@ export enum StoreEvent {
 	CLEAR_RECENT_PROJECTS = 'clear-recent-projects',
 	ADD_RECENT_PROJECT_CATEGORY = 'add-recent-project-category',
 	REMOVE_RECENT_PROJECT_CATEGORY = 'remove-recent-project-category'
+}
+
+export type ContextMenuTemplateItem = Omit<MenuItemConstructorOptions, 'submenu' | 'click'> & {
+	submenu?: Array<ContextMenuTemplateItem>;
+	click?: string;
+}
+
+export enum ContextMenuEvent {
+	SHOW = 'show-context-menu',
+	CLICK = 'context-menu-command'
 }
