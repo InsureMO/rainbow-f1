@@ -1,4 +1,4 @@
-import {app, BrowserWindow, nativeTheme} from 'electron';
+import {app, BrowserWindow} from 'electron';
 import './main-process/context-menu';
 import {createMainWindow, createSplashWindow} from './main-process';
 

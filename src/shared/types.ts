@@ -20,18 +20,19 @@ export interface RecentProject {
 export type RecentProjects = Array<RecentProject>;
 
 export interface RecentProjectHolder {
+	id: string;
 	projects?: RecentProjects;
 	categories?: RecentProjectCategories;
 }
 
 export interface RecentProjectCategory extends RecentProjectHolder {
-	id: string;
 	name: string;
 }
 
 export type RecentProjectCategories = Array<RecentProjectCategory>;
 
 export interface RecentProjectRoot extends RecentProjectHolder {
+	id: '';
 }
 
 export enum StoreEvent {

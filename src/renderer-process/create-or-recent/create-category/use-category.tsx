@@ -1,9 +1,15 @@
 import {DropdownOption, GlobalEventTypes, useGlobalEventBus} from '@rainbow-d9/n2';
 import {Fragment} from 'react';
 import {RecentProjectCategory, RecentProjectHolder} from '../../../shared/types';
-import {CreateCategoryDialog} from './create-category-dialog';
+import {CategoryDialog} from './category-dialog';
 
-export const useCreateCategory = () => {
+export interface UseCategoryBehavior {
+	parentCategory?: RecentProjectHolder;
+	category?: RecentProjectCategory;
+	rename?: boolean;
+}
+
+export const useCategory = () => {
 	const {fire} = useGlobalEventBus();
 	// map doesn't include root
 	const transformCategoriesToMap = (parent: RecentProjectHolder): Record<string, RecentProjectCategory> => {
@@ -26,7 +32,7 @@ export const useCreateCategory = () => {
 		}).flat();
 	};
 
-	return (parentCategory?: RecentProjectCategory) => {
+	return (behavior?: UseCategoryBehavior) => {
 		const recentProjectsRoot = window.electron.recentProjects.get();
 		const options = [
 			{value: '', label: ''},
@@ -47,8 +53,10 @@ export const useCreateCategory = () => {
 		});
 		const map = transformCategoriesToMap(recentProjectsRoot);
 		fire(GlobalEventTypes.SHOW_DIALOG,
-			<CreateCategoryDialog root={recentProjectsRoot} options={options} map={map}
-			                      parentCategoryId={parentCategory?.id}/>,
+			<CategoryDialog root={recentProjectsRoot} options={options} map={map}
+			                parentCategoryId={behavior?.parentCategory?.id ?? ''}
+			                currentCategoryId={behavior?.category?.id}
+			                rename={behavior?.rename}/>,
 			{margin: 'max(96px, 20vh) auto auto'});
 	};
 };

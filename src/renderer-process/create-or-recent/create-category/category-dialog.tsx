@@ -26,16 +26,24 @@ interface CreateCategoryDialogState {
 	message?: string;
 }
 
-export const CreateCategoryDialog = (props: {
+export const CategoryDialog = (props: {
 	root: RecentProjectRoot; options: DropdownOptions; map: Record<string, RecentProjectCategory>;
 	parentCategoryId?: string;
+	currentCategoryId?: string; rename?: boolean;
 }) => {
-	const {root, options, map, parentCategoryId} = props;
+	const {
+		root, options, map,
+		parentCategoryId = '',
+		currentCategoryId, rename = false
+	} = props;
 
 	const {fire} = useGlobalEventBus();
 	const recentProjectsEventBus = useRecentProjectsEventBus();
 	const inputRef = useRef<HTMLInputElement>(null);
-	const [state, setState] = useState<CreateCategoryDialogState>({changed: false, parentCategoryId, name: ''});
+	const [state, setState] = useState<CreateCategoryDialogState>(() => {
+		const category = map[currentCategoryId];
+		return {changed: false, parentCategoryId, name: category?.name};
+	});
 	useEffect(() => {
 		inputRef.current?.focus();
 	}, []);
@@ -54,8 +62,12 @@ export const CreateCategoryDialog = (props: {
 		} else {
 			siblings = map[state.parentCategoryId]?.categories ?? [];
 		}
-		if (siblings.some(category => category.name === name)) {
+		if (siblings.filter(category => category.id !== currentCategoryId).some(category => category.name === name)) {
 			setState(state => ({...state, message: 'Category name already exists.'}));
+			return;
+		}
+		if (currentCategoryId != null && map[currentCategoryId].name === name) {
+			setState(state => ({...state, message: 'Category name not changed.'}));
 			return;
 		}
 		if (/[\\\/]/.test(name)) {
@@ -71,11 +83,15 @@ export const CreateCategoryDialog = (props: {
 	const onNameChanged = (value: string) => {
 		setState(state => ({...state, name: value, changed: true}));
 	};
-	const onCreateClicked = () => {
-		if (state.parentCategoryId === '') {
-			window.electron.recentProjects.addCategory({id: nanoid(32), name: state.name});
+	const onConfirmClicked = () => {
+		if (rename) {
+			// TODO RENAME CATEGORY
 		} else {
-			window.electron.recentProjects.addCategory({id: nanoid(32), name: state.name}, state.parentCategoryId);
+			if (state.parentCategoryId === '') {
+				window.electron.recentProjects.addCategory({id: nanoid(32), name: state.name});
+			} else {
+				window.electron.recentProjects.addCategory({id: nanoid(32), name: state.name}, state.parentCategoryId);
+			}
 		}
 		recentProjectsEventBus.fire(RecentProjectsEventTypes.REPAINT);
 		fire(GlobalEventTypes.HIDE_DIALOG);
@@ -84,21 +100,27 @@ export const CreateCategoryDialog = (props: {
 		fire(GlobalEventTypes.HIDE_DIALOG);
 	};
 
+	const title = rename ? 'Rename category' : 'Create new category';
+	const okButtonLabel = rename ? 'Rename' : 'Create';
+
 	return <>
 		<DialogHeader>
-			<DialogTitle>Create new category</DialogTitle>
+			<DialogTitle>{title}</DialogTitle>
 		</DialogHeader>
 		<DialogBody data-flex-column={true}>
 			<UnwrappedCaption>Parent category</UnwrappedCaption>
 			<UnwrappedDropdown options={options} onValueChange={onParentChanged} value={state.parentCategoryId}
+			                   disabled={rename}
 			                   clearable={false}/>
 			<UnwrappedCaption>Category name</UnwrappedCaption>
-			<UnwrappedInput onValueChange={onNameChanged} value={state.name} ref={inputRef}/>
+			<UnwrappedInput onValueChange={onNameChanged} value={state.name}
+			                ref={inputRef}/>
 			{state.message != null ? <InvalidMessage>{state.message}</InvalidMessage> : null}
 		</DialogBody>
 		<DialogFooter>
-			<UnwrappedButton onClick={onCreateClicked} ink={ButtonInk.PRIMARY} fill={ButtonFill.PLAIN}>
-				Create
+			<UnwrappedButton onClick={onConfirmClicked} ink={ButtonInk.PRIMARY} fill={ButtonFill.PLAIN}
+			                 disabled={state.message != null}>
+				{okButtonLabel}
 			</UnwrappedButton>
 			<UnwrappedButton onClick={onCancelClicked} ink={ButtonInk.WAIVE} fill={ButtonFill.PLAIN}>
 				Cancel

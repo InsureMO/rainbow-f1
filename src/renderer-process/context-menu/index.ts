@@ -18,7 +18,7 @@ export const showContextMenu = (menu: Array<ContextMenuItem>) => {
 	};
 	const transformed = menu.map(transformItem);
 	const onMenuClicked = (command: ContextMenuItem['click']) => {
-		console.log(`Context menu responds with command[${command}].`);
+		// console.log(`Context menu responds with command[${command}].`);
 		const invoke = handlers[command];
 		if (invoke != null) {
 			invoke();

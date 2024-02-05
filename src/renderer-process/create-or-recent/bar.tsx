@@ -1,9 +1,9 @@
 import {ButtonFill, ButtonInk, UnwrappedButton, UnwrappedButtonBar} from '@rainbow-d9/n2';
-import {useCreateCategory} from './create-category';
+import {useCategory} from './create-category';
 import {ButtonBarSpacer} from './widgets';
 
 export const Bar = () => {
-	const createCategory = useCreateCategory();
+	const createCategory = useCategory();
 
 	const onCreateCategoryClicked = () => createCategory();
 	const onCreateProjectClicked = () => {
