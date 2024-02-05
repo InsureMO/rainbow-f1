@@ -874,10 +874,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@rainbow-d9/n1@1.0.49":
-  version "1.0.49"
-  resolved "https://registry.yarnpkg.com/@rainbow-d9/n1/-/n1-1.0.49.tgz#764549341f2a974b04dc03613b58c9fa1f8a307a"
-  integrity sha512-0rRam9FECjGfpnN9wBXm0m5hv7x5f6/6AzfnXHNDRNlfIbBCnjp40e03OjuePxCOBlHeZvneFVc1QO3NHidyeA==
+"@rainbow-d9/n1@1.0.50":
+  version "1.0.50"
+  resolved "https://registry.yarnpkg.com/@rainbow-d9/n1/-/n1-1.0.50.tgz#5edbe1c717c351f94e0953fd5cdeba6119b4c90b"
+  integrity sha512-m6mIM8Dt6pq1A3fqY7KyZ+A3wEp6KvNwuDGgZ9L7ipKH2Bkhmr1qzMgPuglpEDlWj/n8DrkIADnzKoSjtGKNdA==
   dependencies:
     buffer "^6.0.3"
     events "^3.3.0"
@@ -885,12 +885,12 @@
     react "^18.2.0"
     react-dom "^18.2.0"
 
-"@rainbow-d9/n2@^1.0.49":
-  version "1.0.49"
-  resolved "https://registry.yarnpkg.com/@rainbow-d9/n2/-/n2-1.0.49.tgz#ec39a641d456860ab740985ff5a7a3292c29cc1a"
-  integrity sha512-4eu58EL9dpA5x8Y+1bPN73/x8LCdCctqUiDpcwsxYLUqDO3DB296oWkwVna4RjTv12mZM9G7HFPwzxIcuqUSkg==
+"@rainbow-d9/n2@^1.0.50":
+  version "1.0.50"
+  resolved "https://registry.yarnpkg.com/@rainbow-d9/n2/-/n2-1.0.50.tgz#50cc4c18d6938f84bca5e71db257ef8d6f75aeed"
+  integrity sha512-H1/i5GPrbbK3sccQ1e3yd9tQEHZULUSebj2LmrkuAE/j495es4HRo08W58dyt+wUByoaFEJu3XVKsKWojySLNw==
   dependencies:
-    "@rainbow-d9/n1" "1.0.49"
+    "@rainbow-d9/n1" "1.0.50"
     color "^4.2.3"
     dayjs "^1.11.7"
     react "^18.2.0"
@@ -981,6 +981,25 @@
     "@types/keyv" "^3.1.4"
     "@types/node" "*"
     "@types/responselike" "^1.0.0"
+
+"@types/color-convert@*":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@types/color-convert/-/color-convert-2.0.3.tgz#e93f5c991eda87a945058b47044f5f0008b0dce9"
+  integrity sha512-2Q6wzrNiuEvYxVQqhh7sXM2mhIhvZR/Paq4FdsQkOMgWsCIkKvSGj8Le1/XalulrmgOzPMqNa0ix+ePY4hTrfg==
+  dependencies:
+    "@types/color-name" "*"
+
+"@types/color-name@*":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.3.tgz#c488ac2e519c9795faa0d54e8156d54e66adc4e6"
+  integrity sha512-87W6MJCKZYDhLAx/J1ikW8niMvmGRyY+rpUxWpL1cO7F8Uu5CHuQoFv+R0/L5pgNdW4jTyda42kv60uwVIPjLw==
+
+"@types/color@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@types/color/-/color-3.0.6.tgz#29c27a99d4de2975e1676712679a0bd7f646a3fb"
+  integrity sha512-NMiNcZFRUAiUUCCf7zkAelY8eV3aKqfbzyFQlXpPIEeoNDbsEHGpb854V3gzTsGKYj830I5zPuOwU/TP5/cW6A==
+  dependencies:
+    "@types/color-convert" "*"
 
 "@types/fs-extra@^9.0.1":
   version "9.0.13"

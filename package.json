@@ -29,6 +29,7 @@
 		"@electron-forge/maker-zip": "^7.2.0",
 		"@electron-forge/plugin-auto-unpack-natives": "^7.2.0",
 		"@electron-forge/plugin-vite": "^7.2.0",
+		"@types/color": "^3.0.6",
 		"@types/react-dom": "^18.2.18",
 		"@types/styled-components": "5.1.34",
 		"@typescript-eslint/eslint-plugin": "^5.0.0",
@@ -41,10 +42,13 @@
 		"typescript": "~4.5.4"
 	},
 	"dependencies": {
-		"@rainbow-d9/n2": "^1.0.49",
+		"@rainbow-d9/n1": "^1.0.50",
+		"@rainbow-d9/n2": "^1.0.50",
+		"color": "^4.2.3",
 		"electron-squirrel-startup": "^1.0.0",
 		"electron-store": "^8.1.0",
 		"events": "^3.3.0",
+		"nanoid": "^4.0.0",
 		"normalize.css": "^8.0.1",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",

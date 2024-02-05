@@ -14,6 +14,7 @@ const createRecentProjectsMenu = () => {
 const createThemeChangeMenuHandler = (source: ThemeSource) => {
 	return () => {
 		nativeTheme.themeSource = source;
+		store.setTheme(source);
 		ipcMain.emit(Theme.EVENT_NAME, source);
 	};
 };

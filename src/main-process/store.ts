@@ -1,4 +1,4 @@
-import {ipcMain} from 'electron';
+import {ipcMain, nativeTheme} from 'electron';
 import Store from 'electron-store';
 import {
 	RecentProject,
@@ -19,6 +19,7 @@ enum StoreKey {
 
 class ApplicationStore {
 	constructor() {
+		nativeTheme.themeSource = this.getTheme();
 		ipcMain.on(StoreEvent.SET_TO_STORE, (_, key: string, value: any) => store.set(key, value));
 		ipcMain.on(StoreEvent.GET_FROM_STORE, (event, key: string) => event.returnValue = store.get(key));
 		ipcMain.on(StoreEvent.GET_THEME, (event) => event.returnValue = this.getTheme());
