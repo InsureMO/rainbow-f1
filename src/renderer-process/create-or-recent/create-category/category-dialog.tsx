@@ -14,7 +14,7 @@ import {
 	useGlobalEventBus
 } from '@rainbow-d9/n2';
 import {nanoid} from 'nanoid';
-import {Fragment, useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {RecentProjectCategory, RecentProjectRoot} from '../../../shared/types';
 import {RecentProjectsEventTypes, useRecentProjectsEventBus} from '../event-bus';
 import {InvalidMessage} from '../widgets';
@@ -29,12 +29,12 @@ interface CreateCategoryDialogState {
 export const CategoryDialog = (props: {
 	root: RecentProjectRoot; options: DropdownOptions; map: Record<string, RecentProjectCategory>;
 	parentCategoryId?: string;
-	currentCategoryId?: string; rename?: boolean;
+	currentCategoryId?: string; rename?: boolean; move?: boolean;
 }) => {
 	const {
 		root, options, map,
 		parentCategoryId = '',
-		currentCategoryId, rename = false
+		currentCategoryId, rename = false, move = false
 	} = props;
 
 	const {fire} = useGlobalEventBus();
@@ -66,7 +66,7 @@ export const CategoryDialog = (props: {
 			setState(state => ({...state, message: 'Category name already exists.'}));
 			return;
 		}
-		if (currentCategoryId != null && map[currentCategoryId].name === name) {
+		if (!move && currentCategoryId != null && map[currentCategoryId].name === name) {
 			setState(state => ({...state, message: 'Category name not changed.'}));
 			return;
 		}
@@ -110,10 +110,9 @@ export const CategoryDialog = (props: {
 		<DialogBody data-flex-column={true}>
 			<UnwrappedCaption>Parent category</UnwrappedCaption>
 			<UnwrappedDropdown options={options} onValueChange={onParentChanged} value={state.parentCategoryId}
-			                   disabled={rename}
-			                   clearable={false}/>
+			                   disabled={rename} clearable={false}/>
 			<UnwrappedCaption>Category name</UnwrappedCaption>
-			<UnwrappedInput onValueChange={onNameChanged} value={state.name}
+			<UnwrappedInput onValueChange={onNameChanged} value={state.name} disabled={move}
 			                ref={inputRef}/>
 			{state.message != null ? <InvalidMessage>{state.message}</InvalidMessage> : null}
 		</DialogBody>

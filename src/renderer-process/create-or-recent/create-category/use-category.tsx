@@ -7,6 +7,7 @@ export interface UseCategoryBehavior {
 	parentCategory?: RecentProjectHolder;
 	category?: RecentProjectCategory;
 	rename?: boolean;
+	move?: boolean;
 }
 
 export const useCategory = () => {
@@ -56,7 +57,7 @@ export const useCategory = () => {
 			<CategoryDialog root={recentProjectsRoot} options={options} map={map}
 			                parentCategoryId={behavior?.parentCategory?.id ?? ''}
 			                currentCategoryId={behavior?.category?.id}
-			                rename={behavior?.rename}/>,
+			                rename={behavior?.rename} move={behavior?.move}/>,
 			{margin: 'max(96px, 20vh) auto auto'});
 	};
 };

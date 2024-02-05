@@ -22,7 +22,7 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 		handleCategory({parentCategory: parent, category, rename: true});
 	};
 	const moveCategory = (parent: RecentProjectHolder, category: RecentProjectCategory) => {
-		// TODO MOVE CATEGORY
+		handleCategory({parentCategory: parent, category, move: true});
 	};
 	const removeCategory = (parent: RecentProjectHolder, category: RecentProjectCategory) => {
 		// TODO REMOVE CATEGORY
