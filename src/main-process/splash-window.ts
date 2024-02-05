@@ -1,6 +1,7 @@
-import {BrowserWindow} from 'electron';
+import {BrowserWindow, Menu} from 'electron';
 import path from 'path';
 import {createMainWindow} from './main-window';
+import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 
 export const createSplashWindow = () => {
 	const mainWindow = createMainWindow(false);
@@ -23,6 +24,9 @@ export const createSplashWindow = () => {
 		splashWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/splash.html`));
 	}
 
+	const menuTemplate: Array<MenuItemConstructorOptions> = [];
+	const appMenu = Menu.buildFromTemplate(menuTemplate);
+	Menu.setApplicationMenu(appMenu);
 	splashWindow.center();
 	setTimeout(() => {
 		splashWindow.close();

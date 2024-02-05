@@ -121,9 +121,7 @@ export const createAppMenu = () => {
 };
 
 export const createDockMenu = () => {
-	const menuTemplate = [
-		createRecentProjectsMenu()
-	];
+	const menuTemplate: Array<MenuItemConstructorOptions> = [];
 	const dockMenu = Menu.buildFromTemplate(menuTemplate);
 	app.dock.setMenu(dockMenu);
 };

@@ -1,5 +1,6 @@
-import {BrowserWindow} from 'electron';
+import {BrowserWindow, Menu} from 'electron';
 import path from 'path';
+import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 
 export const openAboutWindow = (parent: BrowserWindow) => {
 	const window = new BrowserWindow({
@@ -23,6 +24,10 @@ export const openAboutWindow = (parent: BrowserWindow) => {
 		// noinspection JSIgnoredPromiseFromCall
 		window.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/about.html`));
 	}
+
+	const menuTemplate: Array<MenuItemConstructorOptions> = [];
+	const appMenu = Menu.buildFromTemplate(menuTemplate);
+	Menu.setApplicationMenu(appMenu);
 
 	return window;
 };
