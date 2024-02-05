@@ -26,10 +26,6 @@ export const showContextMenu = (menu: Array<ContextMenuItem>) => {
 			console.error(`No context menu handler found for command[${command}].`);
 		}
 	};
-	window.electron.contextMenu.onClosed(() => {
-		console.log(`Context menu closed.`);
-		window.electron.contextMenu.offClicked(onMenuClicked);
-	});
-	window.electron.contextMenu.onClicked(onMenuClicked);
+	window.electron.contextMenu.onClick(onMenuClicked);
 	window.electron.contextMenu.showContextMenu(transformed);
 };

@@ -21,10 +21,7 @@ declare global {
 	}
 
 	interface WindowElectronContextMenu {
-		onClicked: (listener: (command: string) => void) => void;
-		offClicked: (listener: (command: string) => void) => void;
-		onceClicked: (listener: (command: string) => void) => void;
-		onClosed: (listener: () => void) => void;
+		onClick: (listener: (command: string) => void) => void;
 		showContextMenu: (menu: ContextMenu) => void;
 	}
 

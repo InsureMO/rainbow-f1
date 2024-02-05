@@ -3,7 +3,7 @@ import {ipcRenderer} from 'electron';
 import {EventEmitter} from 'events';
 import {ContextMenu, ContextMenuEvent} from '../shared/types';
 
-class IpcRendererBridge {
+class ContextMenuBridge {
 	private readonly _eventBus = new EventEmitter();
 
 	constructor() {
@@ -12,41 +12,25 @@ class IpcRendererBridge {
 			this._eventBus.emit(ContextMenuEvent.CLICKED, command);
 		});
 		ipcRenderer.on(ContextMenuEvent.WILL_CLOSE, (_: IpcRendererEvent) => {
-			this._eventBus.emit(ContextMenuEvent.WILL_CLOSE);
+			// will close also can be triggered by clicking on the menu item
+			// The event happens before the menu click (for some unknown reason),
+			// so the clean-up action is executed after 200ms to ensure the menu click event is received correctly.
+			setTimeout(() => {
+				this._eventBus.removeAllListeners(ContextMenuEvent.CLICKED);
+			}, 200);
 		});
-	}
-
-	public onMenuClicked(listener: (command: string) => void): void {
-		this._eventBus.on(ContextMenuEvent.CLICKED, listener);
-	}
-
-	public offMenuClicked(listener: (command: string) => void): void {
-		this._eventBus.off(ContextMenuEvent.CLICKED, listener);
 	}
 
 	public onceMenuClicked(listener: (command: string) => void): void {
 		this._eventBus.once(ContextMenuEvent.CLICKED, listener);
 	}
-
-	public onceMenuClosed(listener: () => void): void {
-		this._eventBus.once(ContextMenuEvent.WILL_CLOSE, listener);
-	}
 }
 
-const ipcRendererBridge = new IpcRendererBridge();
+const bridge = new ContextMenuBridge();
 
 export const ContextMenuHandlers: WindowElectronContextMenu = {
-	onClicked: (listener: (command: string) => void) => {
-		ipcRendererBridge.onMenuClicked(listener);
-	},
-	offClicked: (listener: (command: string) => void) => {
-		ipcRendererBridge.offMenuClicked(listener);
-	},
-	onceClicked: (listener: (command: string) => void) => {
-		ipcRendererBridge.onceMenuClicked(listener);
-	},
-	onClosed: (listener: () => void) => {
-		ipcRendererBridge.onceMenuClosed(listener);
+	onClick: (listener: (command: string) => void) => {
+		bridge.onceMenuClicked(listener);
 	},
 	showContextMenu: (menu: ContextMenu) => {
 		ipcRenderer.send(ContextMenuEvent.SHOW, menu);
