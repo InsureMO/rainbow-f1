@@ -1,4 +1,5 @@
-import {RecentProject, RecentProjectCategory, RecentProjectRoot, Theme} from './shared/constants';
+import {ContextMenu, RecentProject, RecentProjectCategory, RecentProjectRoot} from './shared/constants';
+import {ThemeSource} from './shared/types';
 
 declare global {
 	interface WindowElectronStore {
@@ -6,27 +7,35 @@ declare global {
 		set: (key: string, value: any) => void;
 	}
 
-	interface WindowElectronHandler {
-		store: WindowElectronStore;
-		getTheme: () => Exclude<Theme, Theme.EVENT_NAME>;
-		getRecentProjects: () => RecentProjectRoot;
-		addRecentProject: (project: RecentProject, categoryId?: string) => void;
-		removeRecentProject: (projectId: string) => void;
-		clearRecentProjects: () => void;
-		addRecentCategory: (category: RecentProjectCategory, parentCategoryId?: string) => void;
-		removeRecentCategory: (categoryId: string) => void;
+	interface WindowElectronTheme {
+		get: () => ThemeSource;
 	}
 
-	interface WindowIpcRenderer {
-		on: (channel: string, listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => void;
-		off: (channel: string, listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => void;
-		once: (channel: string, listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => void;
-		send: (channel: string, ...args: any[]) => void;
-		sendSync: (channel: string, ...args: any[]) => any;
+	interface WindowElectronRecentProjects {
+		get: () => RecentProjectRoot;
+		addProject: (project: RecentProject, categoryId?: string) => void;
+		removeProject: (projectId: string) => void;
+		clear: () => void;
+		addCategory: (category: RecentProjectCategory, parentCategoryId?: string) => void;
+		removeCategory: (categoryId: string) => void;
+	}
+
+	interface WindowElectronContextMenu {
+		onClicked: (listener: (command: string) => void) => void;
+		offClicked: (listener: (command: string) => void) => void;
+		onceClicked: (listener: (command: string) => void) => void;
+		onClosed: (listener: () => void) => void;
+		showContextMenu: (menu: ContextMenu) => void;
+	}
+
+	interface WindowElectronHandler {
+		store: WindowElectronStore;
+		theme: WindowElectronTheme;
+		recentProjects: WindowElectronRecentProjects;
+		contextMenu: WindowElectronContextMenu;
 	}
 
 	interface Window {
 		electron: WindowElectronHandler;
-		ipcRenderer: WindowIpcRenderer;
 	}
 }

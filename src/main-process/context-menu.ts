@@ -1,5 +1,5 @@
 import {BrowserWindow, ipcMain, Menu} from 'electron';
-import {ContextMenuEvent, ContextMenuTemplateItem} from '../shared/constants';
+import {ContextMenuEvent, ContextMenuTemplateItem} from '../shared/types';
 import IpcMainEvent = Electron.IpcMainEvent;
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 
@@ -10,6 +10,7 @@ class ApplicationContextMenu {
 				return this.transformTemplateItem(item, event);
 			});
 			const menu = Menu.buildFromTemplate(transformed);
+			menu.on('menu-will-close', () => event.sender.send(ContextMenuEvent.WILL_CLOSE));
 			menu.popup({window: BrowserWindow.fromWebContents(event.sender)});
 		});
 	}
@@ -18,7 +19,7 @@ class ApplicationContextMenu {
 		return {
 			...item,
 			submenu: item.submenu?.map(subItem => this.transformTemplateItem(subItem, event)),
-			click: item.click != null ? () => event.sender.send(ContextMenuEvent.CLICK, item.click) : (void 0)
+			click: item.click != null ? () => event.sender.send(ContextMenuEvent.CLICKED, item.click) : (void 0)
 		};
 	};
 }

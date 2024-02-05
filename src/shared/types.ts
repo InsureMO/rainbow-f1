@@ -54,7 +54,10 @@ export type ContextMenuTemplateItem = Omit<MenuItemConstructorOptions, 'submenu'
 	click?: string;
 }
 
+export type ContextMenu = Array<ContextMenuTemplateItem>;
+
 export enum ContextMenuEvent {
 	SHOW = 'show-context-menu',
-	CLICK = 'context-menu-command'
+	CLICKED = 'context-menu-clicked',
+	WILL_CLOSE = 'context-menu-will-close'
 }

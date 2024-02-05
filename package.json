@@ -44,6 +44,7 @@
 		"@rainbow-d9/n2": "^1.0.49",
 		"electron-squirrel-startup": "^1.0.0",
 		"electron-store": "^8.1.0",
+		"events": "^3.3.0",
 		"normalize.css": "^8.0.1",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",

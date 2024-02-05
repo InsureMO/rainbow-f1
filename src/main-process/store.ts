@@ -8,7 +8,7 @@ import {
 	StoreEvent as StoreEvent,
 	Theme,
 	ThemeSource
-} from '../shared/constants';
+} from '../shared/types';
 
 const store = new Store();
 

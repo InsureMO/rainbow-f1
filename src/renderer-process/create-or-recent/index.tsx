@@ -11,13 +11,8 @@ import {
 } from '@rainbow-d9/n2';
 import {MouseEvent} from 'react';
 import styled from 'styled-components';
-import {
-	ContextMenuEvent,
-	ContextMenuTemplateItem,
-	RecentProjectCategory,
-	RecentProjectHolder,
-	RecentProjectRoot
-} from '../../shared/constants';
+import {RecentProjectCategory, RecentProjectHolder, RecentProjectRoot} from '../../shared/types';
+import {showContextMenu} from '../context-menu';
 import {EllipsisVertical, FolderClosed, FolderClosedEmpty, FolderOpen} from '../icons';
 
 const CreateOrRecentContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or-recent-container'})`
@@ -182,41 +177,23 @@ const RecentProjectTree = (props: { root: RecentProjectRoot }) => {
 
 	const createSubCategory = (category: RecentProjectCategory) => {
 		// TODO CREATE SUB CATEGORY
-		console.log('create-sub-category');
+
 	};
 	const renameCategory = (category: RecentProjectCategory) => {
 		// TODO RENAME CATEGORY
-		console.log('rename-category');
 	};
 	const moveCategory = (category: RecentProjectCategory) => {
 		// TODO RENAME CATEGORY
-		console.log('move-category');
 	};
 	const onCategoryOperatorClicked = (category: RecentProjectCategory) => (event: MouseEvent<HTMLSpanElement>) => {
 		event.stopPropagation();
 		event.preventDefault();
-		window.ipcRenderer.once(ContextMenuEvent.CLICK, (e, command) => {
-			switch (true) {
-				case command === 'create-sub-category':
-					createSubCategory(category);
-					break;
-				case command === 'rename-category':
-					renameCategory(category);
-					break;
-				case command === 'move-category':
-					moveCategory(category);
-					break;
-				default:
-				// do nothing
-			}
-		});
-		const contextTemplate: Array<ContextMenuTemplateItem> = [
-			{label: 'Create sub category', click: 'create-sub-category'},
+		showContextMenu([
+			{label: 'Create sub category', click: 'create-sub-category', invoke: () => createSubCategory(category)},
 			{type: 'separator'},
-			{label: 'Rename', click: 'rename-category'},
-			{label: 'Move to...', click: 'move-category'}
-		];
-		window.ipcRenderer.send(ContextMenuEvent.SHOW, contextTemplate);
+			{label: 'Rename', click: 'rename-category', invoke: () => renameCategory(category)},
+			{label: 'Move to...', click: 'move-category', invoke: () => moveCategory(category)}
+		]);
 	};
 	const onProjectOperatorClicked = (event: MouseEvent<HTMLSpanElement>) => {
 		event.stopPropagation();
@@ -266,7 +243,7 @@ const RecentProjectTree = (props: { root: RecentProjectRoot }) => {
 };
 
 export const CreateOrRecentPage = () => {
-	const recentProjectsRoot = window.electron.getRecentProjects();
+	const recentProjectsRoot = window.electron.recentProjects.get();
 	// TODO MOCK DATA
 	recentProjectsRoot.categories = [{
 		id: '1', name: 'Hello world',

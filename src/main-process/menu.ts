@@ -1,5 +1,5 @@
 import {app, ipcMain, Menu, nativeTheme} from 'electron';
-import {Theme} from '../shared/constants';
+import {Theme, ThemeSource} from '../shared/types';
 import store from './store';
 import {isMac} from './utils';
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
@@ -9,7 +9,7 @@ const mac = isMac();
 const createRecentProjectsMenu = () => {
 	return {label: 'Recent Projects'};
 };
-const createThemeChangeMenuHandler = (source: Exclude<Theme, Theme.EVENT_NAME>) => {
+const createThemeChangeMenuHandler = (source: ThemeSource) => {
 	return () => {
 		nativeTheme.themeSource = source;
 		ipcMain.emit(Theme.EVENT_NAME, source);
