@@ -11,7 +11,8 @@ export default defineConfig({
 		rollupOptions: {
 			input: {
 				index: 'index.html',
-				splash: 'splash.html'
+				splash: 'splash.html',
+				about: 'about.html'
 			}
 		}
 	}

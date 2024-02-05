@@ -1,71 +1,11 @@
 import {app, BrowserWindow} from 'electron';
-import path from 'path';
-import {createAppMenu, createDockMenu} from './main-process/menu';
 import './main-process/context-menu';
+import {createMainWindow, createSplashWindow} from './main-process';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
 	app.quit();
 }
-
-const createSplashWindow = () => {
-	const mainWindow = createMainWindow(false);
-	const splashWindow = new BrowserWindow({
-		width: 640,
-		height: 480,
-		frame: false,
-		transparent: true,
-		alwaysOnTop: true,
-		resizable: false
-	});
-
-	// and load the splash.html of the app.
-	if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-		// noinspection JSIgnoredPromiseFromCall
-		splashWindow.loadURL(`${MAIN_WINDOW_VITE_DEV_SERVER_URL}/splash.html`);
-	} else {
-		// noinspection JSIgnoredPromiseFromCall
-		splashWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/splash.html`));
-	}
-
-	splashWindow.center();
-	setTimeout(() => {
-		splashWindow.close();
-		mainWindow.maximize();
-		mainWindow.show();
-	}, 5000);
-};
-
-const createMainWindow = (showImmediate: boolean): BrowserWindow => {
-	createAppMenu();
-	createDockMenu();
-
-	// Create the browser window.
-	const mainWindow = new BrowserWindow({
-		show: false,
-		webPreferences: {preload: path.join(__dirname, 'preload.js')}
-	});
-	// mainWindow.maximize();
-
-	// and load the index.html of the app.
-	if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-		// noinspection JSIgnoredPromiseFromCall
-		mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
-	} else {
-		// noinspection JSIgnoredPromiseFromCall
-		mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
-	}
-
-	if (showImmediate) {
-		// Open the DevTools.
-		// mainWindow.webContents.openDevTools();
-		mainWindow.once('ready-to-show', () => {
-			mainWindow.maximize();
-			mainWindow.show();
-		});
-	}
-	return mainWindow;
-};
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

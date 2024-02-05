@@ -2,6 +2,13 @@ import {ContextMenu, RecentProject, RecentProjectCategory, RecentProjectRoot} fr
 import {ThemeSource} from './shared/types';
 
 declare global {
+	interface WindowElectronVersions {
+		node: string;
+		chrome: string;
+		v8: string;
+		electron: string;
+	}
+
 	interface WindowElectronStore {
 		get: (key: string) => any;
 		set: (key: string, value: any) => void;
@@ -26,6 +33,7 @@ declare global {
 	}
 
 	interface WindowElectronHandler {
+		versions: WindowElectronVersions;
 		store: WindowElectronStore;
 		theme: WindowElectronTheme;
 		recentProjects: WindowElectronRecentProjects;

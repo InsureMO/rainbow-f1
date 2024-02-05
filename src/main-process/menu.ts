@@ -1,5 +1,6 @@
-import {app, ipcMain, Menu, nativeTheme} from 'electron';
+import {app, BrowserWindow, ipcMain, Menu, nativeTheme} from 'electron';
 import {Theme, ThemeSource} from '../shared/types';
+import {openAboutWindow} from './about-window';
 import store from './store';
 import {isMac} from './utils';
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
@@ -7,7 +8,8 @@ import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 const mac = isMac();
 
 const createRecentProjectsMenu = () => {
-	return {label: 'Recent Projects'};
+	// TODO OPEN RECENT PROJECTS
+	return {label: 'Recent Projects...'};
 };
 const createThemeChangeMenuHandler = (source: ThemeSource) => {
 	return () => {
@@ -17,9 +19,18 @@ const createThemeChangeMenuHandler = (source: ThemeSource) => {
 };
 
 export const createAppMenu = () => {
+	let aboutWindow: BrowserWindow;
 	const aboutMenuItem = {
 		label: 'About @Rainbow-F1', click: () => {
-			// TODO OPEN ABOUT WINDOW
+			if (aboutWindow != null) {
+				aboutWindow.center();
+				aboutWindow.focus();
+			} else {
+				aboutWindow = openAboutWindow(BrowserWindow.getFocusedWindow());
+				aboutWindow.on('closed', () => {
+					aboutWindow = null;
+				});
+			}
 		}
 	};
 	const checkForUpdatesMenuItem = {
