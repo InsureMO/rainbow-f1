@@ -1,6 +1,7 @@
 import {BrowserWindow} from 'electron';
 import path from 'path';
 import {createAppMenu, createDockMenu} from './menu';
+import {isDev} from './utils';
 
 export const createMainWindow = (showImmediate: boolean): BrowserWindow => {
 	// Create the browser window.
@@ -10,8 +11,8 @@ export const createMainWindow = (showImmediate: boolean): BrowserWindow => {
 	});
 	// mainWindow.maximize();
 
-	// and load the index.html of the app.
-	if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+	// and load the index.html of the app
+	if (isDev()) {
 		// noinspection JSIgnoredPromiseFromCall
 		mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
 	} else {

@@ -1,6 +1,7 @@
 import {app, BrowserWindow, ipcMain, Menu, nativeTheme} from 'electron';
 import {Theme, ThemeSource} from '../shared/types';
 import {openAboutWindow} from './about-window';
+import {createProjectWindow} from './project-window';
 import store from './store';
 import {isMac} from './utils';
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
@@ -8,8 +9,11 @@ import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 const mac = isMac();
 
 const createRecentProjectsMenu = () => {
-	// TODO OPEN RECENT PROJECTS
-	return {label: 'Recent Projects...'};
+	return {
+		label: 'Recent Projects...', click: () => {
+			createProjectWindow({showImmediate: true, parent: BrowserWindow.getFocusedWindow()});
+		}
+	};
 };
 const createThemeChangeMenuHandler = (source: ThemeSource) => {
 	return () => {
@@ -17,6 +21,26 @@ const createThemeChangeMenuHandler = (source: ThemeSource) => {
 		store.setTheme(source);
 		ipcMain.emit(Theme.EVENT_NAME, source);
 	};
+};
+
+export const createDevMenu = (should: boolean) => {
+	if (should) {
+		return [{
+			label: 'Developers',
+			submenu: [
+				{label: 'Zoom In', role: 'zoomIn'} as MenuItemConstructorOptions,
+				{label: 'Zoom Out', role: 'zoomOut'} as MenuItemConstructorOptions,
+				{label: 'Zoom Reset', role: 'resetZoom'} as MenuItemConstructorOptions,
+				{type: 'separator'} as MenuItemConstructorOptions,
+				{label: 'Reload', role: 'reload'} as MenuItemConstructorOptions,
+				{label: 'Force Reload', role: 'forceReload'} as MenuItemConstructorOptions,
+				{type: 'separator'} as MenuItemConstructorOptions,
+				{label: 'Toggle Developer Tools', role: 'toggleDevTools'} as MenuItemConstructorOptions
+			]
+		}];
+	} else {
+		return [];
+	}
 };
 
 export const createAppMenu = () => {
@@ -93,19 +117,7 @@ export const createAppMenu = () => {
 				}
 			]
 		},
-		{
-			label: 'Developers',
-			submenu: [
-				{label: 'Zoom In', role: 'zoomIn'} as MenuItemConstructorOptions,
-				{label: 'Zoom Out', role: 'zoomOut'} as MenuItemConstructorOptions,
-				{label: 'Zoom Reset', role: 'resetZoom'} as MenuItemConstructorOptions,
-				{type: 'separator'} as MenuItemConstructorOptions,
-				{label: 'Reload', role: 'reload'} as MenuItemConstructorOptions,
-				{label: 'Force Reload', role: 'forceReload'} as MenuItemConstructorOptions,
-				{type: 'separator'} as MenuItemConstructorOptions,
-				{label: 'Toggle Developer Tools', role: 'toggleDevTools'} as MenuItemConstructorOptions
-			]
-		},
+		...createDevMenu(true),
 		{
 			label: 'Help',
 			submenu: [

@@ -1,5 +1,7 @@
 import {BrowserWindow, Menu} from 'electron';
 import path from 'path';
+import {createDevMenu} from './menu';
+import {isDev} from './utils';
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 
 export const createProjectWindow = (options: {
@@ -19,10 +21,11 @@ export const createProjectWindow = (options: {
 		center: true,
 		// parent,
 		show: false,
+		alwaysOnTop: true,
 		webPreferences: {preload: path.join(__dirname, 'preload.js')}
 	});
 	// and load the splash.html of the app.
-	if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+	if (isDev()) {
 		// noinspection JSIgnoredPromiseFromCall
 		window.loadURL(`${MAIN_WINDOW_VITE_DEV_SERVER_URL}/project.html`);
 	} else {
@@ -30,19 +33,7 @@ export const createProjectWindow = (options: {
 		window.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/project.html`));
 	}
 
-	const menuTemplate: Array<MenuItemConstructorOptions> = [{
-		label: 'Developers',
-		submenu: [
-			{label: 'Zoom In', role: 'zoomIn'} as MenuItemConstructorOptions,
-			{label: 'Zoom Out', role: 'zoomOut'} as MenuItemConstructorOptions,
-			{label: 'Zoom Reset', role: 'resetZoom'} as MenuItemConstructorOptions,
-			{type: 'separator'} as MenuItemConstructorOptions,
-			{label: 'Reload', role: 'reload'} as MenuItemConstructorOptions,
-			{label: 'Force Reload', role: 'forceReload'} as MenuItemConstructorOptions,
-			{type: 'separator'} as MenuItemConstructorOptions,
-			{label: 'Toggle Developer Tools', role: 'toggleDevTools'} as MenuItemConstructorOptions
-		]
-	}];
+	const menuTemplate: Array<MenuItemConstructorOptions> = createDevMenu(isDev());
 	const appMenu = Menu.buildFromTemplate(menuTemplate);
 
 	window.on('focus', () => {

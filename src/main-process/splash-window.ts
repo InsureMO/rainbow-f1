@@ -1,6 +1,7 @@
 import {BrowserWindow, Menu} from 'electron';
 import path from 'path';
 import {createProjectWindow} from './project-window';
+import {isDev} from './utils';
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 
 export const createSplashWindow = () => {
@@ -16,7 +17,7 @@ export const createSplashWindow = () => {
 	});
 
 	// and load the splash.html of the app.
-	if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+	if (isDev()) {
 		// noinspection JSIgnoredPromiseFromCall
 		splashWindow.loadURL(`${MAIN_WINDOW_VITE_DEV_SERVER_URL}/splash.html`);
 	} else {
