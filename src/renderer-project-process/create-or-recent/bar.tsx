@@ -7,10 +7,10 @@ import {
 	useGlobalEventBus
 } from '@rainbow-d9/n2';
 import {useNavigate} from 'react-router-dom';
+import {ButtonBarSpacer} from '../../renderer-common/widgets';
 import {useCategory} from './category';
 import {RecentProjectsEventTypes, useRecentProjectsEventBus} from './event-bus';
 import {useRepaint} from './use-repaint';
-import {ButtonBarSpacer} from './widgets';
 
 export const Bar = () => {
 	const navigate = useNavigate();

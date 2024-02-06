@@ -19,15 +19,15 @@ export const CreateOrRecentContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-cre
     border-radius: var(--f1-border-radius);
     padding: 0 24px;
 
+    > span[data-w=d9-caption] {
+        height: 64px;
+    }
+
     > svg[data-icon=logo] {
         height: 48px;
         width: 48px;
         color: var(--f1-danger-color);
         align-self: center;
-    }
-
-    > span[data-w=d9-caption] {
-        height: 64px;
     }
 
     > div[data-w=d9-tree] {
@@ -158,11 +158,6 @@ export const NoRecentProject = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or
     padding: 8px 0 24px;
     line-height: 1.5;
     border-top: var(--f1-border);
-`;
-export const ButtonBarSpacer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or-recent-button-bar-spacer'})`
-    display: block;
-    position: relative;
-    flex-grow: 1;
 `;
 export const InvalidMessage = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-form-cell-invalid-msg'})`
     display: flex;

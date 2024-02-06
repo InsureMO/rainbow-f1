@@ -1,6 +1,6 @@
 import {BrowserWindow, Menu} from 'electron';
 import path from 'path';
-import {createDevMenu} from './menu';
+import {createDevMenu, createDevQuitMenu} from './menu';
 import {isDev} from './utils';
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 
@@ -24,8 +24,9 @@ export const createProjectWindow = (options: {
 		alwaysOnTop: true,
 		webPreferences: {preload: path.join(__dirname, 'preload.js')}
 	});
+	const dev = isDev();
 	// and load the splash.html of the app.
-	if (isDev()) {
+	if (dev) {
 		// noinspection JSIgnoredPromiseFromCall
 		window.loadURL(`${MAIN_WINDOW_VITE_DEV_SERVER_URL}/project.html`);
 	} else {
@@ -33,7 +34,7 @@ export const createProjectWindow = (options: {
 		window.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/project.html`));
 	}
 
-	const menuTemplate: Array<MenuItemConstructorOptions> = createDevMenu(isDev());
+	const menuTemplate: Array<MenuItemConstructorOptions> = [...createDevQuitMenu(dev), ...createDevMenu(dev)];
 	const appMenu = Menu.buildFromTemplate(menuTemplate);
 
 	window.on('focus', () => {

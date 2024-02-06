@@ -23,6 +23,29 @@ const createThemeChangeMenuHandler = (source: ThemeSource) => {
 	};
 };
 
+export const createQuitMenuItem = (check: boolean) => {
+	return {
+		label: 'Quit @Rainbow-F1', accelerator: 'CmdOrCtrl+Q',
+		click: () => {
+			// TODO CHECK IF THERE IS ANY UNSAVED WORK
+			app.quit();
+		}
+	};
+};
+
+export const createDevQuitMenu = (should: boolean) => {
+	if (should) {
+		return [{
+			label: app.getName(),
+			submenu: [
+				createQuitMenuItem(false)
+			]
+		}];
+	} else {
+		return [];
+	}
+};
+
 export const createDevMenu = (should: boolean) => {
 	if (should) {
 		return [{
@@ -63,13 +86,6 @@ export const createAppMenu = () => {
 			// TODO CHECK FOR UPDATES
 		}
 	};
-	const quitMenuItem = {
-		label: 'Quit @Rainbow-F1', accelerator: 'CmdOrCtrl+Q',
-		click: () => {
-			// TODO CHECK IF THERE IS ANY UNSAVED WORK
-			app.quit();
-		}
-	};
 	const theme = store.getTheme();
 
 	const menuTemplate: Array<MenuItemConstructorOptions> = [
@@ -79,7 +95,7 @@ export const createAppMenu = () => {
 				aboutMenuItem,
 				checkForUpdatesMenuItem,
 				{type: 'separator'} as MenuItemConstructorOptions,
-				quitMenuItem
+				createQuitMenuItem(true)
 			]
 		} : null,
 		{
@@ -92,7 +108,7 @@ export const createAppMenu = () => {
 				{type: 'separator'} as MenuItemConstructorOptions,
 				{label: 'Close Project'},
 				mac ? null : {type: 'separator'} as MenuItemConstructorOptions,
-				mac ? null : quitMenuItem
+				mac ? null : createQuitMenuItem(true)
 			].filter(menu => menu != null)
 		},
 		{label: 'Edit', role: 'editMenu'} as MenuItemConstructorOptions,
