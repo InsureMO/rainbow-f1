@@ -1,10 +1,10 @@
 import {BrowserWindow, Menu} from 'electron';
 import path from 'path';
-import {createMainWindow} from './main-window';
+import {createProjectWindow} from './project-window';
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 
 export const createSplashWindow = () => {
-	const mainWindow = createMainWindow(false);
+	const projectWindow = createProjectWindow({showImmediate: false});
 	const splashWindow = new BrowserWindow({
 		width: 640,
 		height: 480,
@@ -30,7 +30,6 @@ export const createSplashWindow = () => {
 	splashWindow.center();
 	setTimeout(() => {
 		splashWindow.close();
-		mainWindow.maximize();
-		mainWindow.show();
+		projectWindow.show();
 	}, 5000);
 };

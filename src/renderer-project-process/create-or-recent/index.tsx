@@ -1,4 +1,5 @@
-import {Dialog, GlobalEventBusProvider, YesNoDialog} from '@rainbow-d9/n2';
+import {Dialog, GlobalEventBusProvider, UnwrappedCaption, YesNoDialog} from '@rainbow-d9/n2';
+import {Logo} from '../../renderer-common/icons';
 import {Bar} from './bar';
 import {RecentProjectsEventBusProvider} from './event-bus';
 import {RecentProjects} from './recent-projects';
@@ -11,6 +12,8 @@ export const CreateOrRecentPage = () => {
 			<YesNoDialog/>
 			<CreateOrRecentContainer>
 				<CreateOrRecentContent>
+					<UnwrappedCaption data-page-title={true}>Recent projects...</UnwrappedCaption>
+					<Logo/>
 					<RecentProjects/>
 					<Bar/>
 				</CreateOrRecentContent>

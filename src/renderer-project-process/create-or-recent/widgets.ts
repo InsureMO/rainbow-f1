@@ -2,33 +2,44 @@ import {DOM_KEY_WIDGET} from '@rainbow-d9/n2';
 import styled from 'styled-components';
 
 export const CreateOrRecentContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or-recent-container'})`
-    display: flex;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
+    display: block;
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
 `;
 export const CreateOrRecentContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or-recent-content'})`
-    display: flex;
+    display: grid;
     position: relative;
-    flex-direction: column;
-    max-height: max(60vh, 480px);
-    width: max(60vw, 640px);
-    margin: min(20vh, 96px) auto;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto 1fr auto;
+    width: calc(100vw - 48px);
+    height: 100vh;
     border: var(--f1-border);
     border-radius: var(--f1-border-radius);
-    padding: 24px 24px 0;
+    padding: 0 24px;
+
+    > svg[data-icon=logo] {
+        height: 48px;
+        width: 48px;
+        color: var(--f1-danger-color);
+        align-self: center;
+    }
+
+    > span[data-w=d9-caption] {
+        height: 64px;
+    }
 
     > div[data-w=d9-tree] {
+        grid-column: span 2;
         border: 0;
+        border-top: var(--f1-border);
         border-radius: 0;
         width: 100%;
     }
 
     > div[data-w=d9-button-bar] {
+        grid-column: span 2;
         border-top: var(--f1-border);
         border-radius: 0;
     }
@@ -139,12 +150,14 @@ export const CreateOrRecentContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-cre
 export const NoRecentProject = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or-recent-nothing-found'})`
     display: flex;
     position: relative;
+    grid-column: span 2;
     flex-grow: 1;
-    align-items: center;
+    align-items: start;
     font-size: 1.2em;
     color: var(--f1-label-color);
     padding: 8px 0 24px;
     line-height: 1.5;
+    border-top: var(--f1-border);
 `;
 export const ButtonBarSpacer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or-recent-button-bar-spacer'})`
     display: block;

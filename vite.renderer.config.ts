@@ -12,6 +12,7 @@ export default defineConfig({
 			input: {
 				index: 'index.html',
 				splash: 'splash.html',
+				project: 'project.html',
 				about: 'about.html'
 			}
 		}

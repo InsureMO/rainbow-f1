@@ -2,8 +2,8 @@ import {PROPERTY_PATH_ME, PropValue, Undefinable} from '@rainbow-d9/n1';
 import {GlobalEventTypes, TreeNodeDef, UnwrappedTree, useGlobalEventBus} from '@rainbow-d9/n2';
 import {MouseEvent} from 'react';
 import {RecentProject, RecentProjectCategory, RecentProjectHolder, RecentProjectRoot} from '../../shared/types';
-import {ContextMenuItem, showContextMenu} from '../context-menu';
-import {EllipsisVertical, FolderClosed, FolderClosedEmpty, FolderOpen} from '../icons';
+import {ContextMenuItem, showContextMenu} from '../../renderer-common/context-menu';
+import {EllipsisVertical, FolderClosed, FolderClosedEmpty, FolderOpen} from '../../renderer-common/icons';
 import {useCategory} from './category';
 import {RecentProjectsEventTypes, useRecentProjectsEventBus} from './event-bus';
 

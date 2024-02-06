@@ -1,7 +1,7 @@
 import {DOM_KEY_WIDGET} from '@rainbow-d9/n2';
 import styled from 'styled-components';
 import {GlobalStyles} from '../renderer-process/global-styles';
-import {Logo} from '../renderer-process/icons';
+import {Logo} from '../renderer-common/icons';
 
 const AboutContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-about'})`
     display: grid;

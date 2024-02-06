@@ -88,6 +88,11 @@ export const GlobalStyles: any = createGlobalStyle`
         margin: 4px 2px 0;
     }
 
+    span[data-w=d9-caption][data-page-title=true] {
+        font-size: 2em;
+        color: var(--f1-label-color);
+    }
+
     @media (prefers-color-scheme: dark) {
         body {
             --f1-background-color: #242424;
