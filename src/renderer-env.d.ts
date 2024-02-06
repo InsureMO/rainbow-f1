@@ -24,6 +24,8 @@ declare global {
 		removeProject: (projectId: string) => void;
 		clear: () => void;
 		addCategory: (category: RecentProjectCategory, parentCategoryId?: string) => void;
+		renameCategory: (categoryId: string, newName: string) => void;
+		moveCategory: (categoryId: string, newParentCategoryId: string) => void;
 		removeCategory: (categoryId: string) => void;
 	}
 

@@ -47,6 +47,8 @@ export enum StoreEvent {
 	REMOVE_RECENT_PROJECT = 'remove-recent-project',
 	CLEAR_RECENT_PROJECTS = 'clear-recent-projects',
 	ADD_RECENT_PROJECT_CATEGORY = 'add-recent-project-category',
+	RENAME_RECENT_PROJECT_CATEGORY = 'rename-recent-project-category',
+	MOVE_RECENT_PROJECT_CATEGORY = 'move-recent-project-category',
 	REMOVE_RECENT_PROJECT_CATEGORY = 'remove-recent-project-category'
 }
 

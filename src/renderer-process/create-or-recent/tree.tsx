@@ -72,10 +72,9 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 		const parent = (parentNode.value.value ?? parentNode.value) as unknown as RecentProjectHolder;
 		const categories = parent.categories ?? [];
 		const projects = parent.projects ?? [];
-		const nodes: Array<TreeNodeDef> = [];
-		categories.forEach((category) => {
+		const categoryNodes = categories.map((category) => {
 			const hasChild = (category.categories ?? []).length !== 0 || (category.projects ?? []).length !== 0;
-			nodes.push({
+			return {
 				marker: category.id,
 				label: <span data-recent-category={true}>
 					{hasChild ? <FolderClosed/> : <FolderClosedEmpty/>}
@@ -85,10 +84,12 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 				</span>,
 				value: category as unknown as PropValue,
 				$ip2r: PROPERTY_PATH_ME, $ip2p: `category-${category.id}`, leaf: false
-			});
+			};
+		}).sort((a, b) => {
+			return (a.value as unknown as RecentProjectCategory).name.localeCompare((b.value as unknown as RecentProjectCategory).name, (void 0), {sensitivity: 'base'});
 		});
-		projects.forEach((project) => {
-			nodes.push({
+		const projectNodes = projects.map((project) => {
+			return {
 				marker: project.id,
 				label: <span data-recent-project={true}>
 					<span data-short-name={true}>{computeShortName(project.name)}</span>
@@ -99,9 +100,11 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 				</span>,
 				value: project as unknown as PropValue,
 				$ip2r: PROPERTY_PATH_ME, $ip2p: `project-${project.id}`, leaf: true
-			});
+			};
+		}).sort((a, b) => {
+			return (a.value as unknown as RecentProject).name.localeCompare((b.value as unknown as RecentProject).name, (void 0), {sensitivity: 'base'});
 		});
-		return nodes;
+		return [...categoryNodes, ...projectNodes];
 	};
 
 	return <UnwrappedTree data={root} detective={detective} initExpandLevel={0}/>;

@@ -28,6 +28,8 @@ class ApplicationStore {
 		ipcMain.on(StoreEvent.REMOVE_RECENT_PROJECT, (_, projectId: string) => this.removeRecentProject(projectId));
 		ipcMain.on(StoreEvent.CLEAR_RECENT_PROJECTS, () => this.clearRecentProjects());
 		ipcMain.on(StoreEvent.ADD_RECENT_PROJECT_CATEGORY, (_, category: RecentProjectCategory, parentCategoryId?: string) => this.addRecentProjectCategory(category, parentCategoryId));
+		ipcMain.on(StoreEvent.RENAME_RECENT_PROJECT_CATEGORY, (_, categoryId: string, newName: string) => this.renameRecentProjectCategory(categoryId, newName));
+		ipcMain.on(StoreEvent.MOVE_RECENT_PROJECT_CATEGORY, (_, categoryId: string, newParentCategoryId?: string) => this.moveRecentProjectCategory(categoryId, newParentCategoryId));
 		ipcMain.on(StoreEvent.REMOVE_RECENT_PROJECT_CATEGORY, (_, categoryId: string) => this.removeRecentProjectCategory(categoryId));
 	}
 
@@ -120,6 +122,37 @@ class ApplicationStore {
 				foundCategory.categories.push(category);
 			} else {
 				root.categories.push(category);
+			}
+		}
+		store.set(StoreKey.RECENT_PROJECTS, root);
+	}
+
+	public renameRecentProjectCategory(categoryId: string, newName: string): void {
+		const root = this.getRecentProjects();
+		const [, foundCategory] = this.findRecentProjectCategory(root, categoryId);
+		if (foundCategory != null) {
+			foundCategory.name = newName;
+		}
+		store.set(StoreKey.RECENT_PROJECTS, root);
+	}
+
+	public moveRecentProjectCategory(categoryId: string, newParentCategoryId?: string): void {
+		const root = this.getRecentProjects();
+		const [parent, foundCategory] = this.findRecentProjectCategory(root, categoryId);
+		if (parent != null && foundCategory != null) {
+			parent.categories = parent.categories.filter(c => c.id !== categoryId);
+			if (`${newParentCategoryId ?? ''}`.trim().length === 0) {
+				root.categories = root.categories ?? [];
+				root.categories.push(foundCategory);
+			} else {
+				const [, newParentCategory] = this.findRecentProjectCategory(root, newParentCategoryId);
+				if (newParentCategory != null) {
+					newParentCategory.categories = newParentCategory.categories ?? [];
+					newParentCategory.categories.push(foundCategory);
+				} else {
+					root.categories = root.categories ?? [];
+					root.categories.push(foundCategory);
+				}
 			}
 		}
 		store.set(StoreKey.RECENT_PROJECTS, root);

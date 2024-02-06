@@ -39,6 +39,10 @@ export const GlobalStyles: any = createGlobalStyle`
         // d9 font
         --d9-font-variant: none;
         // d9 dialog
+        --d9-dialog-margin-top: max(96px, 20vh);
+        --d9-dialog-margin-left: calc(50vw - var(--d9-dialog-width) / 2 - 32px);
+        --d9-dialog-width: 600px;
+        --d9-dialog-padding: 32px 32px 16px;
         --d9-dialog-header-padding: 0;
         --d9-dialog-header-margin: -24px 0 0;
         --d9-dialog-shadow: var(--f1-dialog-shadow);
@@ -56,13 +60,15 @@ export const GlobalStyles: any = createGlobalStyle`
         background-color: var(--f1-background-color);
     }
 
-    div[data-w=dialog-body][data-flex-column=true] {
-        display: flex;
-        position: relative;
-        flex-direction: column;
+    div[data-w=dialog-body] {
+        &[data-flex-column=true] {
+            display: flex;
+            position: relative;
+            flex-direction: column;
 
-        div[data-w=d9-dropdown] {
-            width: unset;
+            div[data-w=d9-dropdown] {
+                width: unset;
+            }
         }
     }
 
