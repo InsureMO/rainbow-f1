@@ -2,7 +2,7 @@ import {PROPERTY_PATH_ME, PropValue, Undefinable} from '@rainbow-d9/n1';
 import {GlobalEventTypes, TreeNodeDef, UnwrappedTree, useGlobalEventBus} from '@rainbow-d9/n2';
 import {MouseEvent} from 'react';
 import {RecentProject, RecentProjectCategory, RecentProjectHolder, RecentProjectRoot} from '../../shared/types';
-import {showContextMenu} from '../context-menu';
+import {ContextMenuItem, showContextMenu} from '../context-menu';
 import {EllipsisVertical, FolderClosed, FolderClosedEmpty, FolderOpen} from '../icons';
 import {useCategory} from './category';
 import {RecentProjectsEventTypes, useRecentProjectsEventBus} from './event-bus';
@@ -16,16 +16,16 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 
 	const {fire} = useGlobalEventBus();
 	const recentProjectsEventBus = useRecentProjectsEventBus();
-	const handleCategory = useCategory();
+	const {performCategoryOperation} = useCategory();
 
 	const createSubCategory = (category: RecentProjectCategory) => {
-		handleCategory({parentCategory: category});
+		performCategoryOperation({parentCategory: category});
 	};
 	const renameCategory = (parent: RecentProjectHolder, category: RecentProjectCategory) => {
-		handleCategory({parentCategory: parent, category, rename: true});
+		performCategoryOperation({parentCategory: parent, category, rename: true});
 	};
 	const moveCategory = (parent: RecentProjectHolder, category: RecentProjectCategory) => {
-		handleCategory({parentCategory: parent, category, move: true});
+		performCategoryOperation({parentCategory: parent, category, move: true});
 	};
 	const removeCategory = (_parent: RecentProjectHolder, category: RecentProjectCategory) => {
 		fire(GlobalEventTypes.SHOW_YES_NO_DIALOG, <>
@@ -49,17 +49,24 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 	const onCategoryOperatorClicked = (parent: RecentProjectHolder, category: RecentProjectCategory) => (event: MouseEvent<HTMLSpanElement>) => {
 		event.stopPropagation();
 		event.preventDefault();
+		// when category is the only one in root, cannot perform moving
+		let movable = true;
+		if (parent === root) {
+			movable = (parent.categories ?? []).length > 1;
+		}
 		showContextMenu([
 			{label: 'Create sub category', click: 'create-sub-category', invoke: () => createSubCategory(category)},
 			{type: 'separator'},
 			{label: 'Rename', click: 'rename-category', invoke: () => renameCategory(parent, category)},
-			{label: 'Move to...', click: 'move-category', invoke: () => moveCategory(parent, category)},
+			movable ? {
+				label: 'Move to...', click: 'move-category', invoke: () => moveCategory(parent, category)
+			} : null,
 			{type: 'separator'},
 			{
 				label: 'Remove from recent projects',
 				click: 'remove-category', invoke: () => removeCategory(parent, category)
 			}
-		]);
+		].filter(x => x != null) as Array<ContextMenuItem>);
 	};
 	const onProjectClicked = (project: RecentProject) => (event: MouseEvent<HTMLSpanElement>) => {
 		event.stopPropagation();
@@ -69,16 +76,18 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 	const onProjectOperatorClicked = (parent: RecentProjectHolder, project: RecentProject) => (event: MouseEvent<HTMLSpanElement>) => {
 		event.stopPropagation();
 		event.preventDefault();
+		// when project is under root, and no category exists, cannot perform moving
+		const movable = parent !== root || (parent.categories ?? []).length > 1;
 		showContextMenu([
 			{label: 'Open', click: 'open-project', invoke: () => openProject(project)},
 			{type: 'separator'},
-			{label: 'Move to...', click: 'move-project', invoke: () => moveProject(parent, project)},
-			{type: 'separator'},
+			movable ? {label: 'Move to...', click: 'move-project', invoke: () => moveProject(parent, project)} : null,
+			movable ? {type: 'separator'} : null,
 			{
 				label: 'Remove from recent projects',
 				click: 'remove-project', invoke: () => removeProject(parent, project)
 			}
-		]);
+		].filter(x => x != null) as Array<ContextMenuItem>);
 	};
 	const detective = (parentNode: Undefinable<TreeNodeDef>): Array<TreeNodeDef> => {
 		// the first "value" is given by UnwrappedTree, the second "value" is given by Tree

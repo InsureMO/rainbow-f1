@@ -1,45 +1,35 @@
 import {DropdownOption, GlobalEventTypes, useGlobalEventBus} from '@rainbow-d9/n2';
 import {Fragment} from 'react';
-import {RecentProjectCategory, RecentProjectHolder} from '../../../shared/types';
+import {
+	RecentProjectCategory,
+	RecentProjectHolder,
+	RecentProjectRootId,
+	RecentProjectRootName
+} from '../../../shared/types';
 import {CategoryDialog} from './category-dialog';
 import {RecentProjectCategoryCandidate} from './types';
+import {transformCategoriesToMap, transformCategoriesToOptions} from './utils';
 
-export interface UseCategoryBehavior {
-	parentCategory?: RecentProjectHolder;
+export interface CategoryOperation {
+	/** the parent to perform category operation, could be root */
+	parentCategory: RecentProjectHolder;
+	/** the category to be renamed or moved */
 	category?: RecentProjectCategory;
+	/** identify whether the dialog is for renaming */
 	rename?: boolean;
+	/** identify whether the dialog is for moving */
 	move?: boolean;
 }
 
 export const useCategory = () => {
 	const {fire} = useGlobalEventBus();
-	// map doesn't include root
-	const transformCategoriesToMap = (parent: RecentProjectHolder): Record<string, RecentProjectCategory> => {
-		const holders: Record<string, RecentProjectCategory> = {};
-		const collectHolders = (holder: RecentProjectHolder) => {
-			if ((holder as RecentProjectCategory).id != null) {
-				holders[(holder as RecentProjectCategory).id] = holder as RecentProjectCategory;
-			}
-			(holder.categories ?? []).forEach(collectHolders);
-		};
-		collectHolders(parent);
-		return holders;
-	};
-	const transformCategoriesToOptions = (parent: RecentProjectHolder, prefix: string, parentCategoryIdsOfParent: Array<string>): Array<RecentProjectCategoryCandidate> => {
-		const parentCategoryIds = [...parentCategoryIdsOfParent, parent.id].filter(x => x != null);
-		return (parent.categories ?? []).map((category: RecentProjectCategory) => {
-			return [
-				{value: category.id, label: `${prefix}${category.name}`, parentCategoryIds},
-				...transformCategoriesToOptions(category, `${prefix}${category.name}/`, parentCategoryIds)
-			];
-		}).flat();
-	};
 
-	return (behavior?: UseCategoryBehavior) => {
+
+	const performCategoryOperation = (operation?: CategoryOperation) => {
 		const recentProjectsRoot = window.electron.recentProjects.get();
 		const options = [
 			// add root manually
-			{value: '', label: '', parentCategoryIds: []},
+			{value: RecentProjectRootId, label: RecentProjectRootName, parentCategoryIds: []},
 			// all categories
 			...transformCategoriesToOptions(recentProjectsRoot, '/', []).sort((a: DropdownOption, b: DropdownOption) => {
 				return (a.label as string).localeCompare(b.label as string);
@@ -60,9 +50,11 @@ export const useCategory = () => {
 		const map = transformCategoriesToMap(recentProjectsRoot);
 		fire(GlobalEventTypes.SHOW_DIALOG,
 			<CategoryDialog root={recentProjectsRoot} options={options} map={map}
-			                parentCategoryId={behavior?.parentCategory?.id ?? ''}
-			                currentCategoryId={behavior?.category?.id}
-			                rename={behavior?.rename} move={behavior?.move}/>,
+			                parentCategoryId={operation?.parentCategory?.id ?? RecentProjectRootId}
+			                currentCategoryId={operation?.category?.id}
+			                rename={operation?.rename} move={operation?.move}/>,
 			{margin: 'max(96px, 25vh) auto auto'});
 	};
+
+	return {performCategoryOperation};
 };

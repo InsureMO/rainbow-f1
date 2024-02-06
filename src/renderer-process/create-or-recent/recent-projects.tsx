@@ -4,6 +4,7 @@ import {NoRecentProject} from './widgets';
 
 export const RecentProjects = () => {
 	useRepaint();
+
 	const recentProjectsRoot = window.electron.recentProjects.get();
 	const hasRecentProjects = (recentProjectsRoot.categories ?? []).length !== 0 || (recentProjectsRoot.projects ?? []).length !== 0;
 

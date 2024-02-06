@@ -31,8 +31,11 @@ export interface RecentProjectCategory extends RecentProjectHolder {
 
 export type RecentProjectCategories = Array<RecentProjectCategory>;
 
+export const RecentProjectRootId = '';
+export const RecentProjectRootName = '';
+
 export interface RecentProjectRoot extends RecentProjectHolder {
-	id: '';
+	id: typeof RecentProjectRootId;
 }
 
 export enum StoreEvent {

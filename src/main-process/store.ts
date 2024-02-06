@@ -5,6 +5,7 @@ import {
 	RecentProjectCategory,
 	RecentProjectHolder,
 	RecentProjectRoot,
+	RecentProjectRootId,
 	StoreEvent as StoreEvent,
 	Theme,
 	ThemeSource
@@ -42,7 +43,11 @@ class ApplicationStore {
 	}
 
 	public getRecentProjects(): RecentProjectRoot {
-		return store.get(StoreKey.RECENT_PROJECTS, {}) as RecentProjectRoot;
+		const root = store.get(StoreKey.RECENT_PROJECTS, {id: RecentProjectRootId}) as RecentProjectRoot;
+		if (root.id == null) {
+			root.id = RecentProjectRootId;
+		}
+		return root;
 	}
 
 	protected findRecentProjectCategory(holder: RecentProjectHolder, categoryId: string): [RecentProjectHolder, RecentProjectCategory] | [] {

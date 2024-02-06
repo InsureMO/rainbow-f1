@@ -14,10 +14,16 @@ import {
 } from '@rainbow-d9/n2';
 import {nanoid} from 'nanoid';
 import {useEffect, useRef, useState} from 'react';
-import {RecentProjectCategory, RecentProjectRoot} from '../../../shared/types';
+import {
+	RecentProjectCategory,
+	RecentProjectHolder,
+	RecentProjectRoot,
+	RecentProjectRootId
+} from '../../../shared/types';
 import {RecentProjectsEventTypes, useRecentProjectsEventBus} from '../event-bus';
 import {InvalidMessage} from '../widgets';
 import {RecentProjectCategoryCandidate} from './types';
+import {filterAvailableCategories} from './utils';
 
 interface CreateCategoryDialogState {
 	changed: boolean;
@@ -27,25 +33,36 @@ interface CreateCategoryDialogState {
 }
 
 export const CategoryDialog = (props: {
-	root: RecentProjectRoot; options: Array<RecentProjectCategoryCandidate>; map: Record<string, RecentProjectCategory>;
+	root: RecentProjectRoot; options: Array<RecentProjectCategoryCandidate>; map: Record<string, RecentProjectHolder>;
 	parentCategoryId?: string;
 	currentCategoryId?: string; rename?: boolean; move?: boolean;
 }) => {
 	const {
 		root, options, map,
-		parentCategoryId = '',
+		parentCategoryId = RecentProjectRootId,
 		currentCategoryId, rename = false, move = false
 	} = props;
 
 	const {fire} = useGlobalEventBus();
 	const recentProjectsEventBus = useRecentProjectsEventBus();
+	const containerRef = useRef<HTMLDivElement>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [state, setState] = useState<CreateCategoryDialogState>(() => {
 		const category = map[currentCategoryId];
-		return {changed: false, parentCategoryId, name: category?.name ?? ''};
+		// current category id never be root, thus it is a category when found in map
+		return {
+			changed: false,
+			// leave undefined if it is a moving operation
+			parentCategoryId: move ? (void 0) : parentCategoryId,
+			name: (category as RecentProjectCategory)?.name ?? ''
+		};
 	});
 	useEffect(() => {
-		inputRef.current?.focus();
+		if (move) {
+			(containerRef.current?.querySelector('div[data-w=dropdown]') as HTMLDivElement)?.focus();
+		} else {
+			inputRef.current?.focus();
+		}
 	}, []);
 	useEffect(() => {
 		if (!state.changed) {
@@ -59,7 +76,7 @@ export const CategoryDialog = (props: {
 				return;
 			}
 			let siblings: Array<RecentProjectCategory>;
-			if (state.parentCategoryId === '') {
+			if (state.parentCategoryId === RecentProjectRootId) {
 				siblings = root.categories ?? [];
 			} else {
 				siblings = map[state.parentCategoryId]?.categories ?? [];
@@ -68,7 +85,8 @@ export const CategoryDialog = (props: {
 				setState(state => ({...state, message: 'Category name already exists.'}));
 				return;
 			}
-			if (currentCategoryId != null && map[currentCategoryId].name === name) {
+			// current category id never be root, thus it is a category when found in map
+			if (currentCategoryId != null && (map[currentCategoryId] as RecentProjectCategory).name === name) {
 				setState(state => ({...state, message: 'Category name not changed.'}));
 				return;
 			}
@@ -77,7 +95,7 @@ export const CategoryDialog = (props: {
 				return;
 			}
 		} else {
-			// move category
+			// move category, compare with given parent category id
 			if (state.parentCategoryId == parentCategoryId) {
 				// move to current parent is nonsense
 				setState(state => ({...state, message: 'Category already in the target parent.'}));
@@ -99,7 +117,7 @@ export const CategoryDialog = (props: {
 		} else if (move) {
 			window.electron.recentProjects.moveCategory(currentCategoryId, state.parentCategoryId);
 		} else {
-			if (state.parentCategoryId === '') {
+			if (state.parentCategoryId === RecentProjectRootId) {
 				window.electron.recentProjects.addCategory({id: nanoid(32), name: state.name});
 			} else {
 				window.electron.recentProjects.addCategory({id: nanoid(32), name: state.name}, state.parentCategoryId);
@@ -115,25 +133,29 @@ export const CategoryDialog = (props: {
 	const title = rename ? 'Rename category' : (move ? 'Move category to' : 'Create new category');
 	const parentLabel = move ? 'Move to' : 'Parent category';
 	// filter myself and all my descendants when move is true
-	const availableOptions = move ? options.filter(option => {
-		// option is not my current parent, myself, and not my descendants
-		return option.value !== currentCategoryId
-			&& option.value !== parentCategoryId
-			&& !option.parentCategoryIds.some(id => id === currentCategoryId);
-	}) : options;
+	const availableOptions = move ? filterAvailableCategories(options, currentCategoryId, parentCategoryId) : options;
+	const selectedParentCategoryId = (() => {
+		if (state.parentCategoryId != null) {
+			return state.parentCategoryId;
+		}
+		if (availableOptions[0]?.value !== parentCategoryId) {
+			return availableOptions[0]?.value ?? RecentProjectRootId;
+		} else {
+			return availableOptions[1]?.value ?? RecentProjectRootId;
+		}
+	})();
 	const okButtonLabel = rename ? 'Rename' : (move ? 'Move' : 'Create');
 
 	return <>
 		<DialogHeader>
 			<DialogTitle>{title}</DialogTitle>
 		</DialogHeader>
-		<DialogBody data-flex-column={true}>
+		<DialogBody data-flex-column={true} ref={containerRef}>
 			<UnwrappedCaption>{parentLabel}</UnwrappedCaption>
-			<UnwrappedDropdown options={availableOptions} onValueChange={onParentChanged} value={state.parentCategoryId}
+			<UnwrappedDropdown options={availableOptions} onValueChange={onParentChanged} value={selectedParentCategoryId}
 			                   disabled={rename} clearable={false}/>
 			<UnwrappedCaption>Category name</UnwrappedCaption>
-			<UnwrappedInput onValueChange={onNameChanged} value={state.name} disabled={move}
-			                ref={inputRef}/>
+			<UnwrappedInput onValueChange={onNameChanged} value={state.name} disabled={move} ref={inputRef}/>
 			{state.message != null ? <InvalidMessage>{state.message}</InvalidMessage> : null}
 		</DialogBody>
 		<DialogFooter>
