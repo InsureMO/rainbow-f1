@@ -1,5 +1,4 @@
 import {app, BrowserWindow} from 'electron';
-import './main-process/context-menu';
 import {createMainWindow, createSplashWindow} from './main-process';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.

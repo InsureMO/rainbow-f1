@@ -6,12 +6,14 @@ import {
 	UnwrappedButtonBar,
 	useGlobalEventBus
 } from '@rainbow-d9/n2';
+import {useNavigate} from 'react-router-dom';
 import {useCategory} from './category';
 import {RecentProjectsEventTypes, useRecentProjectsEventBus} from './event-bus';
 import {useRepaint} from './use-repaint';
 import {ButtonBarSpacer} from './widgets';
 
 export const Bar = () => {
+	const navigate = useNavigate();
 	const {fire} = useGlobalEventBus();
 	const recentProjectsEventBus = useRecentProjectsEventBus();
 	const {performCategoryOperation} = useCategory();
@@ -25,11 +27,27 @@ export const Bar = () => {
 		}, () => fire(GlobalEventTypes.HIDE_DIALOG));
 	};
 	const onCreateCategoryClicked = () => performCategoryOperation();
+	const selectProjectFolder = () => {
+		const {canceled, filePaths} = window.electron.dialog.open({
+			title: 'Select project folder',
+			buttonLabel: 'Open',
+			properties: ['openDirectory', 'createDirectory', 'dontAddToRecent']
+		});
+		if (canceled) {
+			return {canceled, filePaths: []};
+		} else {
+			return {canceled, filePaths: [filePaths[0]]};
+		}
+	};
 	const onCreateProjectClicked = () => {
-		// TODO CREATE PROJECT
+		navigate('/create-project');
 	};
 	const onOpenFolderClicked = () => {
-		// TODO OPEN FOLDER
+		const {canceled, filePaths: [path]} = selectProjectFolder();
+		if (canceled) {
+			return;
+		}
+		// TODO OPEN PROJECT
 	};
 
 	const recentProjectsRoot = window.electron.recentProjects.get();

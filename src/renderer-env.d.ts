@@ -1,5 +1,5 @@
 import {ContextMenu, RecentProject, RecentProjectCategory, RecentProjectRoot} from './shared/constants';
-import {ThemeSource} from './shared/types';
+import {CreateF1ProjectOptions, F1Project, OpenDialogOptions, OpenDialogResult, ThemeSource} from './shared/types';
 
 declare global {
 	interface WindowElectronVersions {
@@ -34,12 +34,22 @@ declare global {
 		showContextMenu: (menu: ContextMenu) => void;
 	}
 
+	interface WindowElectronDialog {
+		open(options: OpenDialogOptions): OpenDialogResult;
+	}
+
+	interface WindowElectronF1Project {
+		create(options: CreateF1ProjectOptions): F1Project;
+	}
+
 	interface WindowElectronHandler {
 		versions: WindowElectronVersions;
 		store: WindowElectronStore;
 		theme: WindowElectronTheme;
 		recentProjects: WindowElectronRecentProjects;
 		contextMenu: WindowElectronContextMenu;
+		dialog: WindowElectronDialog;
+		f1Project: WindowElectronF1Project;
 	}
 
 	interface Window {
