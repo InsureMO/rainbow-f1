@@ -70,6 +70,11 @@ export const GlobalStyles: any = createGlobalStyle`
                 width: unset;
             }
         }
+
+        span[data-w=dialog-label] > span[data-w=dialog-label] {
+            display: block;
+            position: relative;
+        }
     }
 
     div[data-w=dialog-footer] {

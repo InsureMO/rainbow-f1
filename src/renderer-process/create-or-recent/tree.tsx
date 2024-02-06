@@ -1,10 +1,11 @@
 import {PROPERTY_PATH_ME, PropValue, Undefinable} from '@rainbow-d9/n1';
-import {TreeNodeDef, UnwrappedTree} from '@rainbow-d9/n2';
+import {GlobalEventTypes, TreeNodeDef, UnwrappedTree, useGlobalEventBus} from '@rainbow-d9/n2';
 import {MouseEvent} from 'react';
 import {RecentProject, RecentProjectCategory, RecentProjectHolder, RecentProjectRoot} from '../../shared/types';
 import {showContextMenu} from '../context-menu';
 import {EllipsisVertical, FolderClosed, FolderClosedEmpty, FolderOpen} from '../icons';
-import {useCategory} from './create-category';
+import {useCategory} from './category';
+import {RecentProjectsEventTypes, useRecentProjectsEventBus} from './event-bus';
 
 const computeShortName = (name: string): string => {
 	return (name ?? '').trim().split(/[\s-_]/).map(s => s[0].toUpperCase()).filter((_, i) => i < 2).join('');
@@ -13,6 +14,8 @@ const computeShortName = (name: string): string => {
 export const Tree = (props: { root: RecentProjectRoot }) => {
 	const {root} = props;
 
+	const {fire} = useGlobalEventBus();
+	const recentProjectsEventBus = useRecentProjectsEventBus();
 	const handleCategory = useCategory();
 
 	const createSubCategory = (category: RecentProjectCategory) => {
@@ -24,8 +27,15 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 	const moveCategory = (parent: RecentProjectHolder, category: RecentProjectCategory) => {
 		handleCategory({parentCategory: parent, category, move: true});
 	};
-	const removeCategory = (parent: RecentProjectHolder, category: RecentProjectCategory) => {
-		// TODO REMOVE CATEGORY
+	const removeCategory = (_parent: RecentProjectHolder, category: RecentProjectCategory) => {
+		fire(GlobalEventTypes.SHOW_YES_NO_DIALOG, <>
+			<span data-w="dialog-label">Are you sure you want to remove this category?</span>
+			<span data-w="dialog-label">All subcategories and items will be removed simultaneously.</span>
+		</>, () => {
+			window.electron.recentProjects.removeCategory(category.id);
+			fire(GlobalEventTypes.HIDE_DIALOG);
+			recentProjectsEventBus.fire(RecentProjectsEventTypes.REPAINT);
+		}, () => fire(GlobalEventTypes.HIDE_DIALOG));
 	};
 	const openProject = (project: RecentProject) => {
 		// TODO OPEN PROJECT
@@ -50,6 +60,11 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 				click: 'remove-category', invoke: () => removeCategory(parent, category)
 			}
 		]);
+	};
+	const onProjectClicked = (project: RecentProject) => (event: MouseEvent<HTMLSpanElement>) => {
+		event.stopPropagation();
+		event.preventDefault();
+		openProject(project);
 	};
 	const onProjectOperatorClicked = (parent: RecentProjectHolder, project: RecentProject) => (event: MouseEvent<HTMLSpanElement>) => {
 		event.stopPropagation();
@@ -91,7 +106,7 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 		const projectNodes = projects.map((project) => {
 			return {
 				marker: project.id,
-				label: <span data-recent-project={true}>
+				label: <span data-recent-project={true} onClick={onProjectClicked(project)}>
 					<span data-short-name={true}>{computeShortName(project.name)}</span>
 					<span data-name={true}>{project.name}</span>
 					<span data-path={true}>{project.path}</span>
