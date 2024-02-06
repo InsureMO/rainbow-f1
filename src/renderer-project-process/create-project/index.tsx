@@ -1,9 +1,10 @@
 import {GlobalEventBusProvider, UnwrappedCaption} from '@rainbow-d9/n2';
 import {Logo} from '../../renderer-common/icons';
 import {Bar} from './bar';
+import {Content} from './context';
 import {CreateProjectEventBusProvider} from './event-bus';
 import {SideBar} from './side-bar';
-import {CreateProjectContainer, CreateProjectContent} from './widgets';
+import {CreateProjectContainer} from './widgets';
 
 export const CreateProjectPage = () => {
 	return <GlobalEventBusProvider>
@@ -12,8 +13,7 @@ export const CreateProjectPage = () => {
 				<UnwrappedCaption data-page-title={true}>Project settings</UnwrappedCaption>
 				<Logo/>
 				<SideBar/>
-				<CreateProjectContent>
-				</CreateProjectContent>
+				<Content/>
 				<Bar/>
 			</CreateProjectContainer>
 		</CreateProjectEventBusProvider>
