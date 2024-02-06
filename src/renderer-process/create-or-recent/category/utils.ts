@@ -1,3 +1,4 @@
+import {nanoid} from 'nanoid';
 import {RecentProjectCategory, RecentProjectHolder} from '../../../shared/types';
 import {RecentProjectCategoryCandidate} from './types';
 
@@ -28,4 +29,12 @@ export const filterAvailableCategories = (options: Array<RecentProjectCategoryCa
 			&& option.value !== parentCategoryId
 			&& !option.parentCategoryIds.some(id => id === currentCategoryId);
 	});
+};
+
+export const generateCategoryId = (exists: Record<string, RecentProjectHolder>): string => {
+	let id = nanoid(32);
+	while (exists[id] != null) {
+		id = nanoid(32);
+	}
+	return id;
 };

@@ -43,8 +43,14 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 	const moveProject = (parent: RecentProjectHolder, project: RecentProject) => {
 		// TODO MOVE PROJECT
 	};
-	const removeProject = (parent: RecentProjectHolder, project: RecentProject) => {
-		// TODO REMOVE PROJECT
+	const removeProject = (_parent: RecentProjectHolder, project: RecentProject) => {
+		fire(GlobalEventTypes.SHOW_YES_NO_DIALOG, <>
+			<span data-w="dialog-label">Are you sure you want to remove this project?</span>
+		</>, () => {
+			window.electron.recentProjects.removeProject(project.id);
+			fire(GlobalEventTypes.HIDE_DIALOG);
+			recentProjectsEventBus.fire(RecentProjectsEventTypes.REPAINT);
+		}, () => fire(GlobalEventTypes.HIDE_DIALOG));
 	};
 	const onCategoryOperatorClicked = (parent: RecentProjectHolder, category: RecentProjectCategory) => (event: MouseEvent<HTMLSpanElement>) => {
 		event.stopPropagation();

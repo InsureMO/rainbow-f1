@@ -12,7 +12,6 @@ import {
 	UnwrappedInput,
 	useGlobalEventBus
 } from '@rainbow-d9/n2';
-import {nanoid} from 'nanoid';
 import {useEffect, useRef, useState} from 'react';
 import {
 	RecentProjectCategory,
@@ -23,7 +22,7 @@ import {
 import {RecentProjectsEventTypes, useRecentProjectsEventBus} from '../event-bus';
 import {InvalidMessage} from '../widgets';
 import {RecentProjectCategoryCandidate} from './types';
-import {filterAvailableCategories} from './utils';
+import {filterAvailableCategories, generateCategoryId} from './utils';
 
 interface CreateCategoryDialogState {
 	changed: boolean;
@@ -118,9 +117,10 @@ export const CategoryDialog = (props: {
 			window.electron.recentProjects.moveCategory(currentCategoryId, state.parentCategoryId);
 		} else {
 			if (state.parentCategoryId === RecentProjectRootId) {
-				window.electron.recentProjects.addCategory({id: nanoid(32), name: state.name});
+				window.electron.recentProjects.addCategory({id: generateCategoryId(map), name: state.name});
 			} else {
-				window.electron.recentProjects.addCategory({id: nanoid(32), name: state.name}, state.parentCategoryId);
+				window.electron.recentProjects.addCategory(
+					{id: generateCategoryId(map), name: state.name}, state.parentCategoryId);
 			}
 		}
 		recentProjectsEventBus.fire(RecentProjectsEventTypes.REPAINT);
@@ -152,7 +152,8 @@ export const CategoryDialog = (props: {
 		</DialogHeader>
 		<DialogBody data-flex-column={true} ref={containerRef}>
 			<UnwrappedCaption>{parentLabel}</UnwrappedCaption>
-			<UnwrappedDropdown options={availableOptions} onValueChange={onParentChanged} value={selectedParentCategoryId}
+			<UnwrappedDropdown options={availableOptions} onValueChange={onParentChanged}
+			                   value={selectedParentCategoryId}
 			                   disabled={rename} clearable={false}/>
 			<UnwrappedCaption>Category name</UnwrappedCaption>
 			<UnwrappedInput onValueChange={onNameChanged} value={state.name} disabled={move} ref={inputRef}/>
