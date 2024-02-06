@@ -25,6 +25,9 @@ export const GlobalStyles: any = createGlobalStyle`
         --f1-border-color: #e9e9e9;
         --f1-border: 1px solid var(--f1-border-color);
         --f1-border-radius: 4px;
+        // scrollbar
+        --f1-scroll-background-color: rgba(229, 229, 229, 0.5);
+        --f1-scroll-thumb-color: rgb(193, 193, 193);
         // d9 color
         --d9-background-color: var(--f1-background-color);
         --d9-font-color: var(--f1-font-color);
@@ -58,6 +61,25 @@ export const GlobalStyles: any = createGlobalStyle`
 
         color: var(--f1-font-color);
         background-color: var(--f1-background-color);
+    }
+
+    div[data-v-scroll],
+    div[data-h-scroll] {
+        &::-webkit-scrollbar {
+            background-color: transparent;
+            height: 6px;
+            width: 4px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background-color: var(--f1-scroll-background-color);
+            border-radius: 2px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: var(--f1-scroll-thumb-color);
+            border-radius: 2px;
+        }
     }
 
     div[data-w=dialog-body] {

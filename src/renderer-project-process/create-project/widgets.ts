@@ -34,12 +34,41 @@ export const CreateProjectContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-cr
     }
 `;
 
-export const CreateProjectSidebar = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-project-sidebar'})`
+export const CreateProjectSidebar = styled.div.attrs({
+	[DOM_KEY_WIDGET]: 'f1-create-project-sidebar',
+	'data-v-scroll': '',
+	'data-h-scroll': ''
+})`
     display: flex;
     position: relative;
     flex-direction: column;
     border-top: var(--f1-border);
     border-right: var(--f1-border);
+    overflow: auto;
+`;
+export const CreateProjectBaseItem = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-project-base-item'})`
+    display: flex;
+    position: relative;
+    align-items: center;
+    padding: 0 16px;
+    min-height: var(--f1-row-height);
+    border-radius: var(--f1-border-radius);
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+
+    &[data-active=true] {
+        color: var(--f1-invert-color);
+        background-color: var(--f1-primary-color);
+    }
+
+    &[data-active=false]:hover {
+        background-color: var(--f1-hover-color);
+    }
 `;
 export const CreateProjectContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-project-content'})`
     display: flex;
