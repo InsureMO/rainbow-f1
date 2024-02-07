@@ -8,7 +8,7 @@ export const Bar = () => {
 		navigate('/');
 	};
 	const onCreateProjectClicked = () => {
-
+		// TODO CREATE PROJECT, CREATE PROJECT ON SELECTED DIRECTORY WITH FILLED SETTINGS DATA
 	};
 
 	return <UnwrappedButtonBar>
