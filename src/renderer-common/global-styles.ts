@@ -5,6 +5,10 @@ export const GlobalStyles: any = createGlobalStyle`
     html, body {
         font-family: 'Noto Sans SC', 'Noto Sans JP', 'Roboto Mono', Arial, Helvetica, sans-serif;
         font-size: 14px;
+
+        *, *:before, *:after {
+            box-sizing: border-box;
+        }
     }
 
     body {
@@ -46,6 +50,8 @@ export const GlobalStyles: any = createGlobalStyle`
         --d9-border-radius: var(--f1-border-radius);
         // d9 font
         --d9-font-variant: none;
+        // d9 common
+        --d9-input-height: var(--f1-row-height);
         // d9 dialog
         --d9-dialog-margin-top: max(96px, 20vh);
         --d9-dialog-margin-left: calc(50vw - var(--d9-dialog-width) / 2 - 32px);
@@ -117,7 +123,7 @@ export const GlobalStyles: any = createGlobalStyle`
 
     span[data-w=d9-caption][data-page-title=true] {
         font-size: 2em;
-        color: var(--f1-label-color);
+        color: var(--f1-font-color);
     }
 
     input[data-w=d9-input][readonly] {

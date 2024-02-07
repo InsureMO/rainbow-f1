@@ -6,7 +6,7 @@ export const CreateProjectContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-cr
     position: relative;
     grid-template-columns: 250px 1fr auto;
     grid-template-rows: auto 1fr auto;
-    width: calc(100vw - 48px);
+    width: 100vw;
     height: 100vh;
     padding: 0 24px;
     overflow: hidden;
@@ -31,6 +31,7 @@ export const CreateProjectContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-cr
         grid-column: span 3;
         border-top: var(--f1-border);
         border-radius: 0;
+        height: 64px;
     }
 `;
 
@@ -89,15 +90,23 @@ export const CreateProjectContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-crea
     position: relative;
     border-top: var(--f1-border);
 `;
-export const ModuleSettingsContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-module-settings-container'})`
+export const ModuleSettingsContainer = styled.div.attrs({
+	[DOM_KEY_WIDGET]: 'f1-module-settings-container',
+	'data-v-scroll': ''
+})`
     display: grid;
     position: relative;
     grid-template-columns: repeat(12, 1fr);
     grid-column-gap: 8px;
     grid-row-gap: 8px;
+    margin-right: -16px;
     padding-left: 16px;
+    padding-right: 16px;
     align-content: start;
-    width: 100%;
+    width: calc(100% + 16px);
+    height: calc(100vh - 64px * 2);
+    overflow-y: auto;
+    overflow-x: hidden;
 
     > div, > span, > input {
         &[data-columns-2] {
@@ -152,11 +161,86 @@ export const ModuleSettingsContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-m
 `;
 export const ModuleSettingsTitle = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-module-settings-title'})`
     display: flex;
-    position: relative;
+    position: sticky;
+    top: 0;
     align-items: center;
     grid-column: span 12;
     padding: 12px 0;
     font-size: 1.2em;
+    background-color: var(--f1-background-color);
     border-bottom: var(--f1-border);
+    z-index: 1;
+`;
+export const ComponentsTitle = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-module-components-title'})`
+    display: flex;
+    position: relative;
+    align-items: center;
+    grid-column: span 12;
+    margin-top: 8px;
+    padding: 8px 0;
+    font-size: 1.1em;
+    //border-top: var(--f1-border);
     opacity: 0.7;
+
+    &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: calc(100% - 1px);
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background-color: var(--f1-border-color);
+        opacity: 0.3;
+    }
+`;
+export const ComponentContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-component-container'})`
+    display: grid;
+    position: relative;
+    grid-template-columns: repeat(12, 1fr);
+    grid-column-gap: 8px;
+    grid-column: span 12;
+    margin: 0 -8px;
+    padding: 4px 8px;
+    border-radius: var(--f1-border-radius);
+    transition: background-color 0.3s ease-in-out;
+
+    &:hover {
+        background-color: var(--f1-hover-color);
+    }
+
+    &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: calc(100% - 1px);
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background-color: var(--f1-border-color);
+        opacity: 0.1;
+    }
+
+    > div[data-w=d9-checkbox] {
+        align-self: start;
+        justify-self: end;
+    }
+`;
+export const ComponentDescription = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-component-description'})`
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    grid-column: span 11;
+
+    > span {
+        display: flex;
+        position: relative;
+        line-height: 1.5;
+    }
+
+    > span[data-name] {
+        font-weight: 500;
+        color: var(--f1-primary-color);
+        height: 24px;
+    }
 `;

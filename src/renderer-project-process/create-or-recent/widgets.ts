@@ -13,7 +13,7 @@ export const CreateOrRecentContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-cre
     position: relative;
     grid-template-columns: 1fr auto;
     grid-template-rows: auto 1fr auto;
-    width: calc(100vw - 48px);
+    width: 100vw;
     height: 100vh;
     padding: 0 24px;
 
@@ -34,12 +34,15 @@ export const CreateOrRecentContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-cre
         border-top: var(--f1-border);
         border-radius: 0;
         width: 100%;
+        height: unset !important;
+        max-height: 100%;
     }
 
     > div[data-w=d9-button-bar] {
         grid-column: span 2;
         border-top: var(--f1-border);
         border-radius: 0;
+        height: 64px;
     }
 
     span[data-w=d9-tree-node-label] {
