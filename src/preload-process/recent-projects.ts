@@ -4,6 +4,7 @@ import {RecentProject, RecentProjectCategory, RecentProjectRoot, StoreEvent} fro
 export const RecentProjectsHandlers: WindowElectronRecentProjects = {
 	get: (): RecentProjectRoot => ipcRenderer.sendSync(StoreEvent.GET_RECENT_PROJECTS),
 	addProject: (project: RecentProject, categoryId?: string) => ipcRenderer.send(StoreEvent.ADD_RECENT_PROJECT, project, categoryId),
+	renameProject: (projectId: string, newName: string) => ipcRenderer.send(StoreEvent.RENAME_RECENT_PROJECT, projectId, newName),
 	removeProject: (projectId: string) => ipcRenderer.send(StoreEvent.REMOVE_RECENT_PROJECT, projectId),
 	clear: () => ipcRenderer.send(StoreEvent.CLEAR_RECENT_PROJECTS),
 	addCategory: (category: RecentProjectCategory, parentCategoryId?: string) => ipcRenderer.send(StoreEvent.ADD_RECENT_PROJECT_CATEGORY, category, parentCategoryId),

@@ -1,6 +1,6 @@
 import {BrowserWindow, Menu} from 'electron';
 import path from 'path';
-import {createDevMenu, createDevQuitMenu, createEditMenu} from './menu';
+import {createDevMenu, createDevQuitMenu, createEditMenu, createWindowMenu} from './menu';
 import {isDev} from './utils';
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 
@@ -34,7 +34,10 @@ export const createProjectWindow = (options: {
 		window.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/project.html`));
 	}
 
-	const menuTemplate: Array<MenuItemConstructorOptions> = [...createDevQuitMenu(dev), ...createEditMenu(dev), ...createDevMenu(dev)];
+	const menuTemplate: Array<MenuItemConstructorOptions> = [
+		...createDevQuitMenu(dev),
+		...createEditMenu(dev), ...createWindowMenu(dev), ...createDevMenu(dev)
+	];
 	const appMenu = Menu.buildFromTemplate(menuTemplate);
 
 	window.on('focus', () => {

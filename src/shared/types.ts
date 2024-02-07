@@ -49,6 +49,7 @@ export enum StoreEvent {
 	// recent projects
 	GET_RECENT_PROJECTS = 'get-recent-projects',
 	ADD_RECENT_PROJECT = 'add-recent-project',
+	RENAME_RECENT_PROJECT = 'rename-recent-project',
 	REMOVE_RECENT_PROJECT = 'remove-recent-project',
 	CLEAR_RECENT_PROJECTS = 'clear-recent-projects',
 	ADD_RECENT_PROJECT_CATEGORY = 'add-recent-project-category',
@@ -75,6 +76,28 @@ export type OpenDialogResult = OpenDialogReturnValue;
 
 export enum DialogEvent {
 	OPEN = 'open-dialog'
+}
+
+export interface FileSystemOperationResult<R> {
+	success: boolean;
+	/** return value when success */
+	ret?: R;
+	/** message when error rises */
+	message?: string;
+}
+
+export interface FileSystemBooleanResult extends FileSystemOperationResult<boolean> {
+}
+
+export enum FileSystemEvent {
+	EXISTS = 'fs-exists',
+	EMPTY = 'fs-empty',
+	MKDIR = 'fs-mkdir',
+	CREATE_FILE = 'fs-create-file',
+}
+
+export enum PathEvent {
+	BASENAME = 'path-basename',
 }
 
 export interface F1Project {

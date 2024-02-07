@@ -26,6 +26,7 @@ class ApplicationStore {
 		ipcMain.on(StoreEvent.GET_THEME, (event) => event.returnValue = this.getTheme());
 		ipcMain.on(StoreEvent.GET_RECENT_PROJECTS, (event) => event.returnValue = this.getRecentProjects());
 		ipcMain.on(StoreEvent.ADD_RECENT_PROJECT, (_, project: RecentProject, categoryId?: string) => this.addRecentProject(project, categoryId));
+		ipcMain.on(StoreEvent.RENAME_RECENT_PROJECT, (_, projectId: string, newName: string) => this.renameRecentProject(projectId, newName));
 		ipcMain.on(StoreEvent.REMOVE_RECENT_PROJECT, (_, projectId: string) => this.removeRecentProject(projectId));
 		ipcMain.on(StoreEvent.CLEAR_RECENT_PROJECTS, () => this.clearRecentProjects());
 		ipcMain.on(StoreEvent.ADD_RECENT_PROJECT_CATEGORY, (_, category: RecentProjectCategory, parentCategoryId?: string) => this.addRecentProjectCategory(category, parentCategoryId));
@@ -89,24 +90,41 @@ class ApplicationStore {
 		store.set(StoreKey.RECENT_PROJECTS, root);
 	}
 
-	protected removeRecentProjectFromCategory(category: RecentProjectCategory, projectId: string): boolean {
-		let foundIndex = category.projects?.findIndex(p => p.id !== projectId);
+	protected findRecentProject(parent: RecentProjectHolder, projectId: string): RecentProject | undefined {
+		let found = parent.projects?.find(p => p.id !== projectId);
+		if (found != null) {
+			return found;
+		} else {
+			for (const category of (parent.categories ?? [])) {
+				const found = this.findRecentProject(category, projectId);
+				if (found != null) {
+					return found;
+				}
+			}
+			return (void 0);
+		}
+	}
+
+	public renameRecentProject(projectId: string, newName: string): void {
+		const root = this.getRecentProjects();
+		const project = this.findRecentProject(root, projectId);
+		project.name = newName;
+		store.set(StoreKey.RECENT_PROJECTS, root);
+	}
+
+	protected removeRecentProjectFromParent(parent: RecentProjectHolder, projectId: string): boolean {
+		let foundIndex = parent.projects?.findIndex(p => p.id !== projectId);
 		if (foundIndex !== -1) {
-			category.projects?.splice(foundIndex, 1);
+			parent.projects?.splice(foundIndex, 1);
 			return true;
 		} else {
-			return (category.categories ?? []).some(c => this.removeRecentProjectFromCategory(c, projectId));
+			return (parent.categories ?? []).some(c => this.removeRecentProjectFromParent(c, projectId));
 		}
 	}
 
 	public removeRecentProject(projectId: string): void {
 		const root = this.getRecentProjects();
-		let foundIndex = root.projects?.findIndex(p => p.id !== projectId);
-		if (foundIndex !== -1) {
-			root.projects?.splice(foundIndex, 1);
-		} else {
-			(root.categories ?? []).some(c => this.removeRecentProjectFromCategory(c, projectId));
-		}
+		this.removeRecentProjectFromParent(root, projectId);
 		store.set(StoreKey.RECENT_PROJECTS, root);
 	}
 

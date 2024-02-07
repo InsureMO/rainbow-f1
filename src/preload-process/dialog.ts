@@ -3,8 +3,6 @@ import {DialogEvent, OpenDialogOptions, OpenDialogResult} from '../shared/types'
 
 export const DialogHandlers: WindowElectronDialog = {
 	open: (options: OpenDialogOptions): OpenDialogResult => {
-		const result = ipcRenderer.sendSync(DialogEvent.OPEN, options);
-		console.log(result);
-		return result;
+		return ipcRenderer.sendSync(DialogEvent.OPEN, options);
 	}
 };

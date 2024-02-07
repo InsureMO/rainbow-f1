@@ -13,6 +13,7 @@ import {
 	useGlobalEventBus
 } from '@rainbow-d9/n2';
 import {useEffect, useRef, useState} from 'react';
+import {InvalidMessage} from '../../../renderer-common/widgets';
 import {
 	RecentProjectCategory,
 	RecentProjectHolder,
@@ -20,7 +21,6 @@ import {
 	RecentProjectRootId
 } from '../../../shared/types';
 import {RecentProjectsEventTypes, useRecentProjectsEventBus} from '../event-bus';
-import {InvalidMessage} from '../widgets';
 import {RecentProjectCategoryCandidate} from './types';
 import {filterAvailableCategories, generateCategoryId} from './utils';
 

@@ -1,9 +1,11 @@
 import {useCreateEventBus} from '@rainbow-d9/n1';
 import {createContext, ReactNode, useContext} from 'react';
+import {F1ModuleSettings} from '../../shared/project-settings';
 import {ProjectModuleBase} from './types';
 
 export enum CreateProjectEventTypes {
 	ACTIVE = 'active',
+	MODULE_NAME_CHANGED = 'module-name-changed'
 }
 
 export interface CreateProjectEventBus {
@@ -12,6 +14,12 @@ export interface CreateProjectEventBus {
 	on(type: CreateProjectEventTypes.ACTIVE, listener: (base: ProjectModuleBase, index: number) => void): this;
 
 	off(type: CreateProjectEventTypes.ACTIVE, listener: (base: ProjectModuleBase, index: number) => void): this;
+
+	fire(type: CreateProjectEventTypes.MODULE_NAME_CHANGED, base: ProjectModuleBase, index: number, settings: F1ModuleSettings): this;
+
+	on(type: CreateProjectEventTypes.MODULE_NAME_CHANGED, listener: (base: ProjectModuleBase, index: number, settings: F1ModuleSettings) => void): this;
+
+	off(type: CreateProjectEventTypes.MODULE_NAME_CHANGED, listener: (base: ProjectModuleBase, index: number, settings: F1ModuleSettings) => void): this;
 }
 
 const Context = createContext<CreateProjectEventBus>({} as CreateProjectEventBus);

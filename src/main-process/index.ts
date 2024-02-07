@@ -1,3 +1,5 @@
+import './fs';
+import './path';
 import './context-menu';
 import './dialog';
 import './f1-project';

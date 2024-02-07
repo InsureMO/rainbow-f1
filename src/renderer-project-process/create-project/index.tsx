@@ -9,7 +9,7 @@ import {CreateProjectContainer} from './widgets';
 
 export const CreateProjectPage = () => {
 	const settings: F1ProjectSettings = {
-		name: '', d9: [{}], o23: [{}]
+		name: '', d9: [{name: ''}], o23: [{name: ''}]
 	};
 
 	return <GlobalEventBusProvider>

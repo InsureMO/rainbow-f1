@@ -15,8 +15,6 @@ export const CreateOrRecentContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-cre
     grid-template-rows: auto 1fr auto;
     width: calc(100vw - 48px);
     height: 100vh;
-    border: var(--f1-border);
-    border-radius: var(--f1-border-radius);
     padding: 0 24px;
 
     > span[data-w=d9-caption] {
@@ -158,14 +156,4 @@ export const NoRecentProject = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or
     padding: 8px 0 24px;
     line-height: 1.5;
     border-top: var(--f1-border);
-`;
-export const InvalidMessage = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-form-cell-invalid-msg'})`
-    display: flex;
-    position: relative;
-    align-items: center;
-    min-height: var(--d9-form-cell-invalid-message-height);
-    padding: var(--d9-form-cell-invalid-message-padding);
-    font-size: var(--d9-form-cell-invalid-message-font-size);
-    font-weight: var(--d9-form-cell-invalid-message-font-weight);
-    color: var(--d9-form-cell-invalid-message-color);
 `;

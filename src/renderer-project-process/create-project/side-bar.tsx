@@ -1,5 +1,5 @@
-import {VUtils} from '@rainbow-d9/n1';
-import {useState} from 'react';
+import {useForceUpdate, VUtils} from '@rainbow-d9/n1';
+import {useEffect, useState} from 'react';
 import {F1ModuleSettings, F1ProjectSettings} from '../../shared/project-settings';
 import {CreateProjectEventTypes, useCreateProjectEventBus} from './event-bus';
 import {BaseState, ProjectModuleBase} from './types';
@@ -8,10 +8,17 @@ import {CreateProjectBaseItem, CreateProjectSidebar} from './widgets';
 export const SideBar = (props: { settings: F1ProjectSettings }) => {
 	const {settings} = props;
 
-	const {fire} = useCreateProjectEventBus();
+	const {on, off, fire} = useCreateProjectEventBus();
 	const [state, setState] = useState<BaseState>({
 		base: ProjectModuleBase.BASIC, index: 0
 	});
+	const forceUpdate = useForceUpdate();
+	useEffect(() => {
+		on(CreateProjectEventTypes.MODULE_NAME_CHANGED, forceUpdate);
+		return () => {
+			off(CreateProjectEventTypes.MODULE_NAME_CHANGED, forceUpdate);
+		};
+	}, [on, off, forceUpdate]);
 
 	const onItemClicked = (base: ProjectModuleBase, index: number) => () => {
 		setState({base, index});

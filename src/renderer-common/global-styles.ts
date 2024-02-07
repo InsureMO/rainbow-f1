@@ -19,6 +19,7 @@ export const GlobalStyles: any = createGlobalStyle`
         --f1-waive-color: #b4b4b4;
         --f1-readonly-color: #f5f5f5;
         --f1-hover-color: #eef6fd;
+        --f1-disable-color: #ebebeb;
         --f1-invert-color: #fff;
         --f1-primary-shadow: 0 0 0 3px ${color('#5f88d6').alpha(0.4).toString()};
         --f1-primary-hover-shadow: 0 0 0 3px ${color('#5f88d6').alpha(0.2).toString()};
@@ -37,6 +38,7 @@ export const GlobalStyles: any = createGlobalStyle`
         --d9-danger-color: var(--f1-danger-color);
         --d9-waive-color: var(--f1-waive-color);
         --d9-hover-color: var(--f1-hover-color);
+        --d9-disable-color: var(--f1-disable-color);
         --d9-invert-color: var(--f1-invert-color);
         // d9 border
         --d9-border-color: var(--f1-border-color);
@@ -140,7 +142,10 @@ export const GlobalStyles: any = createGlobalStyle`
             --f1-label-color: #c7c7c7;
             --f1-primary-color: #6b95f8;
             --f1-danger-color: #ff7d7d;
+            --f1-waive-color: #777;
+            --f1-readonly-color: #444;
             --f1-hover-color: #303f4b;
+            --f1-disable-color: #444;
             --f1-primary-shadow: 0 0 0 3px ${color('#6b95f8').alpha(0.4).toString()};
             --f1-primary-hover-shadow: 0 0 0 3px ${color('#6b95f8').alpha(0.2).toString()};
             --f1-dialog-shadow: 0 0 18px 6px ${color('#fff').alpha(0.4).toString()};

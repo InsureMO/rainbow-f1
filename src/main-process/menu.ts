@@ -53,6 +53,37 @@ export const createEditMenu = (should: boolean) => {
 		return [];
 	}
 };
+
+export const createWindowMenu = (should: boolean) => {
+	if (should) {
+		const theme = store.getTheme();
+		
+		return [{
+			label: 'Window',
+			submenu: [
+				{
+					label: 'Appearance', submenu: [
+						{
+							label: 'Light', type: 'radio', checked: theme === Theme.LIGHT,
+							click: createThemeChangeMenuHandler(Theme.LIGHT)
+						} as MenuItemConstructorOptions,
+						{
+							label: 'Dark', type: 'radio', checked: theme === Theme.DARK,
+							click: createThemeChangeMenuHandler(Theme.DARK)
+						} as MenuItemConstructorOptions,
+						{
+							label: 'Auto-follow system', type: 'radio', checked: theme === Theme.SYSTEM,
+							click: createThemeChangeMenuHandler(Theme.SYSTEM)
+						} as MenuItemConstructorOptions
+					]
+				}
+			]
+		}];
+	} else {
+		return [];
+	}
+};
+
 export const createDevMenu = (should: boolean) => {
 	if (should) {
 		return [{
@@ -93,7 +124,6 @@ export const createAppMenu = () => {
 			// TODO CHECK FOR UPDATES
 		}
 	};
-	const theme = store.getTheme();
 
 	const menuTemplate: Array<MenuItemConstructorOptions> = [
 		mac ? {
@@ -119,27 +149,7 @@ export const createAppMenu = () => {
 			].filter(menu => menu != null)
 		},
 		...createEditMenu(true),
-		{
-			label: 'Window',
-			submenu: [
-				{
-					label: 'Appearance', submenu: [
-						{
-							label: 'Light', type: 'radio', checked: theme === Theme.LIGHT,
-							click: createThemeChangeMenuHandler(Theme.LIGHT)
-						} as MenuItemConstructorOptions,
-						{
-							label: 'Dark', type: 'radio', checked: theme === Theme.DARK,
-							click: createThemeChangeMenuHandler(Theme.DARK)
-						} as MenuItemConstructorOptions,
-						{
-							label: 'Auto-follow system', type: 'radio', checked: theme === Theme.SYSTEM,
-							click: createThemeChangeMenuHandler(Theme.SYSTEM)
-						} as MenuItemConstructorOptions
-					]
-				}
-			]
-		},
+		...createWindowMenu(true),
 		...createDevMenu(true),
 		{
 			label: 'Help',

@@ -2,14 +2,14 @@ export interface F1ModuleSettings {
 	name: string;
 }
 
-export interface D9ProjectSettings extends F1ModuleSettings {
+export interface D9ModuleSettings extends F1ModuleSettings {
 }
 
-export interface O23ProjectSettings extends F1ModuleSettings {
+export interface O23ModuleSettings extends F1ModuleSettings {
 }
 
 export interface F1ProjectSettings {
 	name: string;
-	d9?: Array<D9ProjectSettings>;
-	o23?: Array<O23ProjectSettings>;
+	d9?: Array<D9ModuleSettings>;
+	o23?: Array<O23ModuleSettings>;
 }

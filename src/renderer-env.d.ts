@@ -1,5 +1,12 @@
 import {ContextMenu, RecentProject, RecentProjectCategory, RecentProjectRoot} from './shared/constants';
-import {CreateF1ProjectOptions, F1Project, OpenDialogOptions, OpenDialogResult, ThemeSource} from './shared/types';
+import {
+	CreateF1ProjectOptions,
+	F1Project,
+	FileSystemBooleanResult,
+	OpenDialogOptions,
+	OpenDialogResult,
+	ThemeSource
+} from './shared/types';
 
 declare global {
 	interface WindowElectronVersions {
@@ -21,6 +28,7 @@ declare global {
 	interface WindowElectronRecentProjects {
 		get: () => RecentProjectRoot;
 		addProject: (project: RecentProject, categoryId?: string) => void;
+		renameProject: (projectId: string, newName: string) => void;
 		removeProject: (projectId: string) => void;
 		clear: () => void;
 		addCategory: (category: RecentProjectCategory, parentCategoryId?: string) => void;
@@ -42,8 +50,21 @@ declare global {
 		create(options: CreateF1ProjectOptions): F1Project;
 	}
 
+	interface WindowElectronFileSystem {
+		exists: (path: string) => FileSystemBooleanResult;
+		empty: (directory: string) => FileSystemBooleanResult;
+		mkdir: (directory: string) => FileSystemBooleanResult;
+		createFile: (path: string, content: string) => FileSystemBooleanResult;
+	}
+
+	interface WindowElectronPath {
+		basename: (path: string, suffix?: string) => string;
+	}
+
 	interface WindowElectronHandler {
 		versions: WindowElectronVersions;
+		fs: WindowElectronFileSystem;
+		path: WindowElectronPath;
 		store: WindowElectronStore;
 		theme: WindowElectronTheme;
 		recentProjects: WindowElectronRecentProjects;

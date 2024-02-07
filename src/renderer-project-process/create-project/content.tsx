@@ -1,7 +1,9 @@
 import {useEffect, useState} from 'react';
 import {F1ProjectSettings} from '../../shared/project-settings';
 import {BasicSettings} from './basic-settings';
+import {D9Settings} from './d9-settings';
 import {CreateProjectEventTypes, useCreateProjectEventBus} from './event-bus';
+import {O23Settings} from './o23-settings';
 import {BaseState, ProjectModuleBase} from './types';
 import {CreateProjectContent} from './widgets';
 
@@ -34,5 +36,11 @@ export const Content = (props: { settings: F1ProjectSettings }) => {
 
 	return <CreateProjectContent>
 		{(state.base === ProjectModuleBase.BASIC && state.index === 0) ? <BasicSettings settings={settings}/> : null}
+		{(state.base === ProjectModuleBase.D9)
+			? <D9Settings settings={settings.d9[state.index]} index={state.index}/>
+			: null}
+		{(state.base === ProjectModuleBase.O23)
+			? <O23Settings settings={settings.o23[state.index]} index={state.index}/>
+			: null}
 	</CreateProjectContent>;
 };

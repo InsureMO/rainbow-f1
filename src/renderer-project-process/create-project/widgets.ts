@@ -99,20 +99,22 @@ export const ModuleSettingsContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-m
     align-content: start;
     width: 100%;
 
-    > span[data-w=d9-caption] {
-        &[data-column-2] {
-            grid-column: span 2;
+    > div, > span, > input {
+        &[data-columns-2] {
+            grid-column-end: span 2;
         }
-    }
 
-    > input[data-w=d9-input] {
-        &[data-column-10] {
-            grid-column: span 10;
+        &[data-columns-10] {
+            grid-column-end: span 10;
+        }
+
+        &[data-column-3] {
+            grid-column-start: 3;
         }
     }
 
     > div[data-w=d9-deco-input] {
-        &[data-di-column-10] {
+        &[data-di-columns-10] {
             grid-column: span 10;
         }
 
@@ -143,13 +145,17 @@ export const ModuleSettingsContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-m
             }
         }
     }
+
+    > div[data-w=f1-invalid-msg] {
+        margin-top: -8px;
+    }
 `;
 export const ModuleSettingsTitle = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-module-settings-title'})`
     display: flex;
     position: relative;
     align-items: center;
     grid-column: span 12;
-    padding: 8px 0;
+    padding: 12px 0;
     font-size: 1.2em;
     border-bottom: var(--f1-border);
     opacity: 0.7;
