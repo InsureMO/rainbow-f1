@@ -74,8 +74,7 @@ export type OpenDialogOptions = DialogOpenOptions;
 export type OpenDialogResult = OpenDialogReturnValue;
 
 export enum DialogEvent {
-	OPEN = 'open-dialog',
-	OPEN_RESULT = 'open-dialog-result'
+	OPEN = 'open-dialog'
 }
 
 export interface F1Project {

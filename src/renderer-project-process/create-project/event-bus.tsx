@@ -1,17 +1,17 @@
 import {useCreateEventBus} from '@rainbow-d9/n1';
 import {createContext, ReactNode, useContext} from 'react';
-import {ProjectBase} from './types';
+import {ProjectModuleBase} from './types';
 
 export enum CreateProjectEventTypes {
 	ACTIVE = 'active',
 }
 
 export interface CreateProjectEventBus {
-	fire(type: CreateProjectEventTypes.ACTIVE, base: ProjectBase, index: number): this;
+	fire(type: CreateProjectEventTypes.ACTIVE, base: ProjectModuleBase, index: number): this;
 
-	on(type: CreateProjectEventTypes.ACTIVE, listener: (base: ProjectBase, index: number) => void): this;
+	on(type: CreateProjectEventTypes.ACTIVE, listener: (base: ProjectModuleBase, index: number) => void): this;
 
-	off(type: CreateProjectEventTypes.ACTIVE, listener: (base: ProjectBase, index: number) => void): this;
+	off(type: CreateProjectEventTypes.ACTIVE, listener: (base: ProjectModuleBase, index: number) => void): this;
 }
 
 const Context = createContext<CreateProjectEventBus>({} as CreateProjectEventBus);

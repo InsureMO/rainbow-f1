@@ -42,8 +42,8 @@
 		"typescript": "~4.5.4"
 	},
 	"dependencies": {
-		"@rainbow-d9/n1": "^1.0.50",
-		"@rainbow-d9/n2": "^1.0.50",
+		"@rainbow-d9/n1": "^1.0.51",
+		"@rainbow-d9/n2": "^1.0.51",
 		"color": "^4.2.3",
 		"electron-squirrel-startup": "^1.0.0",
 		"electron-store": "^8.1.0",

@@ -46,6 +46,13 @@ export const createDevQuitMenu = (should: boolean) => {
 	}
 };
 
+export const createEditMenu = (should: boolean) => {
+	if (should) {
+		return [{label: 'Edit', role: 'editMenu'} as MenuItemConstructorOptions];
+	} else {
+		return [];
+	}
+};
 export const createDevMenu = (should: boolean) => {
 	if (should) {
 		return [{
@@ -111,7 +118,7 @@ export const createAppMenu = () => {
 				mac ? null : createQuitMenuItem(true)
 			].filter(menu => menu != null)
 		},
-		{label: 'Edit', role: 'editMenu'} as MenuItemConstructorOptions,
+		...createEditMenu(true),
 		{
 			label: 'Window',
 			submenu: [

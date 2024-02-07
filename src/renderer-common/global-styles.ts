@@ -16,6 +16,8 @@ export const GlobalStyles: any = createGlobalStyle`
         --f1-label-ligther-color: #c0c0c0;
         --f1-primary-color: #5f88d6;
         --f1-danger-color: #dc3559;
+        --f1-waive-color: #b4b4b4;
+        --f1-readonly-color: #f5f5f5;
         --f1-hover-color: #eef6fd;
         --f1-invert-color: #fff;
         --f1-primary-shadow: 0 0 0 3px ${color('#5f88d6').alpha(0.4).toString()};
@@ -33,6 +35,7 @@ export const GlobalStyles: any = createGlobalStyle`
         --d9-font-color: var(--f1-font-color);
         --d9-primary-color: var(--f1-primary-color);
         --d9-danger-color: var(--f1-danger-color);
+        --d9-waive-color: var(--f1-waive-color);
         --d9-hover-color: var(--f1-hover-color);
         --d9-invert-color: var(--f1-invert-color);
         // d9 border
@@ -113,6 +116,21 @@ export const GlobalStyles: any = createGlobalStyle`
     span[data-w=d9-caption][data-page-title=true] {
         font-size: 2em;
         color: var(--f1-label-color);
+    }
+
+    input[data-w=d9-input][readonly] {
+        background-color: var(--f1-readonly-color);
+        box-shadow: none;
+
+        &:hover,
+        &:focus {
+            border: var(--d9-border);
+            box-shadow: none;
+        }
+
+        + span[data-w=d9-deco-tail] {
+            z-index: 1;
+        }
     }
 
     @media (prefers-color-scheme: dark) {

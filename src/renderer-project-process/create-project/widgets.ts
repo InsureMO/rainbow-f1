@@ -69,9 +69,88 @@ export const CreateProjectBaseItem = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-cre
     &[data-active=false]:hover {
         background-color: var(--f1-hover-color);
     }
+
+    > span {
+        display: inline-flex;
+        position: relative;
+        align-items: center;
+        align-self: stretch;
+    }
+
+    > span:nth-child(2) {
+        opacity: 0.5;
+        font-size: 0.8em;
+        margin-top: 1px;
+        margin-left: 4px;
+    }
 `;
 export const CreateProjectContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-project-content'})`
     display: flex;
     position: relative;
     border-top: var(--f1-border);
+`;
+export const ModuleSettingsContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-module-settings-container'})`
+    display: grid;
+    position: relative;
+    grid-template-columns: repeat(12, 1fr);
+    grid-column-gap: 8px;
+    grid-row-gap: 8px;
+    padding-left: 16px;
+    align-content: start;
+    width: 100%;
+
+    > span[data-w=d9-caption] {
+        &[data-column-2] {
+            grid-column: span 2;
+        }
+    }
+
+    > input[data-w=d9-input] {
+        &[data-column-10] {
+            grid-column: span 10;
+        }
+    }
+
+    > div[data-w=d9-deco-input] {
+        &[data-di-column-10] {
+            grid-column: span 10;
+        }
+
+        &[data-di-dir] {
+            > span[data-w=d9-deco-tail] {
+                padding: 0;
+                overflow: unset;
+
+                > button {
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 0;
+                    border-color: transparent;
+
+                    &[data-fill=plain][data-ink=primary] > span[data-w=d9-deco-tail] {
+                        fill: var(--f1-waive-color);
+                        transition: fill 0.3s ease-in-out;
+                    }
+
+                    &[data-fill=plain][data-ink=primary]:hover {
+                        color: var(--f1-primary-color);
+                        border-color: var(--f1-primary-color);
+
+                        > span[data-w=d9-deco-tail] {
+                            fill: var(--f1-primary-color);
+                        }
+                    }
+                }
+            }
+        }
+    }
+`;
+export const ModuleSettingsTitle = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-module-settings-title'})`
+    display: flex;
+    position: relative;
+    align-items: center;
+    grid-column: span 12;
+    padding: 8px 0;
+    font-size: 1.2em;
+    border-bottom: var(--f1-border);
+    opacity: 0.7;
 `;

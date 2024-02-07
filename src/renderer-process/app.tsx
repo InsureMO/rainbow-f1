@@ -1,5 +1,5 @@
 import {RouterProvider} from 'react-router-dom';
-import {GlobalStyles} from './global-styles';
+import {GlobalStyles} from '../renderer-common/global-styles';
 import {router} from './router';
 
 export const App = () => {
