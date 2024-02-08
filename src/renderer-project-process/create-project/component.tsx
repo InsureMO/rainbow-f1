@@ -5,20 +5,21 @@ import {ComponentContainer, ComponentDescription} from './widgets';
 export interface ComponentProps {
 	name: string;
 	description: string | ReactNode;
-	fixed: boolean;
+	fixed: true | ((selected: boolean) => void);
 	defaultUse?: boolean;
 }
 
 export const Component = (props: ComponentProps) => {
 	const {name, description, fixed, defaultUse = false} = props;
 
-	const [value, setValue] = useState(() => fixed || defaultUse);
+	const [value, setValue] = useState(() => (fixed === true) || defaultUse);
 
 	const onSelectChanged = () => {
-		if (fixed) {
+		if (fixed === true) {
 			return;
 		}
 		setValue(!value);
+		fixed(!value);
 	};
 
 	return <ComponentContainer>
@@ -26,6 +27,6 @@ export const Component = (props: ComponentProps) => {
 			<span data-name="">{name}</span>
 			<span data-desc="">{description}</span>
 		</ComponentDescription>
-		<UnwrappedCheckbox onValueChange={onSelectChanged} value={value} disabled={fixed}/>
+		<UnwrappedCheckbox onValueChange={onSelectChanged} value={value} disabled={fixed === true}/>
 	</ComponentContainer>;
 };

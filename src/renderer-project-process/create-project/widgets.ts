@@ -117,6 +117,10 @@ export const ModuleSettingsContainer = styled.div.attrs({
             grid-column-end: span 10;
         }
 
+        &[data-columns-12] {
+            grid-column-end: span 12;
+        }
+
         &[data-column-3] {
             grid-column-start: 3;
         }
@@ -157,6 +161,10 @@ export const ModuleSettingsContainer = styled.div.attrs({
 
     > div[data-w=f1-invalid-msg] {
         margin-top: -8px;
+    }
+
+    > div[data-w=f1-component-container] + div[data-w=f1-invalid-msg] {
+        padding-left: 0;
     }
 `;
 export const ModuleSettingsTitle = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-module-settings-title'})`

@@ -8,3 +8,7 @@ export interface BaseState {
 	base: ProjectModuleBase;
 	index: number;
 }
+
+export interface ModuleSettingsState {
+	nameMessage?: string;
+}

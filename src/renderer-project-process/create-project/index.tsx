@@ -5,12 +5,11 @@ import {Bar} from './bar';
 import {Content} from './content';
 import {CreateProjectEventBusProvider} from './event-bus';
 import {SideBar} from './side-bar';
+import {createF1ProjectSettings} from './utils';
 import {CreateProjectContainer} from './widgets';
 
 export const CreateProjectPage = () => {
-	const settings: F1ProjectSettings = {
-		name: '', d9: [{name: 'awesome-d9'}], o23: [{name: 'awesome-o23'}]
-	};
+	const settings: F1ProjectSettings = createF1ProjectSettings();
 
 	return <GlobalEventBusProvider>
 		<CreateProjectEventBusProvider>

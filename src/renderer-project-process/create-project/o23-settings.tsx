@@ -1,14 +1,34 @@
-import {O23ModuleSettings} from '../../shared/project-settings';
+import {useState} from 'react';
+import {D9ModuleDependencies, F1ProjectSettings, O23ModuleSettings} from '../../shared/project-settings';
 import {Component} from './component';
 import {ModuleSettings} from './module-settings';
-import {ProjectModuleBase} from './types';
+import {ModuleSettingsState, ProjectModuleBase} from './types';
+import {useModuleValidate} from './use-module-validate';
+import {validateModuleName, validateModuleNameDuplication} from './utils';
 import {ComponentsTitle} from './widgets';
 
-export const O23Settings = (props: { settings: O23ModuleSettings; index: number }) => {
-	const {settings, index} = props;
+export const O23Settings = (props: { project: F1ProjectSettings; module: O23ModuleSettings; index: number }) => {
+	const {project, module, index} = props;
+	const {dependencies} = module;
 
-	return <ModuleSettings settings={settings} base={ProjectModuleBase.D9} index={index}
-	                       title="O23 Module Settings">
+	const [state, setState] = useState<ModuleSettingsState>({});
+	useModuleValidate({
+		base: ProjectModuleBase.D9, index, validate: async () => {
+			let nameMessage = validateModuleName(module.name);
+			if (nameMessage == null) {
+				nameMessage = validateModuleNameDuplication({settings: project, base: ProjectModuleBase.O23, index});
+			}
+			setState(state => ({...state, nameMessage}));
+		}
+	});
+
+	const onComponentSelectionChanged = (key: keyof D9ModuleDependencies) => (selected: boolean) => {
+		dependencies[key] = selected;
+	};
+
+	return <ModuleSettings project={project} module={module} base={ProjectModuleBase.D9} index={index}
+	                       title="O23 Module Settings"
+	                       state={state} setState={setState}>
 		<ComponentsTitle>Plugins</ComponentsTitle>
 		<Component name="@rainbow-o23/n91"
 		           description={<>
@@ -16,7 +36,8 @@ export const O23Settings = (props: { settings: O23ModuleSettings; index: number 
 			           data-name="">@rainbow-o23/n5</span>, <span data-name="">@rainbow-o23/n6</span>, <span
 			           data-name="">@rainbow-o23/n7</span> have been included in this plugin component.
 		           </>}
-		           fixed={false} defaultUse={false}/>
+		           fixed={onComponentSelectionChanged('@rainbow-o32/n91')}
+		           defaultUse={dependencies['@rainbow-o32/n91'] ?? false}/>
 		<ComponentsTitle>Mandatory components</ComponentsTitle>
 		<Component name="@rainbow-o23/n90"
 		           description={<>

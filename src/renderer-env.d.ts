@@ -1,12 +1,6 @@
 import {ContextMenu, RecentProject, RecentProjectCategory, RecentProjectRoot} from './shared/constants';
-import {
-	CreateF1ProjectOptions,
-	F1Project,
-	FileSystemBooleanResult,
-	OpenDialogOptions,
-	OpenDialogResult,
-	ThemeSource
-} from './shared/types';
+import {F1ProjectSettings} from './shared/project-settings';
+import {F1Project, FileSystemBooleanResult, OpenDialogOptions, OpenDialogResult, ThemeSource} from './shared/types';
 
 declare global {
 	interface WindowElectronVersions {
@@ -47,7 +41,7 @@ declare global {
 	}
 
 	interface WindowElectronF1Project {
-		create(options: CreateF1ProjectOptions): F1Project;
+		create(options: F1ProjectSettings): { success: boolean; project: F1Project; message?: string };
 	}
 
 	interface WindowElectronFileSystem {
@@ -70,7 +64,7 @@ declare global {
 		recentProjects: WindowElectronRecentProjects;
 		contextMenu: WindowElectronContextMenu;
 		dialog: WindowElectronDialog;
-		f1Project: WindowElectronF1Project;
+		f1: WindowElectronF1Project;
 	}
 
 	interface Window {

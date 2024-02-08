@@ -1,6 +1,7 @@
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 import DialogOpenOptions = Electron.OpenDialogOptions;
 import OpenDialogReturnValue = Electron.OpenDialogReturnValue;
+import {F1ProjectSettings} from './project-settings';
 
 export enum Theme {
 	EVENT_NAME = 'theme-changed', LIGHT = 'light', DARK = 'dark', SYSTEM = 'system'
@@ -100,12 +101,7 @@ export enum PathEvent {
 	BASENAME = 'path-basename',
 }
 
-export interface F1Project {
-	name: string;
-	directory: string;
-}
-
-export interface CreateF1ProjectOptions extends F1Project {
+export interface F1Project extends F1ProjectSettings {
 }
 
 export enum F1ProjectEvent {

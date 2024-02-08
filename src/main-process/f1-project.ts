@@ -1,11 +1,18 @@
 import {ipcMain} from 'electron';
-import {CreateF1ProjectOptions, F1ProjectEvent} from '../shared/types';
+import {F1ProjectSettings} from '../shared/project-settings';
+import {F1ProjectEvent} from '../shared/types';
 
 class ApplicationF1Project {
 	constructor() {
-		ipcMain.on(F1ProjectEvent.CREATE, async (event, options: CreateF1ProjectOptions) => {
+		ipcMain.on(F1ProjectEvent.CREATE, async (event, options: F1ProjectSettings) => {
 			const {name, directory} = options;
-			// check directory, must be empty
+			//TODO
+			// 1. CHECK DIRECTORY, MUST BE EMPTY
+			// 2. CHECK VOLTA, NODE, NPM, YARN VERSIONS
+			// 3. TRY TO CREATE PROJECT FOLDER
+			// 4. CREATE MODULES BY CLI
+
+			// { success: boolean; project: F1Project; message?: string }
 		});
 	}
 }

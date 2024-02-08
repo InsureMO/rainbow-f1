@@ -14,8 +14,13 @@ export const SideBar = (props: { settings: F1ProjectSettings }) => {
 	});
 	const forceUpdate = useForceUpdate();
 	useEffect(() => {
+		const onActiveAndValidate = (base: ProjectModuleBase, index: number) => {
+			setState({base, index});
+		}
+		on(CreateProjectEventTypes.ACTIVE_AND_VALIDATE, onActiveAndValidate);
 		on(CreateProjectEventTypes.MODULE_NAME_CHANGED, forceUpdate);
 		return () => {
+			off(CreateProjectEventTypes.ACTIVE_AND_VALIDATE, onActiveAndValidate);
 			off(CreateProjectEventTypes.MODULE_NAME_CHANGED, forceUpdate);
 		};
 	}, [on, off, forceUpdate]);

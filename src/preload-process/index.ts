@@ -1,6 +1,7 @@
 import {contextBridge} from 'electron';
 import {ContextMenuHandlers} from './context-menu';
 import {DialogHandlers} from './dialog';
+import {F1ProjectHandlers} from './f1';
 import {FileSystemHandlers} from './fs';
 import {PathHandlers} from './path';
 import {RecentProjectsHandlers} from './recent-projects';
@@ -16,5 +17,6 @@ contextBridge.exposeInMainWorld('electron', {
 	theme: ThemeHandlers,
 	recentProjects: RecentProjectsHandlers,
 	contextMenu: ContextMenuHandlers,
-	dialog: DialogHandlers
+	dialog: DialogHandlers,
+	f1: F1ProjectHandlers
 } as WindowElectronHandler);

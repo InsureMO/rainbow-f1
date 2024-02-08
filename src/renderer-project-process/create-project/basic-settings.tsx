@@ -12,6 +12,7 @@ import {InvalidMessage} from '../../renderer-common/widgets';
 import {F1ProjectSettings} from '../../shared/project-settings';
 import {ProjectModuleBase} from './types';
 import {useModuleValidate} from './use-module-validate';
+import {validateProjectDirectory, validateProjectName} from './utils';
 import {ModuleSettingsContainer, ModuleSettingsTitle} from './widgets';
 
 interface BasicSettingsState {
@@ -19,27 +20,8 @@ interface BasicSettingsState {
 	directoryMessage?: string;
 }
 
-const validateName = (name?: string) => {
-	if (VUtils.isBlank(name)) {
-		return 'Please fill in the project name.';
-	} else if (/[\\\/]/.test(value)) {
-		return 'Project name cannot contain / or \\.';
-	} else {
-		return (void 0);
-	}
-};
-const validateDirectory = (directory?: string) => {
-	if (VUtils.isBlank(directory)) {
-		return 'Please select the project directory.';
-	}
-	if (window.electron.fs.exists(directory).ret && !window.electron.fs.empty(directory).ret) {
-		return 'The directory is not empty.';
-	} else {
-		return (void 0);
-	}
-};
-export const BasicSettings = (props: { settings: F1ProjectSettings }) => {
-	const {settings} = props;
+export const BasicSettings = (props: { project: F1ProjectSettings }) => {
+	const {project} = props;
 
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [state, setState] = useState<BasicSettingsState>({});
@@ -49,15 +31,15 @@ export const BasicSettings = (props: { settings: F1ProjectSettings }) => {
 
 	useModuleValidate({
 		base: ProjectModuleBase.BASIC, index: 0, validate: async () => {
-			const nameMessage = validateName(settings.name);
-			const directoryMessage = validateDirectory(settings.directory);
+			const nameMessage = validateProjectName(project.name);
+			const directoryMessage = validateProjectDirectory(project.directory);
 			setState(state => ({...state, nameMessage, directoryMessage}));
 		}
 	});
 
 	const onNameChanged = (value: string) => {
-		settings.name = value;
-		const message = validateName(settings.name);
+		project.name = value;
+		const message = validateProjectName(project.name);
 		setState(state => ({...state, nameMessage: message}));
 	};
 	const onDirClicked = () => {
@@ -70,23 +52,23 @@ export const BasicSettings = (props: { settings: F1ProjectSettings }) => {
 			return;
 		}
 
-		settings.directory = result.filePaths[0];
-		const message = validateDirectory(settings.directory);
+		project.directory = result.filePaths[0];
+		const message = validateProjectDirectory(project.directory);
 		setState(state => ({...state, directoryMessage: message}));
-		if (VUtils.isEmpty(settings.name) && message != null) {
-			settings.name = window.electron.path.basename(directory);
+		if (VUtils.isEmpty(project.name) && message == null) {
+			project.name = window.electron.path.basename(project.directory);
 		}
 	};
 
 	return <ModuleSettingsContainer>
 		<ModuleSettingsTitle>Basic Settings</ModuleSettingsTitle>
 		<UnwrappedCaption data-columns-2>Name:</UnwrappedCaption>
-		<UnwrappedInput onValueChange={onNameChanged} value={settings.name ?? ''} data-columns-10 ref={inputRef}/>
+		<UnwrappedInput onValueChange={onNameChanged} value={project.name ?? ''} data-columns-10 ref={inputRef}/>
 		{state.nameMessage != null
 			? <InvalidMessage data-column-3 data-columns-10>{state.nameMessage}</InvalidMessage>
 			: null}
 		<UnwrappedCaption data-columns-2>Directory:</UnwrappedCaption>
-		<UnwrappedDecorateInput onValueChange={VUtils.noop} value={settings.directory ?? ''}
+		<UnwrappedDecorateInput onValueChange={VUtils.noop} value={project.directory ?? ''}
 		                        data-di-columns-10 data-di-dir readOnly
 		                        tails={[<UnwrappedButton onClick={onDirClicked} fill={ButtonFill.PLAIN}
 		                                                 ink={ButtonInk.PRIMARY}

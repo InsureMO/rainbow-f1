@@ -44,17 +44,18 @@ export const Content = (props: { settings: F1ProjectSettings }) => {
 	useEffect(() => {
 		if (state.validate) {
 			setState(state => ({...state, validate: false}));
+			console.log('fire validation');
 			fire(CreateProjectEventTypes.VALIDATE, state.base, state.index);
 		}
-	}, [fire]);
+	}, [fire, state.validate]);
 
 	return <CreateProjectContent>
-		{(state.base === ProjectModuleBase.BASIC && state.index === 0) ? <BasicSettings settings={settings}/> : null}
+		{(state.base === ProjectModuleBase.BASIC && state.index === 0) ? <BasicSettings project={settings}/> : null}
 		{(state.base === ProjectModuleBase.D9)
-			? <D9Settings settings={settings.d9[state.index]} index={state.index}/>
+			? <D9Settings project={settings} module={settings.d9[state.index]} index={state.index}/>
 			: null}
 		{(state.base === ProjectModuleBase.O23)
-			? <O23Settings settings={settings.o23[state.index]} index={state.index}/>
+			? <O23Settings project={settings} module={settings.o23[state.index]} index={state.index}/>
 			: null}
 	</CreateProjectContent>;
 };
