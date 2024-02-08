@@ -1,5 +1,5 @@
 import {dialog, ipcMain} from 'electron';
-import {DialogEvent, OpenDialogOptions} from '../shared/types';
+import {DialogEvent, OpenDialogOptions} from '../../shared/types';
 
 class ApplicationDialog {
 	constructor() {

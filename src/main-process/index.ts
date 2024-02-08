@@ -1,8 +1,4 @@
-import './fs';
-import './path';
-import './context-menu';
-import './dialog';
-import './f1-project';
+import './events';
 
 export * from './splash-window';
 export * from './project-window';

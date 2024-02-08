@@ -1,8 +1,8 @@
 import {app, BrowserWindow, ipcMain, Menu, nativeTheme} from 'electron';
 import {Theme, ThemeSource} from '../shared/types';
 import {openAboutWindow} from './about-window';
+import {store} from './events';
 import {createProjectWindow} from './project-window';
-import store from './store';
 import {isMac} from './utils';
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 
@@ -57,7 +57,7 @@ export const createEditMenu = (should: boolean) => {
 export const createWindowMenu = (should: boolean) => {
 	if (should) {
 		const theme = store.getTheme();
-		
+
 		return [{
 			label: 'Window',
 			submenu: [

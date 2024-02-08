@@ -107,3 +107,14 @@ export interface F1Project extends F1ProjectSettings {
 export enum F1ProjectEvent {
 	CREATE = 'create-f1-project',
 }
+
+export interface LocalMachineVersions {
+	volta?: string;
+	node?: string;
+	npm?: string;
+	yarn?: string;
+}
+
+export enum LocalMachineEvent {
+	VERSIONS = 'lm-versions'
+}

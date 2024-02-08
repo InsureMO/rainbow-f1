@@ -1,10 +1,10 @@
 import {ipcMain} from 'electron';
-import {F1ProjectSettings} from '../shared/project-settings';
-import {F1ProjectEvent} from '../shared/types';
+import {F1ProjectSettings} from '../../shared/project-settings';
+import {F1ProjectEvent} from '../../shared/types';
 
 class ApplicationF1Project {
 	constructor() {
-		ipcMain.on(F1ProjectEvent.CREATE, async (event, options: F1ProjectSettings) => {
+		ipcMain.on(F1ProjectEvent.CREATE, (event, options: F1ProjectSettings) => {
 			const {name, directory} = options;
 			//TODO
 			// 1. CHECK DIRECTORY, MUST BE EMPTY

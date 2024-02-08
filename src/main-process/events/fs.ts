@@ -1,6 +1,6 @@
 import {ipcMain} from 'electron';
 import * as fs from 'fs';
-import {FileSystemBooleanResult, FileSystemEvent, FileSystemOperationResult} from '../shared/types';
+import {FileSystemBooleanResult, FileSystemEvent, FileSystemOperationResult} from '../../shared/types';
 
 class ApplicationFileSystem {
 	constructor() {

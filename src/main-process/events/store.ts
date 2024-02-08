@@ -9,7 +9,7 @@ import {
 	StoreEvent as StoreEvent,
 	Theme,
 	ThemeSource
-} from '../shared/types';
+} from '../../shared/types';
 
 const store = new Store();
 
