@@ -11,14 +11,11 @@ const AboutContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-about'})`
     padding: 16px 32px;
 
     > div:first-child {
-        grid-column: span 3;
-        margin-bottom: 48px;
-    }
-
-    > div:first-child {
         display: flex;
+        grid-column: span 3;
         align-items: center;
         justify-content: center;
+        margin-bottom: 32px;
 
         > svg {
             height: 300px;
@@ -48,16 +45,19 @@ export const App = () => {
 		<AboutContainer>
 			<div><Logo/></div>
 			<div/>
-			<div>electron:</div>
+			<div>f1</div>
+			<div>{window.electron.versions.app()}</div>
+			<div/>
+			<div>electron</div>
 			<div>{window.electron.versions.electron}</div>
 			<div/>
-			<div>chrome:</div>
+			<div>chrome</div>
 			<div>{window.electron.versions.chrome}</div>
 			<div/>
-			<div>node:</div>
+			<div>node</div>
 			<div>{window.electron.versions.node}</div>
 			<div/>
-			<div>v8:</div>
+			<div>v8</div>
 			<div>{window.electron.versions.v8}</div>
 		</AboutContainer>
 	</>;

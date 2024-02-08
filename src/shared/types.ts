@@ -3,6 +3,10 @@ import DialogOpenOptions = Electron.OpenDialogOptions;
 import OpenDialogReturnValue = Electron.OpenDialogReturnValue;
 import {F1ProjectSettings} from './project-settings';
 
+export enum VersionsEvent {
+	APP = 'versions-app'
+}
+
 export enum Theme {
 	EVENT_NAME = 'theme-changed', LIGHT = 'light', DARK = 'dark', SYSTEM = 'system'
 }

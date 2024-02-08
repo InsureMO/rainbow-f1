@@ -15,6 +15,7 @@ declare global {
 		chrome: string;
 		v8: string;
 		electron: string;
+		app: () => string;
 	}
 
 	interface WindowElectronStore {

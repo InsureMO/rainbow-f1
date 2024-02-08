@@ -1,3 +1,4 @@
+import './versions';
 import './fs';
 import './path';
 import './local-machine';
