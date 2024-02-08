@@ -1,4 +1,4 @@
-import {GlobalEventBusProvider, UnwrappedCaption} from '@rainbow-d9/n2';
+import {Alert, GlobalEventBusProvider, UnwrappedCaption} from '@rainbow-d9/n2';
 import {Logo} from '../../renderer-common/icons';
 import {F1ProjectSettings} from '../../shared/project-settings';
 import {Bar} from './bar';
@@ -14,12 +14,13 @@ export const CreateProjectPage = () => {
 
 	return <GlobalEventBusProvider>
 		<CreateProjectEventBusProvider>
+			<Alert/>
 			<CreateProjectContainer>
 				<UnwrappedCaption data-page-title={true}>Project settings</UnwrappedCaption>
 				<Logo/>
 				<SideBar settings={settings}/>
 				<Content settings={settings}/>
-				<Bar/>
+				<Bar settings={settings}/>
 			</CreateProjectContainer>
 		</CreateProjectEventBusProvider>
 	</GlobalEventBusProvider>;

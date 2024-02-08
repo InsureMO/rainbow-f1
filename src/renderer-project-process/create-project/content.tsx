@@ -7,32 +7,46 @@ import {O23Settings} from './o23-settings';
 import {BaseState, ProjectModuleBase} from './types';
 import {CreateProjectContent} from './widgets';
 
+interface ContextState extends BaseState {
+	validate: boolean;
+}
+
 export const Content = (props: { settings: F1ProjectSettings }) => {
 	const {settings} = props;
 
-	const {on, off} = useCreateProjectEventBus();
-	const [state, setState] = useState<BaseState>({
-		base: ProjectModuleBase.BASIC, index: 0
+	const {on, off, fire} = useCreateProjectEventBus();
+	const [state, setState] = useState<ContextState>({
+		base: ProjectModuleBase.BASIC, index: 0, validate: false
 	});
 	useEffect(() => {
-		const onProjectModuleActive = (base: ProjectModuleBase, index: number) => {
+		const createOnProjectModuleActive = (validate: boolean) => (base: ProjectModuleBase, index: number) => {
 			switch (base) {
 				case ProjectModuleBase.BASIC:
-					setState({base, index: 0});
+					setState({base, index: 0, validate});
 					break;
 				case ProjectModuleBase.D9:
-					setState({base, index});
+					setState({base, index, validate});
 					break;
 				case ProjectModuleBase.O23:
-					setState({base, index});
+					setState({base, index, validate});
 					break;
 			}
 		};
+		const onProjectModuleActive = createOnProjectModuleActive(false);
+		const onProjectModuleActiveAndValidate = createOnProjectModuleActive(true);
 		on(CreateProjectEventTypes.ACTIVE, onProjectModuleActive);
+		on(CreateProjectEventTypes.ACTIVE_AND_VALIDATE, onProjectModuleActiveAndValidate);
 		return () => {
 			off(CreateProjectEventTypes.ACTIVE, onProjectModuleActive);
+			off(CreateProjectEventTypes.ACTIVE_AND_VALIDATE, onProjectModuleActiveAndValidate);
 		};
 	}, [on, off]);
+	useEffect(() => {
+		if (state.validate) {
+			setState(state => ({...state, validate: false}));
+			fire(CreateProjectEventTypes.VALIDATE, state.base, state.index);
+		}
+	}, [fire]);
 
 	return <CreateProjectContent>
 		{(state.base === ProjectModuleBase.BASIC && state.index === 0) ? <BasicSettings settings={settings}/> : null}

@@ -233,14 +233,19 @@ export const ComponentDescription = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-comp
     grid-column: span 11;
 
     > span {
-        display: flex;
         position: relative;
         line-height: 1.5;
     }
 
     > span[data-name] {
+        display: flex;
         font-weight: 500;
         color: var(--f1-primary-color);
         height: 24px;
+    }
+
+    > span[data-desc] > span[data-name] {
+        font-weight: 500;
+        color: var(--f1-primary-color);
     }
 `;

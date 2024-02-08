@@ -1,10 +1,10 @@
 import {UnwrappedCheckbox} from '@rainbow-d9/n2';
-import {useState} from 'react';
+import {ReactNode, useState} from 'react';
 import {ComponentContainer, ComponentDescription} from './widgets';
 
 export interface ComponentProps {
 	name: string;
-	description: string;
+	description: string | ReactNode;
 	fixed: boolean;
 	defaultUse?: boolean;
 }
@@ -19,7 +19,7 @@ export const Component = (props: ComponentProps) => {
 			return;
 		}
 		setValue(!value);
-	}
+	};
 
 	return <ComponentContainer>
 		<ComponentDescription>

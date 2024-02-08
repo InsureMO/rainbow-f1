@@ -14,7 +14,6 @@ import {ModuleSettingsContainer, ModuleSettingsTitle} from './widgets';
 
 interface BasicSettingsState {
 	nameMessage?: string;
-	directory: string;
 	directoryMessage?: string;
 }
 
@@ -22,7 +21,7 @@ export const BasicSettings = (props: { settings: F1ProjectSettings }) => {
 	const {settings} = props;
 
 	const inputRef = useRef<HTMLInputElement>(null);
-	const [state, setState] = useState<BasicSettingsState>({directory: ''});
+	const [state, setState] = useState<BasicSettingsState>({});
 	useEffect(() => {
 		inputRef.current?.focus();
 	}, []);
@@ -48,13 +47,14 @@ export const BasicSettings = (props: { settings: F1ProjectSettings }) => {
 		}
 
 		const directory = result.filePaths[0];
+		settings.directory = directory;
 		if (window.electron.fs.exists(directory).ret && !window.electron.fs.empty(directory).ret) {
-			setState(state => ({...state, directory, directoryMessage: 'The directory is not empty.'}));
+			setState(state => ({...state, directoryMessage: 'The directory is not empty.'}));
 		} else {
 			if (VUtils.isEmpty(settings.name)) {
 				settings.name = window.electron.path.basename(directory);
 			}
-			setState(state => ({...state, directory, directoryMessage: (void 0)}));
+			setState(state => ({...state, directoryMessage: (void 0)}));
 		}
 	};
 
@@ -66,7 +66,7 @@ export const BasicSettings = (props: { settings: F1ProjectSettings }) => {
 			? <InvalidMessage data-column-3 data-columns-10>{state.nameMessage}</InvalidMessage>
 			: null}
 		<UnwrappedCaption data-columns-2>Directory:</UnwrappedCaption>
-		<UnwrappedDecorateInput onValueChange={VUtils.noop} value={state.directory}
+		<UnwrappedDecorateInput onValueChange={VUtils.noop} value={settings.directory ?? ''}
 		                        data-di-columns-10 data-di-dir readOnly
 		                        tails={[<UnwrappedButton onClick={onDirClicked} fill={ButtonFill.PLAIN}
 		                                                 ink={ButtonInk.PRIMARY}

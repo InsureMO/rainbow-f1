@@ -5,6 +5,8 @@ import {ProjectModuleBase} from './types';
 
 export enum CreateProjectEventTypes {
 	ACTIVE = 'active',
+	ACTIVE_AND_VALIDATE = 'active-and-validate',
+	VALIDATE = 'validate',
 	MODULE_NAME_CHANGED = 'module-name-changed'
 }
 
@@ -14,6 +16,18 @@ export interface CreateProjectEventBus {
 	on(type: CreateProjectEventTypes.ACTIVE, listener: (base: ProjectModuleBase, index: number) => void): this;
 
 	off(type: CreateProjectEventTypes.ACTIVE, listener: (base: ProjectModuleBase, index: number) => void): this;
+
+	fire(type: CreateProjectEventTypes.ACTIVE_AND_VALIDATE, base: ProjectModuleBase, index: number): this;
+
+	on(type: CreateProjectEventTypes.ACTIVE_AND_VALIDATE, listener: (base: ProjectModuleBase, index: number) => void): this;
+
+	off(type: CreateProjectEventTypes.ACTIVE_AND_VALIDATE, listener: (base: ProjectModuleBase, index: number) => void): this;
+
+	fire(type: CreateProjectEventTypes.VALIDATE, base: ProjectModuleBase, index: number): this;
+
+	on(type: CreateProjectEventTypes.VALIDATE, listener: (base: ProjectModuleBase, index: number) => void): this;
+
+	off(type: CreateProjectEventTypes.VALIDATE, listener: (base: ProjectModuleBase, index: number) => void): this;
 
 	fire(type: CreateProjectEventTypes.MODULE_NAME_CHANGED, base: ProjectModuleBase, index: number, settings: F1ModuleSettings): this;
 
