@@ -1,7 +1,8 @@
 export enum ProjectModuleBase {
 	BASIC = 'basic',
 	D9 = 'd9',
-	O23 = 'o23'
+	O23 = 'o23',
+	ENVS = 'envs'
 }
 
 export interface BaseState {

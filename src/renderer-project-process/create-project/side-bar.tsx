@@ -16,7 +16,7 @@ export const SideBar = (props: { settings: F1ProjectSettings }) => {
 	useEffect(() => {
 		const onActiveAndValidate = (base: ProjectModuleBase, index: number) => {
 			setState({base, index});
-		}
+		};
 		on(CreateProjectEventTypes.ACTIVE_AND_VALIDATE, onActiveAndValidate);
 		on(CreateProjectEventTypes.MODULE_NAME_CHANGED, forceUpdate);
 		return () => {
@@ -60,5 +60,9 @@ export const SideBar = (props: { settings: F1ProjectSettings }) => {
 				<span>@Rainbow-O23</span>
 			</CreateProjectBaseItem>;
 		})}
+		<CreateProjectBaseItem data-active={state.base === ProjectModuleBase.ENVS && state.index === 0}
+		                       onClick={onItemClicked(ProjectModuleBase.ENVS, 0)}>
+			<span>Environment</span>
+		</CreateProjectBaseItem>
 	</CreateProjectSidebar>;
 };

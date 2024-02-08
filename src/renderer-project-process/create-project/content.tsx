@@ -2,6 +2,7 @@ import {useEffect, useState} from 'react';
 import {F1ProjectSettings} from '../../shared/project-settings';
 import {BasicSettings} from './basic-settings';
 import {D9Settings} from './d9-settings';
+import {EnvsSettings} from './envs-settings';
 import {CreateProjectEventTypes, useCreateProjectEventBus} from './event-bus';
 import {O23Settings} from './o23-settings';
 import {BaseState, ProjectModuleBase} from './types';
@@ -24,6 +25,9 @@ export const Content = (props: { settings: F1ProjectSettings }) => {
 				case ProjectModuleBase.BASIC:
 					setState({base, index: 0, validate});
 					break;
+				case ProjectModuleBase.ENVS:
+					setState({base, index: 0, validate});
+					break
 				case ProjectModuleBase.D9:
 					setState({base, index, validate});
 					break;
@@ -57,5 +61,6 @@ export const Content = (props: { settings: F1ProjectSettings }) => {
 		{(state.base === ProjectModuleBase.O23)
 			? <O23Settings project={settings} module={settings.o23[state.index]} index={state.index}/>
 			: null}
+		{(state.base === ProjectModuleBase.ENVS && state.index === 0) ? <EnvsSettings project={settings}/> : null}
 	</CreateProjectContent>;
 };
