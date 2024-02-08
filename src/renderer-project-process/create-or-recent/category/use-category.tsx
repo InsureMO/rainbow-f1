@@ -40,7 +40,7 @@ export const useCategory = () => {
 				label: (option.label as string).split('/').map((part, index) => {
 					return <Fragment key={index}>
 						<span>{part}</span>
-						<span data-hierarchy-slash={true}>/</span>
+						<span data-hierarchy-slash="">/</span>
 					</Fragment>;
 				}),
 				stringify: () => option.label,

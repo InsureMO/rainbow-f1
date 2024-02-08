@@ -17,7 +17,7 @@ export const CreateOrRecentContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-cre
     height: 100vh;
     padding: 0 24px;
 
-    > span[data-w=d9-caption] {
+    > span[data-w=d9-caption][data-page-title] {
         height: 64px;
     }
 
@@ -34,7 +34,7 @@ export const CreateOrRecentContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-cre
         border-top: var(--f1-border);
         border-radius: 0;
         width: 100%;
-        height: unset !important;
+        height: calc(100vh - 64px - 64px);
         max-height: 100%;
     }
 

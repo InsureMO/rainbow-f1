@@ -114,7 +114,7 @@ export const GlobalStyles: any = createGlobalStyle`
         margin-top: 32px;
     }
 
-    span[data-hierarchy-slash=true] {
+    span[data-hierarchy-slash] {
         opacity: 0.7;
         font-weight: 600;
         font-size: 0.6em;

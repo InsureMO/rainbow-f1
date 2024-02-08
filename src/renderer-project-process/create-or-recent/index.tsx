@@ -12,7 +12,7 @@ export const CreateOrRecentPage = () => {
 			<YesNoDialog/>
 			<CreateOrRecentContainer>
 				<CreateOrRecentContent>
-					<UnwrappedCaption data-page-title={true}>Recent projects...</UnwrappedCaption>
+					<UnwrappedCaption data-page-title>Recent projects...</UnwrappedCaption>
 					<Logo/>
 					<RecentProjects/>
 					<Bar/>

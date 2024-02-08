@@ -874,10 +874,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@rainbow-d9/n1@1.0.51", "@rainbow-d9/n1@^1.0.51":
-  version "1.0.51"
-  resolved "https://registry.yarnpkg.com/@rainbow-d9/n1/-/n1-1.0.51.tgz#e4f469c30e3b58a6b17134261121c74ba628d6ae"
-  integrity sha512-rs5rTXjTv4HFJVH530jaY3cGxxFH4p+gp4i3ECeqGam9qwtyZ2SBvW3jl0aBxUN3xoEXT9/oTI3Ks9hnxUB0YQ==
+"@rainbow-d9/n1@1.0.52", "@rainbow-d9/n1@^1.0.52":
+  version "1.0.52"
+  resolved "https://registry.yarnpkg.com/@rainbow-d9/n1/-/n1-1.0.52.tgz#fb98b364bd108641b7588d29c9ead84e209489e5"
+  integrity sha512-AA9h8BhP2qlUJ9RNom5/xnyvFPlKqR9EZYreq8h0gdiIR1u5r6gL7lXlKjgqZBlbIZKOpOjDHTxsRSjKc8ynRA==
   dependencies:
     buffer "^6.0.3"
     events "^3.3.0"
@@ -885,12 +885,12 @@
     react "^18.2.0"
     react-dom "^18.2.0"
 
-"@rainbow-d9/n2@^1.0.51":
-  version "1.0.51"
-  resolved "https://registry.yarnpkg.com/@rainbow-d9/n2/-/n2-1.0.51.tgz#d74eceabfbfc036977dc7fdcd688f4b91d9c2e7f"
-  integrity sha512-ocbH0f7HiBl/dgzTzHNwtfvMlaTj6roebOF7HUR7DVo/o++hIoVp9RZWvUL5tQF/eifq9C6C6c/4aO1ZCTsmYQ==
+"@rainbow-d9/n2@^1.0.52":
+  version "1.0.52"
+  resolved "https://registry.yarnpkg.com/@rainbow-d9/n2/-/n2-1.0.52.tgz#5a85178142c26cb9d63ad22bd8e1a11a14e8d02f"
+  integrity sha512-TBSF4TkfpX+YGYHQk16rmZUWgkzQIDpqYuLi+76F9JYmFYsK3WbF5rwDz0fWAHFutBJm/YpNTOqRB4DA/+C80A==
   dependencies:
-    "@rainbow-d9/n1" "1.0.51"
+    "@rainbow-d9/n1" "1.0.52"
     color "^4.2.3"
     dayjs "^1.11.7"
     react "^18.2.0"

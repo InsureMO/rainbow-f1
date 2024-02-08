@@ -23,8 +23,8 @@ export const Component = (props: ComponentProps) => {
 
 	return <ComponentContainer>
 		<ComponentDescription>
-			<span data-name={true}>{name}</span>
-			<span data-desc={true}>{description}</span>
+			<span data-name="">{name}</span>
+			<span data-desc="">{description}</span>
 		</ComponentDescription>
 		<UnwrappedCheckbox onValueChange={onSelectChanged} value={value} disabled={fixed}/>
 	</ComponentContainer>;

@@ -11,7 +11,7 @@ export const CreateProjectContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-cr
     padding: 0 24px;
     overflow: hidden;
 
-    > span[data-w=d9-caption] {
+    > span[data-w=d9-caption][data-page-title] {
         grid-column: span 2;
         height: 64px;
     }

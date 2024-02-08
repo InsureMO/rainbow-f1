@@ -16,7 +16,7 @@ export const CreateProjectPage = () => {
 		<CreateProjectEventBusProvider>
 			<Alert/>
 			<CreateProjectContainer>
-				<UnwrappedCaption data-page-title={true}>Project settings</UnwrappedCaption>
+				<UnwrappedCaption data-page-title>Project settings</UnwrappedCaption>
 				<Logo/>
 				<SideBar settings={settings}/>
 				<Content settings={settings}/>

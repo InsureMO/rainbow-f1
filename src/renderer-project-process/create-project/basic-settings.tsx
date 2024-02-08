@@ -10,6 +10,8 @@ import {
 import {useEffect, useRef, useState} from 'react';
 import {InvalidMessage} from '../../renderer-common/widgets';
 import {F1ProjectSettings} from '../../shared/project-settings';
+import {ProjectModuleBase} from './types';
+import {useModuleValidate} from './use-module-validate';
 import {ModuleSettingsContainer, ModuleSettingsTitle} from './widgets';
 
 interface BasicSettingsState {
@@ -17,6 +19,25 @@ interface BasicSettingsState {
 	directoryMessage?: string;
 }
 
+const validateName = (name?: string) => {
+	if (VUtils.isBlank(name)) {
+		return 'Please fill in the project name.';
+	} else if (/[\\\/]/.test(value)) {
+		return 'Project name cannot contain / or \\.';
+	} else {
+		return (void 0);
+	}
+};
+const validateDirectory = (directory?: string) => {
+	if (VUtils.isBlank(directory)) {
+		return 'Please select the project directory.';
+	}
+	if (window.electron.fs.exists(directory).ret && !window.electron.fs.empty(directory).ret) {
+		return 'The directory is not empty.';
+	} else {
+		return (void 0);
+	}
+};
 export const BasicSettings = (props: { settings: F1ProjectSettings }) => {
 	const {settings} = props;
 
@@ -26,15 +47,18 @@ export const BasicSettings = (props: { settings: F1ProjectSettings }) => {
 		inputRef.current?.focus();
 	}, []);
 
+	useModuleValidate({
+		base: ProjectModuleBase.BASIC, index: 0, validate: async () => {
+			const nameMessage = validateName(settings.name);
+			const directoryMessage = validateDirectory(settings.directory);
+			setState(state => ({...state, nameMessage, directoryMessage}));
+		}
+	});
+
 	const onNameChanged = (value: string) => {
 		settings.name = value;
-		if (VUtils.isBlank(value)) {
-			setState(state => ({...state, nameMessage: 'Please fill in the project name.'}));
-		} else if (/[\\\/]/.test(value)) {
-			setState(state => ({...state, nameMessage: 'Project name cannot contain / or \\.'}));
-		} else {
-			setState(state => ({...state, nameMessage: (void 0)}));
-		}
+		const message = validateName(settings.name);
+		setState(state => ({...state, nameMessage: message}));
 	};
 	const onDirClicked = () => {
 		const result = window.electron.dialog.open({
@@ -46,15 +70,11 @@ export const BasicSettings = (props: { settings: F1ProjectSettings }) => {
 			return;
 		}
 
-		const directory = result.filePaths[0];
-		settings.directory = directory;
-		if (window.electron.fs.exists(directory).ret && !window.electron.fs.empty(directory).ret) {
-			setState(state => ({...state, directoryMessage: 'The directory is not empty.'}));
-		} else {
-			if (VUtils.isEmpty(settings.name)) {
-				settings.name = window.electron.path.basename(directory);
-			}
-			setState(state => ({...state, directoryMessage: (void 0)}));
+		settings.directory = result.filePaths[0];
+		const message = validateDirectory(settings.directory);
+		setState(state => ({...state, directoryMessage: message}));
+		if (VUtils.isEmpty(settings.name) && message != null) {
+			settings.name = window.electron.path.basename(directory);
 		}
 	};
 

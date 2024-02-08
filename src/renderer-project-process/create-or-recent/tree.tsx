@@ -1,9 +1,9 @@
 import {PROPERTY_PATH_ME, PropValue, Undefinable} from '@rainbow-d9/n1';
 import {GlobalEventTypes, TreeNodeDef, UnwrappedTree, useGlobalEventBus} from '@rainbow-d9/n2';
 import {MouseEvent} from 'react';
-import {RecentProject, RecentProjectCategory, RecentProjectHolder, RecentProjectRoot} from '../../shared/types';
 import {ContextMenuItem, showContextMenu} from '../../renderer-common/context-menu';
 import {EllipsisVertical, FolderClosed, FolderClosedEmpty, FolderOpen} from '../../renderer-common/icons';
+import {RecentProject, RecentProjectCategory, RecentProjectHolder, RecentProjectRoot} from '../../shared/types';
 import {useCategory} from './category';
 import {RecentProjectsEventTypes, useRecentProjectsEventBus} from './event-bus';
 
@@ -106,11 +106,12 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 			const hasChild = (category.categories ?? []).length !== 0 || (category.projects ?? []).length !== 0;
 			return {
 				marker: category.id,
-				label: <span data-recent-category={true}>
+				label: <span data-recent-category="">
 					{hasChild ? <FolderClosed/> : <FolderClosedEmpty/>}
 					<FolderOpen/>
-					<span data-name={true}>{category.name}</span>
-					<span data-operator={true} onClick={onCategoryOperatorClicked(parent, category)}><EllipsisVertical/></span>
+					<span data-name="">{category.name}</span>
+					<span data-operator=""
+					      onClick={onCategoryOperatorClicked(parent, category)}><EllipsisVertical/></span>
 				</span>,
 				value: category as unknown as PropValue,
 				$ip2r: PROPERTY_PATH_ME, $ip2p: `category-${category.id}`, leaf: false
@@ -121,11 +122,11 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 		const projectNodes = projects.map((project) => {
 			return {
 				marker: project.id,
-				label: <span data-recent-project={true} onClick={onProjectClicked(project)}>
-					<span data-short-name={true}>{computeShortName(project.name)}</span>
-					<span data-name={true}>{project.name}</span>
-					<span data-path={true}>{project.path}</span>
-					<span data-operator={true}
+				label: <span data-recent-project="" onClick={onProjectClicked(project)}>
+					<span data-short-name="">{computeShortName(project.name)}</span>
+					<span data-name="">{project.name}</span>
+					<span data-path="">{project.path}</span>
+					<span data-operator=""
 					      onClick={onProjectOperatorClicked(parent, project)}><EllipsisVertical/></span>
 				</span>,
 				value: project as unknown as PropValue,
