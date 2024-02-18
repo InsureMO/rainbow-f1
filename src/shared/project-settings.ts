@@ -21,6 +21,7 @@ export interface D9ModuleSettings extends F1ModuleSettings {
 export interface O23ModuleDependencies {
 	'@rainbow-o23/n90': boolean;
 	'@rainbow-o23/n91': boolean;
+	'@rainbow-o23/n92': boolean;
 
 	// other dependencies
 	[key: string]: boolean;

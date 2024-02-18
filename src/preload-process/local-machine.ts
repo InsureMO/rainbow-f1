@@ -1,8 +1,7 @@
 import {ipcRenderer} from 'electron';
-import {LocalMachineEvent, LocalMachineVersions} from '../shared/types';
+import {LocalMachineCommands, LocalMachineEvent, LocalMachineVersions} from '../shared/types';
 
 export const LocalMachineHandlers: WindowElectronLocalMachine = {
-	versions: (): LocalMachineVersions => {
-		return ipcRenderer.sendSync(LocalMachineEvent.VERSIONS);
-	}
+	versions: (): LocalMachineVersions => ipcRenderer.sendSync(LocalMachineEvent.VERSIONS),
+	commands: (): LocalMachineCommands => ipcRenderer.sendSync(LocalMachineEvent.COMMANDS)
 };

@@ -5,7 +5,7 @@ import {F1ProjectEvent} from '../../shared/types';
 class ApplicationF1Project {
 	constructor() {
 		ipcMain.on(F1ProjectEvent.CREATE, (event, options: F1ProjectSettings) => {
-			const {name, directory} = options;
+			const {name, directory, d9, o23} = options;
 			//TODO
 			// 1. CHECK DIRECTORY, MUST BE EMPTY
 			// 2. CHECK VOLTA, NODE, NPM, YARN VERSIONS

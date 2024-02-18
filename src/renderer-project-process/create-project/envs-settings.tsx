@@ -1,18 +1,25 @@
 import {VUtils} from '@rainbow-d9/n1';
 import {ButtonFill, ButtonInk, UnwrappedButton, UnwrappedCaption, UnwrappedDecorateInput} from '@rainbow-d9/n2';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {F1ProjectSettings} from '../../shared/project-settings';
 import {ProjectModuleBase} from './types';
 import {useModuleValidate} from './use-module-validate';
 import {ModuleSettingsContainer, ModuleSettingsTitle} from './widgets';
 
 interface EnvsSettingsState {
+	initialized: boolean;
 }
 
 export const EnvsSettings = (props: { project: F1ProjectSettings }) => {
 	const {project} = props;
 
-	const [state, setState] = useState<EnvsSettingsState>({});
+	const [state, setState] = useState<EnvsSettingsState>({initialized: false});
+	useEffect(() => {
+		if (state.initialized) {
+			return;
+		}
+		const commands = window.electron.lm.commands();
+	}, []);
 
 	useModuleValidate({
 		base: ProjectModuleBase.BASIC, index: 0, validate: async () => {

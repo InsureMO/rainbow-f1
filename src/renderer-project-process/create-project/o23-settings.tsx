@@ -38,6 +38,13 @@ export const O23Settings = (props: { project: F1ProjectSettings; module: O23Modu
 		           </>}
 		           fixed={onComponentSelectionChanged('@rainbow-o32/n91')}
 		           defaultUse={dependencies['@rainbow-o32/n91'] ?? false}/>
+		<Component name="@rainbow-o23/n92"
+		           description={<>
+			           AWS package, include S3. <span
+			           data-name="">@rainbow-o23/n8</span> have been included in this plugin component.
+		           </>}
+		           fixed={onComponentSelectionChanged('@rainbow-o32/n92')}
+		           defaultUse={dependencies['@rainbow-o32/n92'] ?? false}/>
 		<ComponentsTitle>Mandatory components</ComponentsTitle>
 		<Component name="@rainbow-o23/n90"
 		           description={<>

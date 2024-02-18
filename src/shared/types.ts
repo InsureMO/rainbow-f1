@@ -119,6 +119,20 @@ export interface LocalMachineVersions {
 	yarn?: string;
 }
 
+export interface LocalMachineCommand {
+	exists: boolean;
+	command?: string;
+	version?: string;
+}
+
+export interface LocalMachineCommands {
+	volta: LocalMachineCommand;
+	node: LocalMachineCommand;
+	npm: LocalMachineCommand;
+	yarn: LocalMachineCommand;
+}
+
 export enum LocalMachineEvent {
-	VERSIONS = 'lm-versions'
+	VERSIONS = 'lm-versions',
+	COMMANDS = 'lm-commands'
 }

@@ -2,7 +2,7 @@ import {ContextMenu, RecentProject, RecentProjectCategory, RecentProjectRoot} fr
 import {F1ProjectSettings} from './shared/project-settings';
 import {
 	F1Project,
-	FileSystemBooleanResult,
+	FileSystemBooleanResult, LocalMachineCommands,
 	LocalMachineVersions,
 	OpenDialogOptions,
 	OpenDialogResult,
@@ -65,6 +65,7 @@ declare global {
 
 	interface WindowElectronLocalMachine {
 		versions: () => LocalMachineVersions;
+		commands: () => LocalMachineCommands;
 	}
 
 	interface WindowElectronHandler {
