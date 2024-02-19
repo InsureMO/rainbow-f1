@@ -1,9 +1,9 @@
 import {contextBridge} from 'electron';
+import {CommandLinesHandlers} from './command-lines';
 import {ContextMenuHandlers} from './context-menu';
 import {DialogHandlers} from './dialog';
 import {F1ProjectHandlers} from './f1';
 import {FileSystemHandlers} from './fs';
-import {LocalMachineHandlers} from './local-machine';
 import {PathHandlers} from './path';
 import {RecentProjectsHandlers} from './recent-projects';
 import {StoreHandlers} from './store';
@@ -14,7 +14,7 @@ contextBridge.exposeInMainWorld('electron', {
 	versions: Versions,
 	fs: FileSystemHandlers,
 	path: PathHandlers,
-	lm: LocalMachineHandlers,
+	cli: CommandLinesHandlers,
 	store: StoreHandlers,
 	theme: ThemeHandlers,
 	recentProjects: RecentProjectsHandlers,

@@ -1,9 +1,9 @@
 import {ContextMenu, RecentProject, RecentProjectCategory, RecentProjectRoot} from './shared/constants';
 import {F1ProjectSettings} from './shared/project-settings';
 import {
+	CommandLines,
 	F1Project,
-	FileSystemBooleanResult, LocalMachineCommands,
-	LocalMachineVersions,
+	FileSystemBooleanResult,
 	OpenDialogOptions,
 	OpenDialogResult,
 	ThemeSource
@@ -63,16 +63,15 @@ declare global {
 		basename: (path: string, suffix?: string) => string;
 	}
 
-	interface WindowElectronLocalMachine {
-		versions: () => LocalMachineVersions;
-		commands: () => LocalMachineCommands;
+	interface WindowElectronCommandLines {
+		commands: (commandLines?: CommandLines) => CommandLines;
 	}
 
 	interface WindowElectronHandler {
 		versions: WindowElectronVersions;
 		fs: WindowElectronFileSystem;
 		path: WindowElectronPath;
-		lm: WindowElectronLocalMachine;
+		cli: WindowElectronCommandLines;
 		store: WindowElectronStore;
 		theme: WindowElectronTheme;
 		recentProjects: WindowElectronRecentProjects;

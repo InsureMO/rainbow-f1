@@ -1,7 +1,7 @@
 import './versions';
 import './fs';
 import './path';
-import './local-machine';
+import './command-lines';
 import './context-menu';
 import './dialog';
 import './f1';

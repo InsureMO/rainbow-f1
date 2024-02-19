@@ -112,27 +112,19 @@ export enum F1ProjectEvent {
 	CREATE = 'create-f1-project',
 }
 
-export interface LocalMachineVersions {
-	volta?: string;
-	node?: string;
-	npm?: string;
-	yarn?: string;
-}
-
-export interface LocalMachineCommand {
-	exists: boolean;
+export interface CommandLine {
 	command?: string;
 	version?: string;
+	exists?: boolean;
 }
 
-export interface LocalMachineCommands {
-	volta: LocalMachineCommand;
-	node: LocalMachineCommand;
-	npm: LocalMachineCommand;
-	yarn: LocalMachineCommand;
+export interface CommandLines {
+	volta?: CommandLine;
+	node?: CommandLine;
+	npm?: CommandLine;
+	yarn?: CommandLine;
 }
 
-export enum LocalMachineEvent {
-	VERSIONS = 'lm-versions',
-	COMMANDS = 'lm-commands'
+export enum CommandLinesEvent {
+	COMMANDS = 'cli-commands'
 }

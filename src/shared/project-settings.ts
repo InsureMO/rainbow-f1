@@ -1,3 +1,5 @@
+import {CommandLines} from './types';
+
 export interface F1ModuleSettings {
 	name: string;
 }
@@ -31,9 +33,14 @@ export interface O23ModuleSettings extends F1ModuleSettings {
 	dependencies: O23ModuleDependencies;
 }
 
+export interface F1ProjectEnvs {
+	cli?: CommandLines;
+}
+
 export interface F1ProjectSettings {
 	name: string;
 	directory?: string;
+	envs?: F1ProjectEnvs;
 	d9?: Array<D9ModuleSettings>;
 	o23?: Array<O23ModuleSettings>;
 }

@@ -1,4 +1,5 @@
 import {MakerDeb} from '@electron-forge/maker-deb';
+import {MakerDMG} from '@electron-forge/maker-dmg';
 import {MakerRpm} from '@electron-forge/maker-rpm';
 import {MakerSquirrel} from '@electron-forge/maker-squirrel';
 import {MakerZIP} from '@electron-forge/maker-zip';
@@ -6,9 +7,17 @@ import {VitePlugin} from '@electron-forge/plugin-vite';
 import type {ForgeConfig} from '@electron-forge/shared-types';
 
 const config: ForgeConfig = {
-	packagerConfig: {},
+	packagerConfig: {
+		icon: 'src/assets/logo'
+	},
 	rebuildConfig: {},
-	makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
+	makers: [
+		new MakerSquirrel({setupIcon: 'src/assets/logo.ico'}),
+		new MakerZIP({}, ['darwin']),
+		new MakerDMG({icon: 'src/assets/logo.icns'}, ['darwin']),
+		new MakerRpm({options: {icon: 'src/assets/logo.png'}}),
+		new MakerDeb({options: {icon: 'src/assets/logo.png'}})
+	],
 	plugins: [
 		new VitePlugin({
 			// `build` can specify multiple entry builds, which can be Main process, Preload scripts, Worker process, etc.

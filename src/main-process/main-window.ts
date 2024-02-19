@@ -7,6 +7,7 @@ export const createMainWindow = (showImmediate: boolean): BrowserWindow => {
 	// Create the browser window.
 	const mainWindow = new BrowserWindow({
 		show: false,
+		icon: 'asserts/logo.png',
 		webPreferences: {preload: path.join(__dirname, 'preload.js')}
 	});
 	// mainWindow.maximize();

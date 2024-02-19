@@ -18,8 +18,13 @@ export const EnvsSettings = (props: { project: F1ProjectSettings }) => {
 		if (state.initialized) {
 			return;
 		}
-		const commands = window.electron.lm.commands();
-	}, []);
+		const commands = window.electron.cli.commands(project.envs?.cli);
+		if (project.envs == null) {
+			project.envs = {};
+		}
+		project.envs.cli = commands;
+		setState({initialized: true});
+	}, [state.initialized]);
 
 	useModuleValidate({
 		base: ProjectModuleBase.BASIC, index: 0, validate: async () => {
@@ -47,7 +52,7 @@ export const EnvsSettings = (props: { project: F1ProjectSettings }) => {
 	return <ModuleSettingsContainer>
 		<ModuleSettingsTitle>Environment Settings</ModuleSettingsTitle>
 		<UnwrappedCaption data-columns-2>Node:</UnwrappedCaption>
-		<UnwrappedDecorateInput onValueChange={VUtils.noop} value={project.directory ?? ''}
+		<UnwrappedDecorateInput onValueChange={VUtils.noop} value={project.envs?.cli?.node?.command ?? ''}
 		                        data-di-columns-10 data-di-dir readOnly
 		                        tails={[<UnwrappedButton onClick={onDirClicked} fill={ButtonFill.PLAIN}
 		                                                 ink={ButtonInk.PRIMARY}
@@ -56,19 +61,19 @@ export const EnvsSettings = (props: { project: F1ProjectSettings }) => {
 		{/*	? <InvalidMessage data-column-3 data-columns-10>{state.nameMessage}</InvalidMessage>*/}
 		{/*	: null}*/}
 		<UnwrappedCaption data-columns-2>Npm:</UnwrappedCaption>
-		<UnwrappedDecorateInput onValueChange={VUtils.noop} value={project.directory ?? ''}
+		<UnwrappedDecorateInput onValueChange={VUtils.noop} value={project.envs?.cli?.npm?.command ?? ''}
 		                        data-di-columns-10 data-di-dir readOnly
 		                        tails={[<UnwrappedButton onClick={onDirClicked} fill={ButtonFill.PLAIN}
 		                                                 ink={ButtonInk.PRIMARY}
 		                                                 tails={['$icons.f1FolderClosedEmpty']}/>]}/>
 		<UnwrappedCaption data-columns-2>Yarn:</UnwrappedCaption>
-		<UnwrappedDecorateInput onValueChange={VUtils.noop} value={project.directory ?? ''}
+		<UnwrappedDecorateInput onValueChange={VUtils.noop} value={project.envs?.cli?.yarn?.command ?? ''}
 		                        data-di-columns-10 data-di-dir readOnly
 		                        tails={[<UnwrappedButton onClick={onDirClicked} fill={ButtonFill.PLAIN}
 		                                                 ink={ButtonInk.PRIMARY}
 		                                                 tails={['$icons.f1FolderClosedEmpty']}/>]}/>
 		<UnwrappedCaption data-columns-2>Volta:</UnwrappedCaption>
-		<UnwrappedDecorateInput onValueChange={VUtils.noop} value={project.directory ?? ''}
+		<UnwrappedDecorateInput onValueChange={VUtils.noop} value={project.envs?.cli?.volta?.command ?? ''}
 		                        data-di-columns-10 data-di-dir readOnly
 		                        tails={[<UnwrappedButton onClick={onDirClicked} fill={ButtonFill.PLAIN}
 		                                                 ink={ButtonInk.PRIMARY}
