@@ -66,12 +66,18 @@ class ApplicationCommandLines {
 
 	protected getCommandLine(options: {
 		commandLine?: CommandLine,
-		command: string, versionArgs?: Array<string>
+		fallbackCommands: Array<string>, versionArgs?: Array<string>
 	}): CommandLine | undefined {
 		const defined = isNotBlank(options.commandLine?.command) || isNotBlank(options.commandLine?.version);
 		// use defined first
-		const command = isNotBlank(options.commandLine?.command) ? options.commandLine.command : options.command;
-		const path = this.getCommand(command);
+		const commands = [options.commandLine?.command, ...options.fallbackCommands].filter(isNotBlank);
+		let path = null;
+		for (let command of commands) {
+			path = this.getCommand(command);
+			if (path != null) {
+				break;
+			}
+		}
 		if (path == null) {
 			// not found, either given or default
 			return defined ? {command: options.commandLine.command, exists: false} : (void 0);
@@ -84,18 +90,31 @@ class ApplicationCommandLines {
 	}
 
 	public volta(def?: CommandLine): CommandLine | undefined {
-		return this.getCommandLine({commandLine: def, command: 'volta'});
+		return this.getCommandLine({commandLine: def, fallbackCommands: ['volta'], versionArgs: ['-v']});
+	}
+
+	protected replaceBaseVolta(to: string, volta?: string): string | undefined {
+		if (volta == null) {
+			return null;
+		} else if (volta.endsWith('volta.exe')) {
+			return volta.replace('volta.exe', to);
+		} else {
+			return volta.replace(/\/volta$/, `/${to}`);
+		}
 	}
 
 	public commands(commandLines?: CommandLines): CommandLines {
 		commandLines = commandLines ?? {};
 		commandLines.volta = this.volta(commandLines.volta);
-		const hasVolta = commandLines.volta?.exists ?? false;
-		const volta = hasVolta ? commandLines.volta.command : (void 0);
+		const volta = commandLines.volta?.command;
 		['node', 'npm', 'yarn'].forEach(key => {
 			const name = key as keyof CommandLines;
 			const def = commandLines[name];
-			commandLines[name] = this.getCommandLine({commandLine: def, command: key});
+			commandLines[name] = this.getCommandLine({
+				commandLine: def,
+				fallbackCommands: [this.replaceBaseVolta(key, volta), key].filter(c => c != null),
+				versionArgs: ['-v']
+			});
 		});
 		return commandLines;
 	}
