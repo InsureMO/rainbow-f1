@@ -1,5 +1,5 @@
 import {app, BrowserWindow} from 'electron';
-import {createMainWindow, createSplashWindow} from './main-process';
+import {createFirstWindow, createSplashWindow} from './main-process';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -25,7 +25,7 @@ app.on('activate', () => {
 	// dock icon is clicked and there are no other windows open.
 	if (BrowserWindow.getAllWindows().length === 0) {
 		// do not show splash window when activate again
-		createMainWindow(true);
+		createFirstWindow(true);
 	}
 });
 

@@ -189,6 +189,11 @@ class ApplicationStore {
 		}
 		store.set(StoreKey.RECENT_PROJECTS, root);
 	}
+
+	public hasLastProject(): boolean {
+		// TODO CHECK LAST PROJECT
+		return false;
+	}
 }
 
 export default new ApplicationStore();
