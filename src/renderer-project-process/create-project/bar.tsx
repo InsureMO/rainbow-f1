@@ -31,7 +31,7 @@ export const Bar = (props: { settings: F1ProjectSettings }) => {
 	const onBackClicked = () => {
 		navigate('/');
 	};
-	const onCreateProjectClicked = () => {
+	const onCreateProjectClicked = async () => {
 		const rules = [
 			...[
 				() => validateProjectName(settings.name),
@@ -53,24 +53,25 @@ export const Bar = (props: { settings: F1ProjectSettings }) => {
 			...[
 				'node', 'npm', 'yarn', 'volta'
 			].map(key => {
-				return () => {
+				return async () => {
 					const k = key as keyof CommandLines;
-					const [, message] = validateEnvCli(k, settings.envs?.cli?.[k]);
+					const [, message] = await validateEnvCli(k, settings.envs?.cli?.[k]);
 					return message;
 				};
 			}).map(validate => ({validate, base: ProjectModuleBase.ENVS, index: 0}))
 		];
 		for (let {validate, base, index} of rules) {
-			const message = validate();
+			const message = await validate();
 			if (message != null) {
 				global.fire(GlobalEventTypes.SHOW_ALERT, <AlertLabel>{message}</AlertLabel>, () => {
 					fire(CreateProjectEventTypes.ACTIVE_AND_VALIDATE, base, index);
 				});
-				break;
+				return;
 			}
 		}
 
-		window.electron.f1.create(settings);
+		const created = await window.electron.f1.create(settings);
+		console.log(created);
 	};
 
 	return <UnwrappedButtonBar>

@@ -108,6 +108,12 @@ export enum PathEvent {
 export interface F1Project extends F1ProjectSettings {
 }
 
+export interface F1ProjectCreated {
+	success: boolean;
+	project: F1Project;
+	message?: string;
+}
+
 export enum F1ProjectEvent {
 	CREATE = 'create-f1-project',
 }

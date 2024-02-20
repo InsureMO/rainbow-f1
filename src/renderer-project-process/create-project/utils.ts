@@ -33,10 +33,13 @@ export const createO23ModuleSettings = (): O23ModuleSettings => {
 export const createF1ProjectSettings = (): F1ProjectSettings => {
 	return {
 		name: '',
-		envs: {cli: window.electron.cli.commands()},
 		d9: [createD9ModuleSettings()],
 		o23: [createO23ModuleSettings()]
 	};
+};
+
+export const createF1ProjectSettingsEnvs = async (settings: F1ProjectSettings): Promise<void> => {
+	settings.envs = {cli: await window.electron.cli.commands()};
 };
 
 export const validateProjectName = (name?: string): string | undefined => {
@@ -109,7 +112,7 @@ export const validateD9N3N5 = (n3?: boolean, n5?: boolean): string | undefined =
 	}
 };
 
-export const validateEnvCli = (key: keyof CommandLines, cli?: CommandLine): [string | undefined, string | undefined] => {
+export const validateEnvCli = async (key: keyof CommandLines, cli?: CommandLine): Promise<[string | undefined, string | undefined]> => {
 	if (cli == null || isBlank(cli.command)) {
 		if (['node', 'npm'].includes(key)) {
 			return [(void 0), `Please select the executive file for ${key}.`];
@@ -117,7 +120,7 @@ export const validateEnvCli = (key: keyof CommandLines, cli?: CommandLine): [str
 			return [(void 0), (void 0)];
 		}
 	} else {
-		const version = window.electron.cli.version(key, cli.command);
+		const version = await window.electron.cli.version(key, cli.command);
 		if (version != null) {
 			switch (key) {
 				case 'node':
@@ -130,9 +133,8 @@ export const validateEnvCli = (key: keyof CommandLines, cli?: CommandLine): [str
 						return [version, `Invalid executive file for npm, please use a version above ${MIN_NPM_VERSION}.`];
 					}
 					break;
-				default:
-					return [version, (void 0)];
 			}
+			return [version, (void 0)];
 		} else {
 			return [(void 0), `Invalid executive file for ${key}, no version information detected.`];
 		}

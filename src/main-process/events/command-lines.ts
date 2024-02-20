@@ -5,11 +5,11 @@ import {isNotBlank, isWin} from '../utils';
 
 class ApplicationCommandLines {
 	constructor() {
-		ipcMain.on(CommandLinesEvent.COMMANDS, (event, commandLines?: CommandLines) => event.returnValue = this.commands(commandLines));
-		ipcMain.on(CommandLinesEvent.VERSION, (event, _key: keyof CommandLines, path: string) => event.returnValue = this.getVersion(path, '-v'));
+		ipcMain.handle(CommandLinesEvent.COMMANDS, async (_, commandLines?: CommandLines) => this.commands(commandLines));
+		ipcMain.handle(CommandLinesEvent.VERSION, async (_, _key: keyof CommandLines, path: string) => this.getVersion(path, '-v'));
 	}
 
-	protected getVersion(command: string, ...args: Array<string>): string | undefined {
+	protected async getVersion(command: string, ...args: Array<string>): Promise<string | undefined> {
 		if (isWin() && command.includes(' ')) {
 			command = `"${command}"`;
 		}
@@ -26,7 +26,7 @@ class ApplicationCommandLines {
 		}
 	}
 
-	protected getCommand(command: string): string | undefined {
+	protected async getCommand(command: string): Promise<string | undefined> {
 		if (isWin()) {
 			if (command.includes('\\')) {
 				// absolute path
@@ -65,16 +65,16 @@ class ApplicationCommandLines {
 		}
 	}
 
-	protected getCommandLine(options: {
+	protected async getCommandLine(options: {
 		commandLine?: CommandLine,
 		fallbackCommands: Array<string>, versionArgs?: Array<string>
-	}): CommandLine | undefined {
+	}): Promise<CommandLine | undefined> {
 		const defined = isNotBlank(options.commandLine?.command) || isNotBlank(options.commandLine?.version);
 		// use defined first
 		const commands = [options.commandLine?.command, ...options.fallbackCommands].filter(isNotBlank);
 		let path = null;
 		for (let command of commands) {
-			path = this.getCommand(command);
+			path = await this.getCommand(command);
 			if (path != null) {
 				break;
 			}
@@ -83,15 +83,15 @@ class ApplicationCommandLines {
 			// not found, either given or default
 			return defined ? {command: options.commandLine.command, exists: false} : (void 0);
 		}
-		const version = this.getVersion(path, ...(options.versionArgs ?? ['-v']));
+		const version = await this.getVersion(path, ...(options.versionArgs ?? ['-v']));
 		if (version == null) {
 			return defined ? {command: options.commandLine.command, exists: false} : (void 0);
 		}
 		return {command: path, version, exists: true};
 	}
 
-	public volta(def?: CommandLine): CommandLine | undefined {
-		return this.getCommandLine({commandLine: def, fallbackCommands: ['volta'], versionArgs: ['-v']});
+	public async volta(def?: CommandLine): Promise<CommandLine | undefined> {
+		return await this.getCommandLine({commandLine: def, fallbackCommands: ['volta'], versionArgs: ['-v']});
 	}
 
 	protected replaceBaseVolta(to: string, volta?: string): string | undefined {
@@ -104,19 +104,21 @@ class ApplicationCommandLines {
 		}
 	}
 
-	public commands(commandLines?: CommandLines): CommandLines {
+	public async commands(commandLines?: CommandLines): Promise<CommandLines> {
 		commandLines = commandLines ?? {};
-		commandLines.volta = this.volta(commandLines.volta);
+		commandLines.volta = await this.volta(commandLines.volta);
 		const volta = commandLines.volta?.command;
-		['node', 'npm', 'yarn'].forEach(key => {
+		await Promise.all([
+			'node', 'npm', 'yarn'
+		].map(async key => {
 			const name = key as keyof CommandLines;
 			const def = commandLines[name];
-			commandLines[name] = this.getCommandLine({
+			commandLines[name] = await this.getCommandLine({
 				commandLine: def,
 				fallbackCommands: [this.replaceBaseVolta(key, volta), key].filter(c => c != null),
 				versionArgs: ['-v']
 			});
-		});
+		}));
 		return commandLines;
 	}
 }

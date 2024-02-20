@@ -23,22 +23,22 @@ export const EnvsSettings = (props: { project: F1ProjectSettings }) => {
 	const [state, setState] = useState<EnvsSettingsState>({});
 
 	useModuleValidate({
-		base: ProjectModuleBase.BASIC, index: 0, validate: async () => {
-			const messages = [
+		base: ProjectModuleBase.ENVS, index: 0, validate: async () => {
+			const messages = (await Promise.all([
 				'node', 'npm', 'yarn', 'volta'
-			].map(key => {
+			].map(async key => {
 				const k = key as keyof CommandLines;
-				const [version, message] = validateEnvCli(k, project.envs?.cli?.[k]);
+				const [version, message] = await validateEnvCli(k, project.envs?.cli?.[k]);
 				return {k, version, message};
-			}).reduce((state, {k: key, message}) => {
+			}))).reduce((state, {k: key, message}) => {
 				state[`${key}Message`] = message;
 				return state;
-			}, {} as Omit<EnvsSettingsState, 'initialized'>);
-			setState(state => ({...state, ...messages}));
+			}, {} as EnvsSettingsState);
+			setState(messages);
 		}
 	});
 
-	const onDirClicked = (options: { title: string, set: (path: string) => void }) => () => {
+	const onDirClicked = (options: { title: string, set: (path: string) => Promise<void> }) => async () => {
 		const {title, set} = options;
 		const result = window.electron.dialog.open({
 			title, properties: ['openFile', 'dontAddToRecent', 'showHiddenFiles'], buttonLabel: 'Select'
@@ -47,11 +47,11 @@ export const EnvsSettings = (props: { project: F1ProjectSettings }) => {
 			return;
 		}
 
-		set(result.filePaths[0]);
+		await set(result.filePaths[0]);
 	};
 
-	const createSet = (key: keyof CommandLines) => {
-		return (path: string) => {
+	const createSet = (key: keyof CommandLines): ((path: string) => Promise<void>) => {
+		return async (path: string) => {
 			if (project.envs == null) {
 				project.envs = {cli: {[key]: {exists: false}}};
 			} else if (project.envs.cli == null) {
@@ -60,7 +60,7 @@ export const EnvsSettings = (props: { project: F1ProjectSettings }) => {
 				project.envs.cli[key] = {exists: false};
 			}
 			project.envs.cli[key].command = path;
-			const [version, message] = validateEnvCli(key, project.envs.cli[key]);
+			const [version, message] = await validateEnvCli(key, project.envs.cli[key]);
 			if (version != null) {
 				project.envs.cli[key].version = version;
 				project.envs.cli[key].exists = true;
@@ -73,7 +73,7 @@ export const EnvsSettings = (props: { project: F1ProjectSettings }) => {
 	};
 
 	const tails = (options: {
-		cli?: CommandLine, title: string, set: (path: string) => void
+		cli?: CommandLine, title: string, set: (path: string) => Promise<void>
 	}) => {
 		const {cli, title, set} = options;
 		const onClicked = onDirClicked({title, set});

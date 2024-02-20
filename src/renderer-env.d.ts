@@ -2,7 +2,7 @@ import {ContextMenu, RecentProject, RecentProjectCategory, RecentProjectRoot} fr
 import {F1ProjectSettings} from './shared/project-settings';
 import {
 	CommandLines,
-	F1Project,
+	F1ProjectCreated,
 	FileSystemBooleanResult,
 	OpenDialogOptions,
 	OpenDialogResult,
@@ -49,7 +49,7 @@ declare global {
 	}
 
 	interface WindowElectronF1Project {
-		create(options: F1ProjectSettings): { success: boolean; project: F1Project; message?: string };
+		create(options: F1ProjectSettings): Promise<F1ProjectCreated>;
 	}
 
 	interface WindowElectronFileSystem {
@@ -64,8 +64,8 @@ declare global {
 	}
 
 	interface WindowElectronCommandLines {
-		commands: (commandLines?: CommandLines) => CommandLines;
-		version: (key: keyof CommandLines, path: string) => string | undefined;
+		commands: (commandLines?: CommandLines) => Promise<CommandLines>;
+		version: (key: keyof CommandLines, path: string) => Promise<string | undefined>;
 	}
 
 	interface WindowElectronHandler {
