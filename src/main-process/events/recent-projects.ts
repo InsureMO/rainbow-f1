@@ -2,25 +2,25 @@ import {ipcMain} from 'electron';
 import {
 	RecentProject,
 	RecentProjectCategory,
+	RecentProjectsEvent,
 	RecentProjectHolder,
 	RecentProjectRoot,
-	RecentProjectRootId,
-	StoreEvent
+	RecentProjectRootId
 } from '../../shared/types';
 import {isBlank} from '../utils';
 import store, {StoreKey} from './store';
 
 class ApplicationRecentProjects {
 	constructor() {
-		ipcMain.on(StoreEvent.GET_RECENT_PROJECTS, (event) => event.returnValue = this.getRecentProjects());
-		ipcMain.on(StoreEvent.ADD_RECENT_PROJECT, (_, project: RecentProject, categoryId?: string) => this.addRecentProject(project, categoryId));
-		ipcMain.on(StoreEvent.RENAME_RECENT_PROJECT, (_, projectId: string, newName: string) => this.renameRecentProject(projectId, newName));
-		ipcMain.on(StoreEvent.REMOVE_RECENT_PROJECT, (_, projectId: string) => this.removeRecentProject(projectId));
-		ipcMain.on(StoreEvent.CLEAR_RECENT_PROJECTS, () => this.clearRecentProjects());
-		ipcMain.on(StoreEvent.ADD_RECENT_PROJECT_CATEGORY, (_, category: RecentProjectCategory, parentCategoryId?: string) => this.addRecentProjectCategory(category, parentCategoryId));
-		ipcMain.on(StoreEvent.RENAME_RECENT_PROJECT_CATEGORY, (_, categoryId: string, newName: string) => this.renameRecentProjectCategory(categoryId, newName));
-		ipcMain.on(StoreEvent.MOVE_RECENT_PROJECT_CATEGORY, (_, categoryId: string, newParentCategoryId?: string) => this.moveRecentProjectCategory(categoryId, newParentCategoryId));
-		ipcMain.on(StoreEvent.REMOVE_RECENT_PROJECT_CATEGORY, (_, categoryId: string) => this.removeRecentProjectCategory(categoryId));
+		ipcMain.on(RecentProjectsEvent.GET_ALL, (event) => event.returnValue = this.getRecentProjects());
+		ipcMain.on(RecentProjectsEvent.ADD_PROJECT, (_, project: RecentProject, categoryId?: string) => this.addRecentProject(project, categoryId));
+		ipcMain.on(RecentProjectsEvent.RENAME_PROJECT, (_, projectId: string, newName: string) => this.renameRecentProject(projectId, newName));
+		ipcMain.on(RecentProjectsEvent.REMOVE_PROJECT, (_, projectId: string) => this.removeRecentProject(projectId));
+		ipcMain.on(RecentProjectsEvent.CLEAR_ALL, () => this.clearRecentProjects());
+		ipcMain.on(RecentProjectsEvent.ADD_CATEGORY, (_, category: RecentProjectCategory, parentCategoryId?: string) => this.addRecentProjectCategory(category, parentCategoryId));
+		ipcMain.on(RecentProjectsEvent.RENAME_CATEGORY, (_, categoryId: string, newName: string) => this.renameRecentProjectCategory(categoryId, newName));
+		ipcMain.on(RecentProjectsEvent.MOVE_CATEGORY, (_, categoryId: string, newParentCategoryId?: string) => this.moveRecentProjectCategory(categoryId, newParentCategoryId));
+		ipcMain.on(RecentProjectsEvent.REMOVE_CATEGORY, (_, categoryId: string) => this.removeRecentProjectCategory(categoryId));
 	}
 
 	public getRecentProjects(): RecentProjectRoot {

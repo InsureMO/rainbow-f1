@@ -1,7 +1,7 @@
 import {app, BrowserWindow, ipcMain, Menu, nativeTheme} from 'electron';
 import {Theme, ThemeSource} from '../shared/types';
 import {openAboutWindow} from './about-window';
-import {store} from './events';
+import {theme as ThemeHelper} from './events';
 import {createProjectWindow} from './project-window';
 import {isMac} from './utils';
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
@@ -18,7 +18,7 @@ const createRecentProjectsMenu = () => {
 const createThemeChangeMenuHandler = (source: ThemeSource) => {
 	return () => {
 		nativeTheme.themeSource = source;
-		store.setTheme(source);
+		ThemeHelper.setTheme(source);
 		ipcMain.emit(Theme.EVENT_NAME, source);
 	};
 };
@@ -56,7 +56,7 @@ export const createEditMenu = (should: boolean) => {
 
 export const createWindowMenu = (should: boolean) => {
 	if (should) {
-		const theme = store.getTheme();
+		const theme = ThemeHelper.getTheme();
 
 		return [{
 			label: 'Window',

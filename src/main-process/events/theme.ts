@@ -1,11 +1,11 @@
 import {ipcMain, nativeTheme} from 'electron';
-import {StoreEvent, Theme, ThemeSource} from '../../shared/types';
+import {Theme, ThemeEvent, ThemeSource} from '../../shared/types';
 import store, {StoreKey} from './store';
 
 class ApplicationTheme {
 	constructor() {
 		nativeTheme.themeSource = this.getTheme();
-		ipcMain.on(StoreEvent.GET_THEME, (event) => event.returnValue = this.getTheme());
+		ipcMain.on(ThemeEvent.GET, (event) => event.returnValue = this.getTheme());
 	}
 
 	public getTheme(): ThemeSource {

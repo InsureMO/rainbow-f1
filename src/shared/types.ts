@@ -13,6 +13,10 @@ export enum Theme {
 
 export type ThemeSource = Exclude<Theme, Theme.EVENT_NAME>;
 
+export enum ThemeEvent {
+	GET = 'theme-get',
+}
+
 export interface RecentProject {
 	id: string;
 	name: string;
@@ -45,22 +49,21 @@ export interface RecentProjectRoot extends RecentProjectHolder {
 	id: typeof RecentProjectRootId;
 }
 
+export enum RecentProjectsEvent {
+	GET_ALL = 'recent-projects-get-all',
+	ADD_PROJECT = 'recent-projects-add-project',
+	RENAME_PROJECT = 'recent-projects-rename-project',
+	REMOVE_PROJECT = 'recent-projects-remove-project',
+	ADD_CATEGORY = 'recent-projects-add-category',
+	RENAME_CATEGORY = 'recent-projects-rename-category',
+	MOVE_CATEGORY = 'recent-projects-move-category',
+	REMOVE_CATEGORY = 'recent-projects-remove-category',
+	CLEAR_ALL = 'recent-projects-clear-all',
+}
+
 export enum StoreEvent {
-	// store getter/setter
-	GET_FROM_STORE = 'get-from-store',
-	SET_TO_STORE = 'set-to-store',
-	// theme
-	GET_THEME = 'get-theme',
-	// recent projects
-	GET_RECENT_PROJECTS = 'get-recent-projects',
-	ADD_RECENT_PROJECT = 'add-recent-project',
-	RENAME_RECENT_PROJECT = 'rename-recent-project',
-	REMOVE_RECENT_PROJECT = 'remove-recent-project',
-	CLEAR_RECENT_PROJECTS = 'clear-recent-projects',
-	ADD_RECENT_PROJECT_CATEGORY = 'add-recent-project-category',
-	RENAME_RECENT_PROJECT_CATEGORY = 'rename-recent-project-category',
-	MOVE_RECENT_PROJECT_CATEGORY = 'move-recent-project-category',
-	REMOVE_RECENT_PROJECT_CATEGORY = 'remove-recent-project-category',
+	GET = 'store-get',
+	SET = 'store-set',
 }
 
 export type ContextMenuTemplateItem = Omit<MenuItemConstructorOptions, 'submenu' | 'click'> & {
@@ -71,7 +74,7 @@ export type ContextMenuTemplateItem = Omit<MenuItemConstructorOptions, 'submenu'
 export type ContextMenu = Array<ContextMenuTemplateItem>;
 
 export enum ContextMenuEvent {
-	SHOW = 'show-context-menu',
+	SHOW = 'context-menu-show',
 	CLICKED = 'context-menu-clicked',
 	WILL_CLOSE = 'context-menu-will-close'
 }
@@ -80,7 +83,7 @@ export type OpenDialogOptions = DialogOpenOptions;
 export type OpenDialogResult = OpenDialogReturnValue;
 
 export enum DialogEvent {
-	OPEN = 'open-dialog'
+	OPEN = 'dialog-open'
 }
 
 export interface FileSystemOperationResult<R> {
@@ -115,7 +118,7 @@ export interface F1ProjectCreated {
 }
 
 export enum F1ProjectEvent {
-	CREATE = 'create-f1-project',
+	CREATE = 'f1-project-create',
 }
 
 export interface CommandLine {
