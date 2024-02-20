@@ -22,7 +22,7 @@ export const createProjectWindow = (options: {
 		center: true,
 		// parent,
 		show: false,
-		alwaysOnTop: !dev,
+		// alwaysOnTop: !dev,
 		webPreferences: {preload: path.join(__dirname, 'preload.js')}
 	});
 	// and load the splash.html of the app.

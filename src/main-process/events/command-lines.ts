@@ -1,5 +1,6 @@
 import {spawnSync} from 'child_process';
 import {ipcMain} from 'electron';
+import log from 'electron-log/main';
 import {CommandLine, CommandLines, CommandLinesEvent} from '../../shared/types';
 import {isNotBlank, isWin} from '../utils';
 
@@ -22,6 +23,7 @@ class ApplicationCommandLines {
 				return stdout;
 			}
 		} else {
+			log.error(`Failed to get version for [${command}] with args ${args.join(', ')}.`, result.error, result.stderr);
 			return (void 0);
 		}
 	}
@@ -34,6 +36,7 @@ class ApplicationCommandLines {
 				if (result.error == null && result.stdout != null && result.stdout.trim().length !== 0 && !result.stdout.includes(' cannot find ')) {
 					return command;
 				} else {
+					log.error(`Failed to locate command [${command}] by "type".`, result.error, result.stderr);
 					return (void 0);
 				}
 			} else {
@@ -47,6 +50,7 @@ class ApplicationCommandLines {
 						return stdout;
 					}
 				} else {
+					log.error(`Failed to locate command [${command}] by "where".`, result.error, result.stderr);
 					return (void 0);
 				}
 			}
@@ -60,6 +64,7 @@ class ApplicationCommandLines {
 					return stdout;
 				}
 			} else {
+				log.error(`Failed to locate command [${command}] by "which".`, result.error, result.stderr);
 				return (void 0);
 			}
 		}

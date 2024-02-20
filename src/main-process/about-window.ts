@@ -8,7 +8,7 @@ export const openAboutWindow = (parent: BrowserWindow) => {
 		width: 640,
 		height: 480,
 		frame: true,
-		alwaysOnTop: true,
+		// alwaysOnTop: true,
 		resizable: false,
 		modal: true,
 		minimizable: false,
