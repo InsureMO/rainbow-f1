@@ -69,7 +69,6 @@ export const GlobalStyles: any = createGlobalStyle`
         --d9-form-cell-invalid-message-font-weight: 600;
         --d9-form-cell-invalid-message-color: var(--d9-danger-color);
 
-
         color: var(--f1-font-color);
         background-color: var(--f1-background-color);
     }

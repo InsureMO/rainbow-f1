@@ -6,6 +6,7 @@ import {isNotBlank, isWin} from '../utils';
 class ApplicationCommandLines {
 	constructor() {
 		ipcMain.on(CommandLinesEvent.COMMANDS, (event, commandLines?: CommandLines) => event.returnValue = this.commands(commandLines));
+		ipcMain.on(CommandLinesEvent.VERSION, (event, _key: keyof CommandLines, path: string) => event.returnValue = this.getVersion(path, '-v'));
 	}
 
 	protected getVersion(command: string, ...args: Array<string>): string | undefined {

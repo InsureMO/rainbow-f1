@@ -54,9 +54,11 @@ export const BasicSettings = (props: { project: F1ProjectSettings }) => {
 
 		project.directory = result.filePaths[0];
 		const message = validateProjectDirectory(project.directory);
-		setState(state => ({...state, directoryMessage: message}));
 		if (VUtils.isEmpty(project.name) && message == null) {
 			project.name = window.electron.path.basename(project.directory);
+			setState(state => ({...state, nameMessage: (void 0), directoryMessage: (void 0)}));
+		} else {
+			setState(state => ({...state, directoryMessage: message}));
 		}
 	};
 

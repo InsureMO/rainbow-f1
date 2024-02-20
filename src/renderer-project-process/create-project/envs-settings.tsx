@@ -1,82 +1,120 @@
 import {VUtils} from '@rainbow-d9/n1';
-import {ButtonFill, ButtonInk, UnwrappedButton, UnwrappedCaption, UnwrappedDecorateInput} from '@rainbow-d9/n2';
-import {useEffect, useState} from 'react';
+import {ButtonFill, ButtonInk, UnwrappedButton, UnwrappedCaption} from '@rainbow-d9/n2';
+import {useState} from 'react';
+import {InvalidMessage} from '../../renderer-common/widgets';
+import {MIN_NODE_VERSION, MIN_NPM_VERSION, RECOMMENDED_YARN_VERSION} from '../../shared/consts';
 import {F1ProjectSettings} from '../../shared/project-settings';
+import {CommandLine, CommandLines} from '../../shared/types';
 import {ProjectModuleBase} from './types';
 import {useModuleValidate} from './use-module-validate';
-import {ModuleSettingsContainer, ModuleSettingsTitle} from './widgets';
+import {validateEnvCli} from './utils';
+import {CliInput, EnvDescription, ModuleSettingsContainer, ModuleSettingsTitle, VersionLabel} from './widgets';
 
 interface EnvsSettingsState {
-	initialized: boolean;
+	nodeMessage?: string;
+	npmMessage?: string;
+	yarnMessage?: string;
+	voltaMessage?: string;
 }
 
 export const EnvsSettings = (props: { project: F1ProjectSettings }) => {
 	const {project} = props;
 
-	const [state, setState] = useState<EnvsSettingsState>({initialized: false});
-	useEffect(() => {
-		if (state.initialized) {
-			return;
-		}
-		const commands = window.electron.cli.commands(project.envs?.cli);
-		if (project.envs == null) {
-			project.envs = {};
-		}
-		project.envs.cli = commands;
-		setState({initialized: true});
-	}, [state.initialized]);
+	const [state, setState] = useState<EnvsSettingsState>({});
 
 	useModuleValidate({
 		base: ProjectModuleBase.BASIC, index: 0, validate: async () => {
+			const messages = [
+				'node', 'npm', 'yarn', 'volta'
+			].map(key => {
+				const k = key as keyof CommandLines;
+				const [version, message] = validateEnvCli(k, project.envs?.cli?.[k]);
+				return {k, version, message};
+			}).reduce((state, {k: key, message}) => {
+				state[`${key}Message`] = message;
+				return state;
+			}, {} as Omit<EnvsSettingsState, 'initialized'>);
+			setState(state => ({...state, ...messages}));
 		}
 	});
 
-	const onDirClicked = () => {
-		// const result = window.electron.dialog.open({
-		// 	title: 'Select project directory',
-		// 	properties: ['openDirectory', 'dontAddToRecent', 'createDirectory'],
-		// 	buttonLabel: 'Select'
-		// });
-		// if (result.canceled) {
-		// 	return;
-		// }
-		//
-		// project.directory = result.filePaths[0];
-		// const message = validateProjectDirectory(project.directory);
-		// setState(state => ({...state, directoryMessage: message}));
-		// if (VUtils.isEmpty(project.name) && message == null) {
-		// 	project.name = window.electron.path.basename(project.directory);
-		// }
+	const onDirClicked = (options: { title: string, set: (path: string) => void }) => () => {
+		const {title, set} = options;
+		const result = window.electron.dialog.open({
+			title, properties: ['openFile', 'dontAddToRecent', 'showHiddenFiles'], buttonLabel: 'Select'
+		});
+		if (result.canceled) {
+			return;
+		}
+
+		set(result.filePaths[0]);
+	};
+
+	const createSet = (key: keyof CommandLines) => {
+		return (path: string) => {
+			if (project.envs == null) {
+				project.envs = {cli: {[key]: {exists: false}}};
+			} else if (project.envs.cli == null) {
+				project.envs.cli = {[key]: {exists: false}};
+			} else if (project.envs.cli[key] == null) {
+				project.envs.cli[key] = {exists: false};
+			}
+			project.envs.cli[key].command = path;
+			const [version, message] = validateEnvCli(key, project.envs.cli[key]);
+			if (version != null) {
+				project.envs.cli[key].version = version;
+				project.envs.cli[key].exists = true;
+			} else {
+				delete project.envs.cli[key].version;
+				project.envs.cli[key].exists = false;
+			}
+			setState(state => ({...state, [`${key}Message`]: message}));
+		};
+	};
+
+	const tails = (options: {
+		cli?: CommandLine, title: string, set: (path: string) => void
+	}) => {
+		const {cli, title, set} = options;
+		const onClicked = onDirClicked({title, set});
+		return [
+			<VersionLabel>{cli?.version}</VersionLabel>,
+			<UnwrappedButton onClick={onClicked} fill={ButtonFill.PLAIN} ink={ButtonInk.PRIMARY}
+			                 tails={['$icons.f1FolderClosedEmpty']}/>
+		];
+	};
+
+	const createCliInput = (key: keyof CommandLines) => {
+		return <>
+			<CliInput onValueChange={VUtils.noop} value={project.envs?.cli?.[key]?.command ?? ''}
+			          data-di-columns-10 data-di-dir readOnly
+			          tails={tails({
+				          cli: project.envs?.cli?.[key],
+				          title: `Select ${key} executive file`,
+				          set: createSet(key)
+			          })}/>
+			{state[`${key}Message`] != null
+				? <InvalidMessage data-column-3 data-columns-10>{state[`${key}Message`]}</InvalidMessage>
+				: null}
+		</>;
 	};
 
 	return <ModuleSettingsContainer>
 		<ModuleSettingsTitle>Environment Settings</ModuleSettingsTitle>
 		<UnwrappedCaption data-columns-2>Node:</UnwrappedCaption>
-		<UnwrappedDecorateInput onValueChange={VUtils.noop} value={project.envs?.cli?.node?.command ?? ''}
-		                        data-di-columns-10 data-di-dir readOnly
-		                        tails={[<UnwrappedButton onClick={onDirClicked} fill={ButtonFill.PLAIN}
-		                                                 ink={ButtonInk.PRIMARY}
-		                                                 tails={['$icons.f1FolderClosedEmpty']}/>]}/>
-		{/*{state.nameMessage != null*/}
-		{/*	? <InvalidMessage data-column-3 data-columns-10>{state.nameMessage}</InvalidMessage>*/}
-		{/*	: null}*/}
+		{createCliInput('node')}
 		<UnwrappedCaption data-columns-2>Npm:</UnwrappedCaption>
-		<UnwrappedDecorateInput onValueChange={VUtils.noop} value={project.envs?.cli?.npm?.command ?? ''}
-		                        data-di-columns-10 data-di-dir readOnly
-		                        tails={[<UnwrappedButton onClick={onDirClicked} fill={ButtonFill.PLAIN}
-		                                                 ink={ButtonInk.PRIMARY}
-		                                                 tails={['$icons.f1FolderClosedEmpty']}/>]}/>
+		{createCliInput('npm')}
 		<UnwrappedCaption data-columns-2>Yarn:</UnwrappedCaption>
-		<UnwrappedDecorateInput onValueChange={VUtils.noop} value={project.envs?.cli?.yarn?.command ?? ''}
-		                        data-di-columns-10 data-di-dir readOnly
-		                        tails={[<UnwrappedButton onClick={onDirClicked} fill={ButtonFill.PLAIN}
-		                                                 ink={ButtonInk.PRIMARY}
-		                                                 tails={['$icons.f1FolderClosedEmpty']}/>]}/>
+		{createCliInput('yarn')}
 		<UnwrappedCaption data-columns-2>Volta:</UnwrappedCaption>
-		<UnwrappedDecorateInput onValueChange={VUtils.noop} value={project.envs?.cli?.volta?.command ?? ''}
-		                        data-di-columns-10 data-di-dir readOnly
-		                        tails={[<UnwrappedButton onClick={onDirClicked} fill={ButtonFill.PLAIN}
-		                                                 ink={ButtonInk.PRIMARY}
-		                                                 tails={['$icons.f1FolderClosedEmpty']}/>]}/>
+		{createCliInput('volta')}
+		<EnvDescription>
+			All <span data-name="">@rainbow-d9</span> and <span data-name="">@rainbow-o23</span> have been fully tested
+			on <span data-name="">node {MIN_NODE_VERSION}</span> and <span data-name="">npm {MIN_NPM_VERSION}</span>, so
+			we recommend that your project also be developed and run using the same environment versions. Additionally,
+			we recommend using <span data-name="">yarn {RECOMMENDED_YARN_VERSION}</span> for package management
+			and <span data-name="">Volta</span> for environment version management.
+		</EnvDescription>
 	</ModuleSettingsContainer>;
 };

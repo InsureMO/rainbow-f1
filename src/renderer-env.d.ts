@@ -65,6 +65,7 @@ declare global {
 
 	interface WindowElectronCommandLines {
 		commands: (commandLines?: CommandLines) => CommandLines;
+		version: (key: keyof CommandLines, path: string) => string | undefined;
 	}
 
 	interface WindowElectronHandler {

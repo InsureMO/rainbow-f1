@@ -126,5 +126,6 @@ export interface CommandLines {
 }
 
 export enum CommandLinesEvent {
-	COMMANDS = 'cli-commands'
+	COMMANDS = 'cli-commands',
+	VERSION = 'cli-version'
 }

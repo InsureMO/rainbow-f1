@@ -1,4 +1,4 @@
-import {DOM_KEY_WIDGET} from '@rainbow-d9/n2';
+import {DOM_KEY_WIDGET, UnwrappedDecorateInput} from '@rainbow-d9/n2';
 import styled from 'styled-components';
 
 export const CreateProjectContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-project-container'})`
@@ -255,5 +255,45 @@ export const ComponentDescription = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-comp
     > span[data-desc] > span[data-name] {
         font-weight: 500;
         color: var(--f1-primary-color);
+    }
+`;
+export const CliInput = styled(UnwrappedDecorateInput)`
+    > input {
+        border-right-color: transparent;
+    }
+
+    > span[data-w=d9-deco-tail]:nth-child(2) {
+        border-left: 0;
+        background-color: var(--f1-readonly-color);
+    }
+
+    > span[data-w=d9-deco-tail]:last-child {
+        z-index: 1;
+    }
+`;
+export const VersionLabel = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-version-label'})`
+    display: flex;
+    position: relative;
+    align-items: center;
+    padding: 0 8px;
+    font-size: 0.9em;
+    opacity: 0.5;
+
+    &:empty {
+        display: none;
+    }
+`;
+export const EnvDescription = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-env-description'})`
+    display: block;
+    position: relative;
+    grid-column: span 12;
+    line-height: 1.5;
+    padding: 8px 0;
+
+    > span[data-name] {
+        display: inline-flex;
+        font-weight: 500;
+        color: var(--f1-primary-color);
+        height: 24px;
     }
 `;

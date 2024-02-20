@@ -1,5 +1,8 @@
 import {VUtils} from '@rainbow-d9/n1';
+import {isBlank} from '../../main-process/utils';
+import {isNodeVersionValid, isNpmVersionValid, MIN_NODE_VERSION, MIN_NPM_VERSION} from '../../shared/consts';
 import {D9ModuleSettings, F1ProjectSettings, O23ModuleSettings} from '../../shared/project-settings';
+import {CommandLine, CommandLines} from '../../shared/types';
 import {ProjectModuleBase} from './types';
 
 export const createD9ModuleSettings = (): D9ModuleSettings => {
@@ -21,7 +24,8 @@ export const createO23ModuleSettings = (): O23ModuleSettings => {
 		name: 'awesome-o23',
 		dependencies: {
 			'@rainbow-o23/n90': true,
-			'@rainbow-o23/n91': false
+			'@rainbow-o23/n91': false,
+			'@rainbow-o23/n92': false
 		}
 	};
 };
@@ -29,6 +33,7 @@ export const createO23ModuleSettings = (): O23ModuleSettings => {
 export const createF1ProjectSettings = (): F1ProjectSettings => {
 	return {
 		name: '',
+		envs: {cli: window.electron.cli.commands()},
 		d9: [createD9ModuleSettings()],
 		o23: [createO23ModuleSettings()]
 	};
@@ -96,10 +101,40 @@ export const validateModuleNameDuplication = (options: {
 	}
 };
 
-export const validateD9N3N5 = (n3?: boolean, n5?: boolean) => {
+export const validateD9N3N5 = (n3?: boolean, n5?: boolean): string | undefined => {
 	if (n3 !== true && n5 !== true) {
 		return 'Select at least one between @rainbow-d9/n3 and @rainbow-d9/n5.';
 	} else {
 		return (void 0);
+	}
+};
+
+export const validateEnvCli = (key: keyof CommandLines, cli?: CommandLine): [string | undefined, string | undefined] => {
+	if (cli == null || isBlank(cli.command)) {
+		if (['node', 'npm'].includes(key)) {
+			return [(void 0), `Please select the executive file for ${key}.`];
+		} else {
+			return [(void 0), (void 0)];
+		}
+	} else {
+		const version = window.electron.cli.version(key, cli.command);
+		if (version != null) {
+			switch (key) {
+				case 'node':
+					if (!isNodeVersionValid(version)) {
+						return [version, `Invalid executive file for node, please use a version above ${MIN_NODE_VERSION}.`];
+					}
+					break;
+				case 'npm':
+					if (!isNpmVersionValid(version)) {
+						return [version, `Invalid executive file for npm, please use a version above ${MIN_NPM_VERSION}.`];
+					}
+					break;
+				default:
+					return [version, (void 0)];
+			}
+		} else {
+			return [(void 0), `Invalid executive file for ${key}, no version information detected.`];
+		}
 	}
 };

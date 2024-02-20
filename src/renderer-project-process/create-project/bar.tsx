@@ -10,10 +10,12 @@ import {
 import {useNavigate} from 'react-router-dom';
 import {ButtonBarSpacer} from '../../renderer-common/widgets';
 import {F1ProjectSettings} from '../../shared/project-settings';
+import {CommandLines} from '../../shared/types';
 import {CreateProjectEventTypes, useCreateProjectEventBus} from './event-bus';
 import {ProjectModuleBase} from './types';
 import {
 	validateD9N3N5,
+	validateEnvCli,
 	validateModuleName,
 	validateModuleNameDuplication,
 	validateProjectDirectory,
@@ -47,7 +49,16 @@ export const Bar = (props: { settings: F1ProjectSettings }) => {
 					() => validateModuleName(o23.name),
 					() => validateModuleNameDuplication({settings, base: ProjectModuleBase.O23, index})
 				].map(validate => ({validate, base: ProjectModuleBase.O23, index}));
-			}).flat()
+			}).flat(),
+			...[
+				'node', 'npm', 'yarn', 'volta'
+			].map(key => {
+				return () => {
+					const k = key as keyof CommandLines;
+					const [, message] = validateEnvCli(k, settings.envs?.cli?.[k]);
+					return message;
+				};
+			}).map(validate => ({validate, base: ProjectModuleBase.ENVS, index: 0}))
 		];
 		for (let {validate, base, index} of rules) {
 			const message = validate();
@@ -55,6 +66,7 @@ export const Bar = (props: { settings: F1ProjectSettings }) => {
 				global.fire(GlobalEventTypes.SHOW_ALERT, <AlertLabel>{message}</AlertLabel>, () => {
 					fire(CreateProjectEventTypes.ACTIVE_AND_VALIDATE, base, index);
 				});
+				break;
 			}
 		}
 
