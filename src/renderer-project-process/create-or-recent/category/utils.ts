@@ -1,5 +1,5 @@
 import {nanoid} from 'nanoid';
-import {RecentProjectCategory, RecentProjectHolder} from '../../../shared/types';
+import {RecentProjectCategory, RecentProjectHolder} from '../../../shared';
 import {RecentProjectCategoryCandidate} from './types';
 
 export const transformCategoriesToMap = (parent: RecentProjectHolder): Record<string, RecentProjectHolder> => {

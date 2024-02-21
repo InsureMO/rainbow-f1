@@ -1,4 +1,3 @@
-import {Icons} from '@rainbow-d9/n2';
 import React, {SVGProps} from 'react';
 
 export const FolderOpen = (props: Omit<SVGProps<SVGSVGElement>, 'xmlns' | 'viewBox'>) => {

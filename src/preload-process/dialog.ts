@@ -1,5 +1,5 @@
 import {ipcRenderer} from 'electron';
-import {DialogEvent, OpenDialogOptions, OpenDialogResult} from '../shared/types';
+import {DialogEvent, OpenDialogOptions, OpenDialogResult} from '../shared';
 
 export const DialogHandlers: WindowElectronDialog = {
 	open: (options: OpenDialogOptions): OpenDialogResult => {

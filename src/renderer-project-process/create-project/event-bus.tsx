@@ -1,6 +1,6 @@
 import {useCreateEventBus} from '@rainbow-d9/n1';
 import {createContext, ReactNode, useContext} from 'react';
-import {F1ModuleSettings} from '../../shared/project-settings';
+import {F1ModuleSettings} from '../../shared';
 import {ProjectModuleBase} from './types';
 
 export enum CreateProjectEventTypes {

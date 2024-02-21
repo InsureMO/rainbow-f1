@@ -1,4 +1,4 @@
-import {ContextMenuTemplateItem} from '../../shared/types';
+import {ContextMenuTemplateItem} from '../../shared';
 
 export interface ContextMenuItem extends Omit<ContextMenuTemplateItem, 'submenu'> {
 	invoke?: () => void;

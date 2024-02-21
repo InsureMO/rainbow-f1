@@ -2,9 +2,14 @@ import {VUtils} from '@rainbow-d9/n1';
 import {ButtonFill, ButtonInk, UnwrappedButton, UnwrappedCaption} from '@rainbow-d9/n2';
 import {useState} from 'react';
 import {InvalidMessage} from '../../renderer-common/widgets';
-import {MIN_NODE_VERSION, MIN_NPM_VERSION, RECOMMENDED_YARN_VERSION} from '../../shared/consts';
-import {F1ProjectSettings} from '../../shared/project-settings';
-import {CommandLine, CommandLines} from '../../shared/types';
+import {
+	CommandLine,
+	CommandLines,
+	F1ProjectSettings,
+	MIN_NODE_VERSION,
+	MIN_NPM_VERSION,
+	RECOMMENDED_YARN_VERSION
+} from '../../shared';
 import {ProjectModuleBase} from './types';
 import {useModuleValidate} from './use-module-validate';
 import {validateEnvCli} from './utils';

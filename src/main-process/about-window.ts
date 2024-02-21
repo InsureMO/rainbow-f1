@@ -1,6 +1,7 @@
 import {BrowserWindow, Menu} from 'electron';
 import path from 'path';
 import {isDev} from './utils';
+import WindowManager, {WindowType} from './window-manager';
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 
 export const openAboutWindow = (parent: BrowserWindow) => {
@@ -17,7 +18,9 @@ export const openAboutWindow = (parent: BrowserWindow) => {
 		// parent,
 		webPreferences: {preload: path.join(__dirname, 'preload.js')}
 	});
-	// and load the splash.html of the app.
+	WindowManager.register(window, WindowType.ABOUT);
+
+	// and load the about.html of the app.
 	if (isDev()) {
 		// noinspection JSIgnoredPromiseFromCall
 		window.loadURL(`${MAIN_WINDOW_VITE_DEV_SERVER_URL}/about.html`);

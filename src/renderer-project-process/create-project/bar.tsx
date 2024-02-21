@@ -9,8 +9,7 @@ import {
 } from '@rainbow-d9/n2';
 import {useNavigate} from 'react-router-dom';
 import {ButtonBarSpacer} from '../../renderer-common/widgets';
-import {F1ProjectSettings} from '../../shared/project-settings';
-import {CommandLines} from '../../shared/types';
+import {CommandLines, F1ProjectSettings} from '../../shared';
 import {CreateProjectEventTypes, useCreateProjectEventBus} from './event-bus';
 import {ProjectModuleBase} from './types';
 import {
@@ -70,8 +69,12 @@ export const Bar = (props: { settings: F1ProjectSettings }) => {
 			}
 		}
 
-		const created = await window.electron.f1.create(settings);
-		console.log(created);
+		const {success, project, message} = await window.electron.f1.create(settings);
+		if (!success) {
+			global.fire(GlobalEventTypes.SHOW_ALERT, <AlertLabel>{message}</AlertLabel>);
+		} else {
+			window.electron.f1.open(project);
+		}
 	};
 
 	return <UnwrappedButtonBar>

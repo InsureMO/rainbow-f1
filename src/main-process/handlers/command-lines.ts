@@ -1,8 +1,8 @@
 import {spawnSync} from 'child_process';
 import {ipcMain} from 'electron';
 import log from 'electron-log/main';
-import {CommandLine, CommandLines, CommandLinesEvent} from '../../shared/types';
-import {isNotBlank, isWin} from '../utils';
+import {CommandLine, CommandLines, CommandLinesEvent, isNotBlank} from '../../shared';
+import {isWin} from '../utils';
 
 class ApplicationCommandLines {
 	constructor() {
@@ -26,6 +26,22 @@ class ApplicationCommandLines {
 			log.error(`Failed to get version for [${command}] with args ${args.join(', ')}.`, result.error, result.stderr);
 			return (void 0);
 		}
+	}
+
+	public async nodeVersion(command: string): Promise<string | undefined> {
+		return await this.getVersion(command, '-v');
+	}
+
+	public async npmVersion(command: string): Promise<string | undefined> {
+		return await this.getVersion(command, '-v');
+	}
+
+	public async yarnVersion(command: string): Promise<string | undefined> {
+		return await this.getVersion(command, '-v');
+	}
+
+	public async voltaVersion(command: string): Promise<string | undefined> {
+		return await this.getVersion(command, '-v');
 	}
 
 	protected async getCommand(command: string): Promise<string | undefined> {

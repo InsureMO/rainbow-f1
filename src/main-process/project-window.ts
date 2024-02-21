@@ -2,6 +2,7 @@ import {BrowserWindow, Menu} from 'electron';
 import path from 'path';
 import {createDevMenu, createDevQuitMenu, createEditMenu, createWindowMenu} from './menu';
 import {isDev} from './utils';
+import WindowManager, {WindowType} from './window-manager';
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 
 export const createProjectWindow = (options: {
@@ -25,7 +26,9 @@ export const createProjectWindow = (options: {
 		// alwaysOnTop: !dev,
 		webPreferences: {preload: path.join(__dirname, 'preload.js')}
 	});
-	// and load the splash.html of the app.
+	WindowManager.register(window, WindowType.PROJECT);
+
+	// and load the project.html of the app.
 	if (dev) {
 		// noinspection JSIgnoredPromiseFromCall
 		window.loadURL(`${MAIN_WINDOW_VITE_DEV_SERVER_URL}/project.html`);

@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {F1ProjectSettings} from '../../shared/project-settings';
+import {F1ProjectSettings} from '../../shared';
 import {BasicSettings} from './basic-settings';
 import {D9Settings} from './d9-settings';
 import {EnvsSettings} from './envs-settings';
@@ -27,7 +27,7 @@ export const Content = (props: { settings: F1ProjectSettings }) => {
 					break;
 				case ProjectModuleBase.ENVS:
 					setState({base, index: 0, validate});
-					break
+					break;
 				case ProjectModuleBase.D9:
 					setState({base, index, validate});
 					break;

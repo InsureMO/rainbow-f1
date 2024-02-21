@@ -1,26 +1,28 @@
 import {BrowserWindow} from 'electron';
 import path from 'path';
+import {F1ProjectSettings} from '../shared';
 import {createAppMenu, createDockMenu} from './menu';
 import {isDev} from './utils';
+import WindowManager, {WindowType} from './window-manager';
 
-export const createMainWindow = (showImmediate: boolean): BrowserWindow => {
+export const createMainWindow = (project: F1ProjectSettings, showImmediate: boolean): BrowserWindow => {
 	// Create the browser window.
-	const mainWindow = new BrowserWindow({
+	const window = new BrowserWindow({
 		show: false,
 		icon: 'asserts/logo.png',
 		webPreferences: {preload: path.join(__dirname, 'preload.js')}
 	});
-	// mainWindow.maximize();
+	WindowManager.register(window, WindowType.MAIN);
 
 	// and load the index.html of the app
 	if (isDev()) {
 		// noinspection JSIgnoredPromiseFromCall
-		mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
+		window.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
 	} else {
 		// noinspection JSIgnoredPromiseFromCall
-		mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
+		window.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
 	}
-	mainWindow.on('focus', () => {
+	window.on('focus', () => {
 		createAppMenu();
 		createDockMenu();
 	});
@@ -28,10 +30,10 @@ export const createMainWindow = (showImmediate: boolean): BrowserWindow => {
 	if (showImmediate) {
 		// Open the DevTools.
 		// mainWindow.webContents.openDevTools();
-		mainWindow.once('ready-to-show', () => {
-			mainWindow.maximize();
-			mainWindow.show();
+		window.once('ready-to-show', () => {
+			window.maximize();
+			window.show();
 		});
 	}
-	return mainWindow;
+	return window;
 };

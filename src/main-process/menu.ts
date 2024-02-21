@@ -1,7 +1,7 @@
 import {app, BrowserWindow, ipcMain, Menu, nativeTheme} from 'electron';
-import {Theme, ThemeSource} from '../shared/types';
+import {Theme, ThemeSource} from '../shared';
 import {openAboutWindow} from './about-window';
-import {theme as ThemeHelper} from './events';
+import {theme as ThemeHelper} from './handlers';
 import {createProjectWindow} from './project-window';
 import {isMac} from './utils';
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;

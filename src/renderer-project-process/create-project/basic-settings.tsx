@@ -9,7 +9,7 @@ import {
 } from '@rainbow-d9/n2';
 import {useEffect, useRef, useState} from 'react';
 import {InvalidMessage} from '../../renderer-common/widgets';
-import {F1ProjectSettings} from '../../shared/project-settings';
+import {F1ProjectSettings} from '../../shared';
 import {ProjectModuleBase} from './types';
 import {useModuleValidate} from './use-module-validate';
 import {validateProjectDirectory, validateProjectName} from './utils';

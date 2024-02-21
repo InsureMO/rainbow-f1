@@ -1,8 +1,17 @@
 import {VUtils} from '@rainbow-d9/n1';
-import {isBlank} from '../../main-process/utils';
-import {isNodeVersionValid, isNpmVersionValid, MIN_NODE_VERSION, MIN_NPM_VERSION} from '../../shared/consts';
-import {D9ModuleSettings, F1ProjectSettings, O23ModuleSettings} from '../../shared/project-settings';
-import {CommandLine, CommandLines} from '../../shared/types';
+
+import {
+	CommandLine,
+	CommandLines,
+	D9ModuleSettings,
+	F1ProjectSettings,
+	isBlank,
+	isNodeVersionValid,
+	isNpmVersionValid,
+	MIN_NODE_VERSION,
+	MIN_NPM_VERSION,
+	O23ModuleSettings
+} from '../../shared';
 import {ProjectModuleBase} from './types';
 
 export const createD9ModuleSettings = (): D9ModuleSettings => {
@@ -66,8 +75,8 @@ export const validateProjectDirectory = (directory?: string): string | undefined
 export const validateModuleName = (name?: string): string | undefined => {
 	if (VUtils.isBlank(name)) {
 		return 'Please fill in the module name.';
-	} else if (/[\\\/]/.test(name)) {
-		return 'Module name cannot contain / or \\.';
+	} else if (/[\\\/\s<>:"'`|?*]/.test(name)) {
+		return 'Module name cannot contain any of /, \\, <, >, :, ", \', `, |, ?, * or whitespace.';
 	} else {
 		return (void 0);
 	}
@@ -113,7 +122,7 @@ export const validateD9N3N5 = (n3?: boolean, n5?: boolean): string | undefined =
 };
 
 export const validateEnvCli = async (key: keyof CommandLines, cli?: CommandLine): Promise<[string | undefined, string | undefined]> => {
-	if (cli == null || isBlank(cli.command)) {
+	if (isBlank(cli?.command)) {
 		if (['node', 'npm'].includes(key)) {
 			return [(void 0), `Please select the executive file for ${key}.`];
 		} else {

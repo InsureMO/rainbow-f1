@@ -1,6 +1,6 @@
 import {ipcMain} from 'electron';
-import * as p from 'path';
-import {FileSystemOperationResult, PathEvent} from '../../shared/types';
+import p from 'path';
+import {FileSystemOperationResult, PathEvent} from '../../shared';
 
 class ApplicationPath {
 	constructor() {

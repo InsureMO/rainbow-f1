@@ -8,3 +8,6 @@ export const isNodeVersionValid = (version: string) => {
 export const isNpmVersionValid = (version: string) => {
 	return version >= MIN_NPM_VERSION;
 };
+
+export const F1_PROJECT_FILE = '.f1.json';
+export const F1_PROJECT_WORKSPACE_FILE = 'package.json';

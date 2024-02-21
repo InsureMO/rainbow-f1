@@ -1,5 +1,5 @@
 import {ipcRenderer} from 'electron';
-import {RecentProject, RecentProjectCategory, RecentProjectsEvent, RecentProjectRoot} from '../shared/types';
+import {RecentProject, RecentProjectCategory, RecentProjectRoot, RecentProjectsEvent} from '../shared';
 
 export const RecentProjectsHandlers: WindowElectronRecentProjects = {
 	get: (): RecentProjectRoot => ipcRenderer.sendSync(RecentProjectsEvent.GET_ALL),

@@ -2,11 +2,12 @@ import {BrowserWindow, Menu} from 'electron';
 import path from 'path';
 import {createFirstWindow} from './first-window';
 import {isDev} from './utils';
+import WindowManager, {WindowType} from './window-manager';
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 
 export const createSplashWindow = () => {
-	const firstWindow = createFirstWindow(false);
-	const splashWindow = new BrowserWindow({
+	const firstWindows = createFirstWindow(false);
+	const window = new BrowserWindow({
 		width: 640,
 		height: 480,
 		frame: false,
@@ -15,22 +16,23 @@ export const createSplashWindow = () => {
 		resizable: false,
 		webPreferences: {preload: path.join(__dirname, 'preload.js')}
 	});
+	WindowManager.register(window, WindowType.SPLASH);
 
 	// and load the splash.html of the app.
 	if (isDev()) {
 		// noinspection JSIgnoredPromiseFromCall
-		splashWindow.loadURL(`${MAIN_WINDOW_VITE_DEV_SERVER_URL}/splash.html`);
+		window.loadURL(`${MAIN_WINDOW_VITE_DEV_SERVER_URL}/splash.html`);
 	} else {
 		// noinspection JSIgnoredPromiseFromCall
-		splashWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/splash.html`));
+		window.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/splash.html`));
 	}
 
 	const menuTemplate: Array<MenuItemConstructorOptions> = [];
 	const appMenu = Menu.buildFromTemplate(menuTemplate);
 	Menu.setApplicationMenu(appMenu);
-	splashWindow.center();
+	window.center();
 	setTimeout(() => {
-		splashWindow.close();
-		firstWindow.show();
+		window.close();
+		firstWindows.forEach(window => window.show());
 	}, 5000);
 };

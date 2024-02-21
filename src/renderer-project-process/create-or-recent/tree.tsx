@@ -3,7 +3,7 @@ import {GlobalEventTypes, TreeNodeDef, UnwrappedTree, useGlobalEventBus} from '@
 import {MouseEvent} from 'react';
 import {ContextMenuItem, showContextMenu} from '../../renderer-common/context-menu';
 import {EllipsisVertical, FolderClosed, FolderClosedEmpty, FolderOpen} from '../../renderer-common/icons';
-import {RecentProject, RecentProjectCategory, RecentProjectHolder, RecentProjectRoot} from '../../shared/types';
+import {RecentProject, RecentProjectCategory, RecentProjectHolder, RecentProjectRoot} from '../../shared';
 import {useCategory} from './category';
 import {RecentProjectsEventTypes, useRecentProjectsEventBus} from './event-bus';
 

@@ -1,5 +1,5 @@
 import {ipcMain, nativeTheme} from 'electron';
-import {Theme, ThemeEvent, ThemeSource} from '../../shared/types';
+import {Theme, ThemeEvent, ThemeSource} from '../../shared';
 import store, {StoreKey} from './store';
 
 class ApplicationTheme {

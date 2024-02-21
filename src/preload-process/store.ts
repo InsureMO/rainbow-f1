@@ -1,5 +1,5 @@
 import {ipcRenderer} from 'electron';
-import {StoreEvent} from '../shared/types';
+import {StoreEvent} from '../shared';
 
 export const StoreHandlers: WindowElectronStore = {
 	get: (key: string): any => ipcRenderer.sendSync(StoreEvent.GET, key),

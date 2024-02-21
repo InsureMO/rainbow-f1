@@ -1,5 +1,5 @@
 import {ipcRenderer} from 'electron';
-import {FileSystemEvent} from '../shared/types';
+import {FileSystemEvent} from '../shared';
 
 export const FileSystemHandlers: WindowElectronFileSystem = {
 	exists: (path: string) => ipcRenderer.sendSync(FileSystemEvent.EXISTS, path),

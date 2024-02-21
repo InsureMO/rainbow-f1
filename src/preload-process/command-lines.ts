@@ -1,5 +1,5 @@
 import {ipcRenderer} from 'electron';
-import {CommandLines, CommandLinesEvent} from '../shared/types';
+import {CommandLines, CommandLinesEvent} from '../shared';
 
 export const CommandLinesHandlers: WindowElectronCommandLines = {
 	commands: (commandLines?: CommandLines): Promise<CommandLines> => ipcRenderer.invoke(CommandLinesEvent.COMMANDS, commandLines),

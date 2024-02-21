@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {InvalidMessage} from '../../renderer-common/widgets';
-import {D9ModuleDependencies, D9ModuleSettings, F1ProjectSettings} from '../../shared/project-settings';
+import {D9ModuleDependencies, D9ModuleSettings, F1ProjectSettings} from '../../shared';
 import {Component} from './component';
 import {ModuleSettings} from './module-settings';
 import {ModuleSettingsState, ProjectModuleBase} from './types';

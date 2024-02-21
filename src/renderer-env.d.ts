@@ -1,13 +1,16 @@
-import {ContextMenu, RecentProject, RecentProjectCategory, RecentProjectRoot} from './shared/constants';
-import {F1ProjectSettings} from './shared/project-settings';
 import {
 	CommandLines,
+	ContextMenu,
 	F1ProjectCreated,
+	F1ProjectSettings,
 	FileSystemBooleanResult,
 	OpenDialogOptions,
 	OpenDialogResult,
+	RecentProject,
+	RecentProjectCategory,
+	RecentProjectRoot,
 	ThemeSource
-} from './shared/types';
+} from './shared';
 
 declare global {
 	interface WindowElectronVersions {
@@ -49,7 +52,9 @@ declare global {
 	}
 
 	interface WindowElectronF1Project {
-		create(options: F1ProjectSettings): Promise<F1ProjectCreated>;
+		create(settings: F1ProjectSettings): Promise<F1ProjectCreated>;
+
+		open(settings: F1ProjectSettings): void;
 	}
 
 	interface WindowElectronFileSystem {

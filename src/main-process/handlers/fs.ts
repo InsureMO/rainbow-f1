@@ -1,6 +1,6 @@
 import {ipcMain} from 'electron';
 import * as fs from 'fs';
-import {FileSystemBooleanResult, FileSystemEvent, FileSystemOperationResult} from '../../shared/types';
+import {FileSystemBooleanResult, FileSystemEvent, FileSystemOperationResult} from '../../shared';
 
 class ApplicationFileSystem {
 	constructor() {
@@ -43,11 +43,15 @@ class ApplicationFileSystem {
 
 	public mkdir(directory: string): FileSystemBooleanResult {
 		return this.invalidOr(directory, () => {
-			if (fs.lstatSync(directory).isDirectory()) {
+			if (fs.existsSync(directory) && fs.lstatSync(directory).isDirectory()) {
 				return {success: true, ret: true};
 			}
-			fs.mkdirSync(directory, {recursive: true});
-			return {success: true, ret: true};
+			try {
+				fs.mkdirSync(directory, {recursive: true});
+				return {success: true, ret: true};
+			} catch (e) {
+				return {success: true, ret: false, message: e.message};
+			}
 		});
 	}
 
@@ -56,9 +60,25 @@ class ApplicationFileSystem {
 			if (fs.existsSync(path) && fs.lstatSync(path).isFile()) {
 				return {success: false, ret: false, message: 'File already exists.'};
 			}
-			fs.writeFileSync(path, content);
-			return {success: true, ret: true};
+			try {
+				fs.writeFileSync(path, content);
+				return {success: true, ret: true};
+			} catch (e) {
+				return {success: false, ret: false, message: e.message};
+			}
 		});
+	}
+
+	/**
+	 * read given file to json format, use u8. return undefined when file not found or not valid json
+	 */
+	public readJSON<T>(file: string): T | undefined {
+		try {
+			const content = fs.readFileSync(file, {encoding: 'utf-8'});
+			return JSON.parse(content);
+		} catch {
+			return (void 0);
+		}
 	}
 }
 

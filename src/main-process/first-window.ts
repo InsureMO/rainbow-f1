@@ -1,11 +1,12 @@
-import {recentProjects} from './events';
+import {recentProjects} from './handlers';
 import {createMainWindow} from './main-window';
 import {createProjectWindow} from './project-window';
 
 export const createFirstWindow = (showImmediate: boolean) => {
-	if (recentProjects.hasLastProject()) {
-		return createMainWindow(showImmediate);
+	const lastProjects = recentProjects.getLastProjects();
+	if (lastProjects.length !== 0) {
+		return lastProjects.map(project => createMainWindow(project, showImmediate));
 	} else {
-		return createProjectWindow({showImmediate});
+		return [createProjectWindow({showImmediate})];
 	}
 };

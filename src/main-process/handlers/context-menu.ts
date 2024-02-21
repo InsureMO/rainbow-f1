@@ -1,5 +1,5 @@
 import {BrowserWindow, ipcMain, Menu} from 'electron';
-import {ContextMenuEvent, ContextMenuTemplateItem} from '../../shared/types';
+import {ContextMenuEvent, ContextMenuTemplateItem} from '../../shared';
 import IpcMainEvent = Electron.IpcMainEvent;
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 

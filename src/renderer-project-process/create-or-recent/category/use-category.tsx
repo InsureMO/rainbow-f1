@@ -1,11 +1,6 @@
 import {DropdownOption, GlobalEventTypes, useGlobalEventBus} from '@rainbow-d9/n2';
 import {Fragment} from 'react';
-import {
-	RecentProjectCategory,
-	RecentProjectHolder,
-	RecentProjectRootId,
-	RecentProjectRootName
-} from '../../../shared/types';
+import {RecentProjectCategory, RecentProjectHolder, RecentProjectRootId, RecentProjectRootName} from '../../../shared';
 import {CategoryDialog} from './category-dialog';
 import {RecentProjectCategoryCandidate} from './types';
 import {transformCategoriesToMap, transformCategoriesToOptions} from './utils';
@@ -23,7 +18,6 @@ export interface CategoryOperation {
 
 export const useCategory = () => {
 	const {fire} = useGlobalEventBus();
-
 
 	const performCategoryOperation = (operation?: CategoryOperation) => {
 		const recentProjectsRoot = window.electron.recentProjects.get();

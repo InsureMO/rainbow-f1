@@ -1,6 +1,6 @@
 import {useForceUpdate, VUtils} from '@rainbow-d9/n1';
 import {useEffect, useState} from 'react';
-import {F1ModuleSettings, F1ProjectSettings} from '../../shared/project-settings';
+import {F1ModuleSettings, F1ProjectSettings} from '../../shared';
 import {CreateProjectEventTypes, useCreateProjectEventBus} from './event-bus';
 import {BaseState, ProjectModuleBase} from './types';
 import {CreateProjectBaseItem, CreateProjectSidebar} from './widgets';

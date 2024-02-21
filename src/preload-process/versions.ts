@@ -1,5 +1,5 @@
 import {ipcRenderer} from 'electron';
-import {VersionsEvent} from '../shared/types';
+import {VersionsEvent} from '../shared';
 
 export const Versions: WindowElectronVersions = {
 	chrome: process.versions.chrome,

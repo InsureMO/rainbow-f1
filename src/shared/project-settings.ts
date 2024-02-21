@@ -1,4 +1,4 @@
-import {CommandLines} from './types';
+import {CommandLines} from './command-lines';
 
 export interface F1ModuleSettings {
 	name: string;

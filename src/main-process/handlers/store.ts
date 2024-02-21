@@ -1,6 +1,6 @@
 import {ipcMain} from 'electron';
 import Store from 'electron-store';
-import {StoreEvent} from '../../shared/types';
+import {StoreEvent} from '../../shared';
 
 const store = new Store();
 

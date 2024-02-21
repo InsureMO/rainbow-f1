@@ -14,12 +14,7 @@ import {
 } from '@rainbow-d9/n2';
 import {useEffect, useRef, useState} from 'react';
 import {InvalidMessage} from '../../../renderer-common/widgets';
-import {
-	RecentProjectCategory,
-	RecentProjectHolder,
-	RecentProjectRoot,
-	RecentProjectRootId
-} from '../../../shared/types';
+import {RecentProjectCategory, RecentProjectHolder, RecentProjectRoot, RecentProjectRootId} from '../../../shared';
 import {RecentProjectsEventTypes, useRecentProjectsEventBus} from '../event-bus';
 import {RecentProjectCategoryCandidate} from './types';
 import {filterAvailableCategories, generateCategoryId} from './utils';

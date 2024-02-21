@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {D9ModuleDependencies, F1ProjectSettings, O23ModuleSettings} from '../../shared/project-settings';
+import {D9ModuleDependencies, F1ProjectSettings, O23ModuleSettings} from '../../shared';
 import {Component} from './component';
 import {ModuleSettings} from './module-settings';
 import {ModuleSettingsState, ProjectModuleBase} from './types';

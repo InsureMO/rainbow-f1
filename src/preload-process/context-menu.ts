@@ -1,7 +1,7 @@
 import IpcRendererEvent = Electron.IpcRendererEvent;
 import {ipcRenderer} from 'electron';
 import {EventEmitter} from 'events';
-import {ContextMenu, ContextMenuEvent} from '../shared/types';
+import {ContextMenu, ContextMenuEvent} from '../shared';
 
 class ContextMenuBridge {
 	private readonly _eventBus = new EventEmitter();

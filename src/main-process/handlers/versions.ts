@@ -1,5 +1,5 @@
 import {app, ipcMain} from 'electron';
-import {VersionsEvent} from '../../shared/types';
+import {VersionsEvent} from '../../shared';
 
 class ApplicationVersions {
 	constructor() {

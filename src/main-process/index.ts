@@ -1,6 +1,6 @@
 import log from 'electron-log/main';
 import fixPath from 'fix-path';
-import './events';
+import './handlers';
 
 // fix the $PATH on macOS/Linux
 fixPath();

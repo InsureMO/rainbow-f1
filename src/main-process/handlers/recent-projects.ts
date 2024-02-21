@@ -1,13 +1,16 @@
 import {ipcMain} from 'electron';
+import path from 'path';
 import {
+	F1_PROJECT_FILE,
+	F1ProjectSettings,
 	RecentProject,
 	RecentProjectCategory,
-	RecentProjectsEvent,
 	RecentProjectHolder,
 	RecentProjectRoot,
-	RecentProjectRootId
-} from '../../shared/types';
-import {isBlank} from '../utils';
+	RecentProjectRootId,
+	RecentProjectsEvent
+} from '../../shared';
+import fs from './fs';
 import store, {StoreKey} from './store';
 
 class ApplicationRecentProjects {
@@ -86,6 +89,13 @@ class ApplicationRecentProjects {
 			}
 			return (void 0);
 		}
+	}
+
+	protected findAllRecentProjects(ancestorOrParent: RecentProjectHolder): Array<RecentProject> {
+		return [
+			...(ancestorOrParent.projects || []),
+			...(ancestorOrParent.categories || []).map(c => this.findAllRecentProjects(c)).flat()
+		];
 	}
 
 	public renameRecentProject(projectId: string, newName: string): void {
@@ -179,20 +189,35 @@ class ApplicationRecentProjects {
 		store.set(StoreKey.RECENT_PROJECTS, root);
 	}
 
-	public hasLastProject(): boolean {
-		const lastProjectId = store.get(StoreKey.LAST_PROJECT) as string | undefined;
-		if (isBlank(lastProjectId)) {
-			return false;
+	public getLastProjects(): Array<F1ProjectSettings> {
+		const lastProjectIds = store.get(StoreKey.LAST_PROJECT) as Array<string> | undefined;
+		if (lastProjectIds == null || lastProjectIds.length === 0) {
+			return [];
 		}
 
 		const root = this.getRecentProjects();
-		const found = this.findRecentProject(root, lastProjectId);
-		if (found == null) {
+		const allProjects = this.findAllRecentProjects(root);
+		const projectMap = allProjects.reduce((map, project) => {
+			map[project.id] = project;
+			return map;
+		}, {} as Record<string, RecentProject>);
+		const found = lastProjectIds.map(lastProjectId => projectMap[lastProjectId]).filter(x => x != null);
+		if (found.length === 0) {
 			store.delete(StoreKey.LAST_PROJECT);
-			return false;
+			return [];
 		}
-		// TODO CHECK THE PROJECT CAN BE OPEN OR NOT
-		return true;
+
+		// check project files
+		return found.map(project => {
+			const directory = project.path;
+			const f1ProjectFile = path.resolve(directory, F1_PROJECT_FILE);
+			const exists = fs.exists(directory).ret && fs.exists(f1ProjectFile).ret;
+			if (!exists) {
+				return null;
+			}
+			const settings: F1ProjectSettings = (fs.readJSON(f1ProjectFile) ?? {}) as F1ProjectSettings;
+			settings.directory = directory;
+		}).filter(x => x != null);
 	}
 }
 
