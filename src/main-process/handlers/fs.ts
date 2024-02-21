@@ -116,6 +116,19 @@ class ApplicationFileSystem {
 		});
 	}
 
+	public createOrReplaceFile(path: string, content: string): FileSystemBooleanResult {
+		return this.invalidOr(path, () => {
+			try {
+				if (fs.existsSync(path) && fs.lstatSync(path).isFile()) {
+					fs.writeFileSync(path, content);
+				}
+				return {success: true, ret: true};
+			} catch (e) {
+				return {success: false, ret: false, message: e.message};
+			}
+		});
+	}
+
 	/**
 	 * read given file to json format, use u8. return undefined when file not found or not valid json
 	 */

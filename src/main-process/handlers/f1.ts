@@ -133,15 +133,20 @@ class ApplicationF1Project {
 			delete json.envs?.cli?.[key]?.version;
 			delete json.envs?.cli?.[key]?.exists;
 		});
-		// modules are not needed
-		delete json.d9;
-		delete json.o23;
+		// module dependencies are not needed, since they are in module package.json
+		// @ts-ignore
+		[...(json.d9 ?? []), ...(json.o23 ?? [])].forEach(module => module.dependencies = []);
 		return JSON.stringify(json, (_, value) => value == null ? (void 0) : value, '\t');
 	}
 
 	protected createF1ProjectFile(directory: string, settings: F1ProjectSettings) {
 		const f1JsonFile = path.resolve(directory, F1_PROJECT_FILE);
 		fs.createFile(f1JsonFile, this.createF1ProjectFileContent(settings));
+	}
+
+	protected replaceF1ProjectFile(directory: string, settings: F1ProjectSettings) {
+		const f1JsonFile = path.resolve(directory, F1_PROJECT_FILE);
+		fs.createOrReplaceFile(f1JsonFile, this.createF1ProjectFileContent(settings));
 	}
 
 	protected createF1ProjectWorkspaceFileContent(settings: F1ProjectSettings): string {
@@ -276,6 +281,8 @@ class ApplicationF1Project {
 				delete settings[key];
 			}
 		});
+		// save it again
+		this.replaceF1ProjectFile(directory, settings);
 		return {success: true, project: settings};
 	}
 }
