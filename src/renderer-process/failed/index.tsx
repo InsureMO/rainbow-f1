@@ -17,7 +17,7 @@ const Container = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-ask-project-failed-con
     height: 100vh;
     align-items: center;
     justify-content: center;
-	margin: auto;
+    margin: auto;
 
     > div {
         display: grid;
@@ -49,7 +49,7 @@ export const Failed = () => {
 	}, [fire]);
 
 	const onCloseClicked = () => {
-
+		// TODO ASK CLOSE THIS WINDOW SINCE FAILED TO LOAD PROJECT
 	};
 
 	return <Container>
