@@ -1,5 +1,4 @@
 import {BrowserWindow, ipcMain} from 'electron';
-import path from 'path';
 import {
 	CommandLine,
 	CommandLines,
@@ -9,6 +8,7 @@ import {
 	F1ProjectCreated,
 	F1ProjectEnvs,
 	F1ProjectEvent,
+	F1ProjectLoaded,
 	F1ProjectSettings,
 	isBlank,
 	isNodeVersionValid,
@@ -20,11 +20,13 @@ import {createMainWindow} from '../main-window';
 import WindowManager, {WindowType} from '../window-manager';
 import cli from './command-lines';
 import fs from './fs';
+import path from './path';
 
 class ApplicationF1Project {
 	constructor() {
-		ipcMain.handle(F1ProjectEvent.CREATE, async (_, settings: F1ProjectSettings): Promise<F1ProjectCreated> => this.create(settings));
+		ipcMain.handle(F1ProjectEvent.CREATE, async (_, settings: F1ProjectSettings): Promise<F1ProjectCreated> => await this.create(settings));
 		ipcMain.on(F1ProjectEvent.OPEN, (event, settings: F1ProjectSettings) => this.open(settings, BrowserWindow.fromWebContents(event.sender)));
+		ipcMain.handle(F1ProjectEvent.ASK, async (event) => await this.loadProject(BrowserWindow.fromWebContents(event.sender)));
 	}
 
 	protected async checkCliNode(node?: CommandLine): Promise<string | undefined> {
@@ -180,7 +182,7 @@ class ApplicationF1Project {
 		if (isBlank(directory)) {
 			return {success: false, project: settings, message: 'Project directory cannot be blank.'};
 		}
-		const directoryExists = fs.exists(directory);
+		const directoryExists = fs.exists(directory).ret;
 		if (!directoryExists) {
 		} else if (!fs.empty(directory)) {
 			return {success: false, project: settings, message: 'Project directory is not empty.'};
@@ -227,19 +229,54 @@ class ApplicationF1Project {
 		// create workspace json
 		this.createF1ProjectWorkspaceFile(directory, settings);
 
-		// TODO create modules by cli
+		// TODO CREATE MODULES BY CLI
 
 		return {success: true, project: settings, message: (void 0)};
 	}
 
 	public open(settings: F1ProjectSettings, window?: BrowserWindow) {
-		const main = createMainWindow(settings, true);
+		const main = createMainWindow(settings, false);
 		main.once('show', () => {
 			if (window != null && WindowManager.type(window) !== WindowType.MAIN) {
 				// close it
 				window.close();
 			}
 		});
+		main.maximize();
+		main.show();
+	}
+
+	public async loadProject(window: BrowserWindow): Promise<F1ProjectLoaded> {
+		const settings = WindowManager.project(window);
+		if (settings == null) {
+			return {success: false, message: 'Project settings not found.'};
+		}
+
+		const directory = settings.directory;
+		if (isBlank(directory)) {
+			return {success: false, message: `Project folder not defined in settings.`};
+		} else if (!fs.exists(directory).ret) {
+			return {success: false, message: `Project folder [${directory}] not exists.`};
+		}
+		// scan direct sub folders
+		const {success, ret: folders, message} = fs.dir(directory, {file: false});
+		if (!success) {
+			return {success, message};
+		}
+		const folderMap = folders.reduce((map, folder) => {
+			map[folder] = true;
+			return map;
+		}, {} as Record<string, true>);
+		// compare folders with settings modules, fix it if needed
+		['d9', 'o23'].forEach(k => {
+			const key = k as 'd9' | 'o23';
+			// @ts-ignore
+			settings[key] = (settings[key] ?? []).filter(module => folderMap[module.name] === true);
+			if (settings[key].length === 0) {
+				delete settings[key];
+			}
+		});
+		return {success: true, project: settings};
 	}
 }
 

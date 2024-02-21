@@ -1,5 +1,4 @@
 import {ipcMain} from 'electron';
-import path from 'path';
 import {
 	F1_PROJECT_FILE,
 	F1ProjectSettings,
@@ -11,6 +10,7 @@ import {
 	RecentProjectsEvent
 } from '../../shared';
 import fs from './fs';
+import path from './path';
 import store, {StoreKey} from './store';
 
 class ApplicationRecentProjects {

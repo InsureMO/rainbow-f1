@@ -11,3 +11,4 @@ export const isNpmVersionValid = (version: string) => {
 
 export const F1_PROJECT_FILE = '.f1.json';
 export const F1_PROJECT_WORKSPACE_FILE = 'package.json';
+export const MAC_INDEX_FILE = '.DS_Store';

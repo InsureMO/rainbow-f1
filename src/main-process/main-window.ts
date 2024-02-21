@@ -3,7 +3,7 @@ import path from 'path';
 import {F1ProjectSettings} from '../shared';
 import {createAppMenu, createDockMenu} from './menu';
 import {isDev} from './utils';
-import WindowManager, {WindowType} from './window-manager';
+import WindowManager from './window-manager';
 
 export const createMainWindow = (project: F1ProjectSettings, showImmediate: boolean): BrowserWindow => {
 	// Create the browser window.
@@ -12,7 +12,7 @@ export const createMainWindow = (project: F1ProjectSettings, showImmediate: bool
 		icon: 'asserts/logo.png',
 		webPreferences: {preload: path.join(__dirname, 'preload.js')}
 	});
-	WindowManager.register(window, WindowType.MAIN);
+	WindowManager.registerMain(window, project);
 
 	// and load the index.html of the app
 	if (isDev()) {

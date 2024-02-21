@@ -25,6 +25,10 @@ class ApplicationPath {
 			return p.basename(path, suffix);
 		}
 	}
+
+	public resolve(...path: Array<string>): string {
+		return p.resolve(...path);
+	}
 }
 
 export default new ApplicationPath();

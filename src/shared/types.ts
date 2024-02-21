@@ -97,6 +97,9 @@ export interface FileSystemOperationResult<R> {
 export interface FileSystemBooleanResult extends FileSystemOperationResult<boolean> {
 }
 
+export interface FileSystemFoldersResult extends FileSystemOperationResult<Array<string>> {
+}
+
 export enum FileSystemEvent {
 	EXISTS = 'fs-exists',
 	EMPTY = 'fs-empty',
@@ -113,13 +116,20 @@ export interface F1Project extends F1ProjectSettings {
 
 export interface F1ProjectCreated {
 	success: boolean;
-	project: F1Project;
+	project: F1ProjectSettings;
+	message?: string;
+}
+
+export interface F1ProjectLoaded {
+	success: boolean;
+	project?: F1Project;
 	message?: string;
 }
 
 export enum F1ProjectEvent {
 	CREATE = 'f1-project-create',
-	OPEN = 'f1-project-open'
+	OPEN = 'f1-project-open',
+	ASK = 'f1-project-ask'
 }
 
 export enum CommandLinesEvent {

@@ -1,6 +1,14 @@
 import {ipcMain} from 'electron';
 import * as fs from 'fs';
-import {FileSystemBooleanResult, FileSystemEvent, FileSystemOperationResult} from '../../shared';
+import {
+	FileSystemBooleanResult,
+	FileSystemEvent,
+	FileSystemFoldersResult,
+	FileSystemOperationResult,
+	MAC_INDEX_FILE
+} from '../../shared';
+import {isMac} from '../utils';
+import path from './path';
 
 class ApplicationFileSystem {
 	constructor() {
@@ -34,11 +42,23 @@ class ApplicationFileSystem {
 	 * 2. or is directory and empty
 	 */
 	public empty(directory: string): FileSystemBooleanResult {
-		return {
-			success: true,
-			ret: this.isValid(directory)
-				&& (!this.exists(directory) || (fs.lstatSync(directory).isDirectory() && fs.readdirSync(directory).length === 0))
-		};
+		if (!this.isValid(directory)) {
+			return {success: true, ret: false};
+		}
+		if (!this.exists(directory).ret) {
+			return {success: true, ret: true};
+		}
+		if (!fs.lstatSync(directory).isDirectory()) {
+			return {success: true, ret: false};
+		}
+		const files = fs.readdirSync(directory) as Array<string>;
+		if (files.length === 0) {
+			return {success: true, ret: true};
+		} else if (isMac() && files.length === 1 && files[0] === MAC_INDEX_FILE) {
+			return {success: true, ret: true};
+		} else {
+			return {success: false, ret: false};
+		}
 	}
 
 	public mkdir(directory: string): FileSystemBooleanResult {
@@ -51,6 +71,33 @@ class ApplicationFileSystem {
 				return {success: true, ret: true};
 			} catch (e) {
 				return {success: true, ret: false, message: e.message};
+			}
+		});
+	}
+
+	public dir(directory: string, options?: {
+		dir?: false, file?: false, recursive?: true
+	}): FileSystemFoldersResult {
+		return this.invalidOr(directory, () => {
+			if (!fs.existsSync(directory) || fs.lstatSync(directory).isFile()) {
+				return {success: true, ret: []};
+			}
+			if (!(options?.dir ?? true) && !(options?.file ?? true)) {
+				// ask nothing, return directly
+				return {success: true, ret: []};
+			}
+			try {
+				let files = fs.readdirSync(directory, {recursive: options?.recursive ?? false}) as Array<string>;
+				if ((options?.dir ?? true) || (options?.file ?? true)) {
+					// require all, do nothing
+				} else if (!(options?.dir ?? true)) {
+					files = files.filter(file => fs.lstatSync(path.resolve(directory, file)).isDirectory());
+				} else if (!(options?.file ?? true)) {
+					files = files.filter(file => fs.lstatSync(path.resolve(directory, file)).isFile());
+				}
+				return {success: true, ret: files};
+			} catch (e) {
+				return {success: false, ret: [], message: e.message};
 			}
 		});
 	}

@@ -1,7 +1,8 @@
 import {
 	CommandLines,
 	ContextMenu,
-	F1ProjectCreated,
+	F1Project,
+	F1ProjectCreated, F1ProjectLoaded,
 	F1ProjectSettings,
 	FileSystemBooleanResult,
 	OpenDialogOptions,
@@ -55,6 +56,11 @@ declare global {
 		create(settings: F1ProjectSettings): Promise<F1ProjectCreated>;
 
 		open(settings: F1ProjectSettings): void;
+
+		/**
+		 * ask project, only used in main window, and project was bound this window already
+		 */
+		ask(): Promise<F1ProjectLoaded>;
 	}
 
 	interface WindowElectronFileSystem {
