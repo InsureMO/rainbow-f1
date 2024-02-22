@@ -57,7 +57,7 @@ declare global {
 	interface WindowElectronF1Project {
 		create(settings: F1ProjectSettings): Promise<F1ProjectCreated>;
 
-		open(settings: F1ProjectSettings): void;
+		open(project: F1Project): void;
 
 		tryToOpen(directory: string): Promise<F1ProjectExisted>;
 

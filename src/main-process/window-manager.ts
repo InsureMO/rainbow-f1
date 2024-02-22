@@ -1,5 +1,5 @@
 import {BrowserWindow} from 'electron';
-import {F1ProjectSettings} from '../shared';
+import {F1Project} from '../shared';
 
 export enum WindowType {
 	MAIN,
@@ -9,7 +9,7 @@ export enum WindowType {
 }
 
 const WINDOWS: Map<number, WindowType> = new Map<number, WindowType>();
-const WINDOW_PROJECTS: Map<number, F1ProjectSettings> = new Map<number, F1ProjectSettings>();
+const WINDOW_PROJECTS: Map<number, F1Project> = new Map<number, F1Project>();
 
 export default class WindowManager {
 	private constructor() {
@@ -21,7 +21,7 @@ export default class WindowManager {
 		window.once('closed', () => WINDOWS.delete(window.id));
 	}
 
-	public static registerMain(window: BrowserWindow, project: F1ProjectSettings) {
+	public static registerMain(window: BrowserWindow, project: F1Project) {
 		WINDOW_PROJECTS.set(window.id, project);
 		window.once('closed', () => WINDOW_PROJECTS.delete(window.id));
 		WindowManager.register(window, WindowType.MAIN);
@@ -31,7 +31,11 @@ export default class WindowManager {
 		return WINDOWS.get(window.id);
 	}
 
-	public static project(window: BrowserWindow): F1ProjectSettings | null {
+	public static project(window: BrowserWindow): F1Project | null {
 		return WINDOW_PROJECTS.get(window.id);
+	}
+
+	public static projects(): Array<F1Project> {
+		return [...WINDOW_PROJECTS.values()];
 	}
 }

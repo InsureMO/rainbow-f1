@@ -1,7 +1,7 @@
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 import DialogOpenOptions = Electron.OpenDialogOptions;
 import OpenDialogReturnValue = Electron.OpenDialogReturnValue;
-import {F1ProjectSettings} from './project-settings';
+import {F1ModuleSettings, F1ProjectEnvs} from './project-settings';
 
 export enum VersionsEvent {
 	APP = 'versions-app'
@@ -109,18 +109,22 @@ export enum PathEvent {
 	BASENAME = 'path-basename',
 }
 
-export interface F1Project extends F1ProjectSettings {
+export interface F1Project {
+	name: string;
+	directory: string;
+	envs?: F1ProjectEnvs;
+	modules: Array<F1ModuleSettings>;
 }
 
 export interface F1ProjectCreated {
 	success: boolean;
-	project: F1ProjectSettings;
+	project: F1Project;
 	message?: string;
 }
 
 export interface F1ProjectExisted {
 	success: boolean;
-	project?: F1ProjectSettings;
+	project?: F1Project;
 	message?: string;
 }
 

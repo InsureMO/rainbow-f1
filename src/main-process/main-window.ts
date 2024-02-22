@@ -1,11 +1,12 @@
 import {BrowserWindow} from 'electron';
 import path from 'path';
-import {F1ProjectSettings} from '../shared';
+import {F1Project} from '../shared';
 import {createAppMenu, createDockMenu} from './menu';
+import {createProjectWindow} from './project-window';
 import {isDev} from './utils';
 import WindowManager from './window-manager';
 
-export const createMainWindow = (project: F1ProjectSettings, showImmediate: boolean): BrowserWindow => {
+export const createMainWindow = (project: F1Project, showImmediate: boolean): BrowserWindow => {
 	// Create the browser window.
 	const window = new BrowserWindow({
 		show: false,
@@ -13,6 +14,18 @@ export const createMainWindow = (project: F1ProjectSettings, showImmediate: bool
 		webPreferences: {preload: path.join(__dirname, 'preload.js')}
 	});
 	WindowManager.registerMain(window, project);
+
+	window.on('focus', () => {
+		createAppMenu();
+		createDockMenu();
+	});
+	window.on('close', () => {
+		if (WindowManager.projects().length === 1) {
+			// last opened main window will close, call project window
+			const window = createProjectWindow({showImmediate});
+			window.show();
+		}
+	});
 
 	// and load the index.html of the app
 	if (isDev()) {
@@ -22,10 +35,6 @@ export const createMainWindow = (project: F1ProjectSettings, showImmediate: bool
 		// noinspection JSIgnoredPromiseFromCall
 		window.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
 	}
-	window.on('focus', () => {
-		createAppMenu();
-		createDockMenu();
-	});
 
 	if (showImmediate) {
 		// Open the DevTools.

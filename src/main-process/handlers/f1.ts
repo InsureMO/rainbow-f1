@@ -14,6 +14,7 @@ import {
 	F1ProjectSettings,
 	isBlank,
 	isNodeVersionValid,
+	isNotBlank,
 	isNpmVersionValid,
 	MIN_NODE_VERSION,
 	MIN_NPM_VERSION
@@ -28,7 +29,7 @@ import recentProjects from './recent-projects';
 class ApplicationF1Project {
 	constructor() {
 		ipcMain.handle(F1ProjectEvent.CREATE, async (_, settings: F1ProjectSettings): Promise<F1ProjectCreated> => await this.create(settings));
-		ipcMain.on(F1ProjectEvent.OPEN, (event, settings: F1ProjectSettings) => this.open(settings, BrowserWindow.fromWebContents(event.sender)));
+		ipcMain.on(F1ProjectEvent.OPEN, (event, project: F1Project) => this.open(project, BrowserWindow.fromWebContents(event.sender)));
 		ipcMain.handle(F1ProjectEvent.TRY_TO_OPEN, async (_, directory: string) => await this.tryToOpen(directory));
 		ipcMain.handle(F1ProjectEvent.ASK, async (event) => await this.loadProject(BrowserWindow.fromWebContents(event.sender)));
 		ipcMain.on(F1ProjectEvent.OPENED, (_, project: F1Project) => this.onProjectOpened(project));
@@ -128,8 +129,12 @@ class ApplicationF1Project {
 		}
 	}
 
-	protected createF1ProjectFileContent(settings: F1ProjectSettings): string {
-		const json: F1ProjectSettings = JSON.parse(JSON.stringify(settings));
+	protected copyF1ProjectSettings(settings: F1ProjectSettings): F1Project {
+		return JSON.parse(JSON.stringify(settings));
+	}
+
+	protected createF1ProjectFileContent(project: F1Project): string {
+		const json: F1Project = JSON.parse(JSON.stringify(project));
 		// absolute directory of this project is not needed
 		delete json.directory;
 		// cli version and existence is not needed
@@ -144,66 +149,66 @@ class ApplicationF1Project {
 		return JSON.stringify(json, (_, value) => value == null ? (void 0) : value, '\t');
 	}
 
-	protected createF1ProjectFile(directory: string, settings: F1ProjectSettings) {
+	protected createF1ProjectFile(directory: string, project: F1Project) {
 		const f1JsonFile = path.resolve(directory, F1_PROJECT_FILE);
-		fs.createFile(f1JsonFile, this.createF1ProjectFileContent(settings));
+		fs.createFile(f1JsonFile, this.createF1ProjectFileContent(project));
 	}
 
-	protected replaceF1ProjectFile(directory: string, settings: F1ProjectSettings) {
+	protected replaceF1ProjectFile(directory: string, project: F1Project) {
 		const f1JsonFile = path.resolve(directory, F1_PROJECT_FILE);
-		fs.createOrReplaceFile(f1JsonFile, this.createF1ProjectFileContent(settings));
+		fs.createOrReplaceFile(f1JsonFile, this.createF1ProjectFileContent(project));
 	}
 
-	protected createF1ProjectWorkspaceFileContent(settings: F1ProjectSettings): string {
-		const hasYarn = settings.envs?.cli?.yarn?.exists;
+	protected createF1ProjectWorkspaceFileContent(project: F1Project): string {
+		const hasYarn = project.envs?.cli?.yarn?.exists;
 		const run = hasYarn ? 'yarn' : 'npm run';
 		return JSON.stringify({
 			private: true,
-			workspaces: (settings.modules || []).map(module => module.name),
+			workspaces: (project.modules || []).map(module => module.name),
 			scripts: {
-				...(settings.modules || []).reduce((scripts, module) => {
+				...(project.modules || []).reduce((scripts, module) => {
 					scripts[`${module.name}:start`] = `cd ./${module.name} && ${run} start`;
 					return scripts;
 				}, {} as Record<string, string>)
 			},
-			volta: {
-				node: settings.envs?.cli?.node?.version,
-				yarn: settings.envs?.cli?.yarn?.version
-			}
+			volta: isNotBlank(project.envs?.cli?.node?.version) && isNotBlank(project.envs?.cli?.yarn?.version)
+				? {node: project.envs?.cli?.node?.version, yarn: project.envs?.cli?.yarn?.version}
+				: (void 0)
 		}, (_, value) => value == null ? (void 0) : value, '\t');
 	}
 
-	protected createF1ProjectWorkspaceFile(directory: string, settings: F1ProjectSettings) {
+	protected createF1ProjectWorkspaceFile(directory: string, project: F1Project) {
 		const f1JsonFile = path.resolve(directory, F1_PROJECT_WORKSPACE_FILE);
-		fs.createFile(f1JsonFile, this.createF1ProjectWorkspaceFileContent(settings));
+		fs.createFile(f1JsonFile, this.createF1ProjectWorkspaceFileContent(project));
 	}
 
 	public async create(settings: F1ProjectSettings): Promise<F1ProjectCreated> {
-		const {name, directory, envs, modules = []} = settings;
+		const project = this.copyF1ProjectSettings(settings);
+		const {name, directory, envs, modules = []} = project;
 		// check name, cannot be empty, and must be a valid name
 		if (isBlank(name)) {
-			return {success: false, project: settings, message: 'Project name cannot be blank.'};
+			return {success: false, project, message: 'Project name cannot be blank.'};
 		}
 		// check directory, must be empty
 		if (isBlank(directory)) {
-			return {success: false, project: settings, message: 'Project directory cannot be blank.'};
+			return {success: false, project, message: 'Project directory cannot be blank.'};
 		}
 		const directoryExists = fs.exists(directory).ret;
 		if (!directoryExists) {
 		} else if (!fs.empty(directory)) {
-			return {success: false, project: settings, message: 'Project directory is not empty.'};
+			return {success: false, project, message: 'Project directory is not empty.'};
 		}
 		// check volta, node, npm, yarn versions
 		const cliMessage = await this.checkCli(envs);
 		if (cliMessage != null) {
-			return {success: false, project: settings, message: cliMessage};
+			return {success: false, project, message: cliMessage};
 		}
 
 		// check module names
 		for (let module of modules) {
 			const nameMessage = this.checkModuleName(module);
 			if (nameMessage != null) {
-				return {success: false, project: settings, message: nameMessage};
+				return {success: false, project, message: nameMessage};
 			}
 		}
 		// TODO CHECK NAME DUPLICATION
@@ -213,7 +218,7 @@ class ApplicationF1Project {
 			// directory does not exist, try to create it
 			const {success, ret, message} = fs.mkdir(directory);
 			if (!success || !ret) {
-				return {success: false, project: settings, message};
+				return {success: false, project, message};
 			}
 		}
 
@@ -222,21 +227,21 @@ class ApplicationF1Project {
 			const moduleDirectory = path.resolve(directory, module.name);
 			const {success, ret, message} = fs.mkdir(moduleDirectory);
 			if (!success || !ret) {
-				return {success, project: settings, message};
+				return {success, project, message};
 			}
 		}
 		// create f1 json
-		this.createF1ProjectFile(directory, settings);
+		this.createF1ProjectFile(directory, project);
 		// create workspace json
-		this.createF1ProjectWorkspaceFile(directory, settings);
+		this.createF1ProjectWorkspaceFile(directory, project);
 
 		// TODO CREATE MODULES BY CLI
 
-		return {success: true, project: settings, message: (void 0)};
+		return {success: true, project, message: (void 0)};
 	}
 
-	public open(settings: F1ProjectSettings, window?: BrowserWindow) {
-		const main = createMainWindow(settings, false);
+	public open(project: F1Project, window?: BrowserWindow) {
+		const main = createMainWindow(project, false);
 		main.maximize();
 		main.show();
 		if (window != null && WindowManager.type(window) !== WindowType.MAIN) {
@@ -261,24 +266,24 @@ class ApplicationF1Project {
 		if (!f1JsonFileExists) {
 			return {success: false, message: `Project file[${F1_PROJECT_FILE}] does not exist.`};
 		}
-		const settings = fs.readJSON<F1ProjectSettings>(f1JsonFile);
-		if (settings == null) {
+		const project = fs.readJSON<F1Project>(f1JsonFile);
+		if (project == null) {
 			return {success: false, message: `Failed to read project file[${F1_PROJECT_FILE}].`};
 		}
-		if (isBlank(settings.name)) {
-			settings.name = path.basename(directory);
+		if (isBlank(project.name)) {
+			project.name = path.basename(directory);
 		}
-		settings.directory = directory;
-		return {success: true, project: settings};
+		project.directory = directory;
+		return {success: true, project};
 	}
 
 	public async loadProject(window: BrowserWindow): Promise<F1ProjectLoaded> {
-		const settings = WindowManager.project(window);
-		if (settings == null) {
+		const project = WindowManager.project(window);
+		if (project == null) {
 			return {success: false, message: 'Project settings not found.'};
 		}
 
-		const directory = settings.directory;
+		const directory = project.directory;
 		if (isBlank(directory)) {
 			return {success: false, message: `Project folder not defined in settings.`};
 		} else if (!fs.exists(directory).ret) {
@@ -294,13 +299,13 @@ class ApplicationF1Project {
 			return map;
 		}, {} as Record<string, true>);
 		// compare folders with settings modules, fix it if needed
-		settings.modules = (settings.modules ?? []).filter(module => folderMap[module.name] === true);
-		if (settings.modules.length === 0) {
-			delete settings.modules;
+		project.modules = (project.modules ?? []).filter(module => folderMap[module.name] === true);
+		if (project.modules.length === 0) {
+			delete project.modules;
 		}
 		// save it again
-		this.replaceF1ProjectFile(directory, settings);
-		return {success: true, project: settings};
+		this.replaceF1ProjectFile(directory, project);
+		return {success: true, project};
 	}
 
 	public onProjectOpened(project: F1Project) {

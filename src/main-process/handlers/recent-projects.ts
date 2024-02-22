@@ -2,6 +2,7 @@ import {ipcMain} from 'electron';
 import {nanoid} from 'nanoid';
 import {
 	F1_PROJECT_FILE,
+	F1Project,
 	F1ProjectSettings,
 	isBlank,
 	RecentProject,
@@ -217,7 +218,7 @@ class ApplicationRecentProjects {
 		}
 	}
 
-	public getLastProjects(): Array<F1ProjectSettings> {
+	public getLastProjects(): Array<F1Project> {
 		const lastProjectIds = store.get(StoreKey.LAST_PROJECT) as Array<string> | undefined;
 		if (lastProjectIds == null || lastProjectIds.length === 0) {
 			return [];
@@ -231,23 +232,23 @@ class ApplicationRecentProjects {
 		}
 
 		// check project files
-		return found.map(project => {
-			const directory = project.path;
+		return found.map(recent => {
+			const directory = recent.path;
 			const f1ProjectFile = path.resolve(directory, F1_PROJECT_FILE);
 			const exists = fs.exists(directory).ret && fs.exists(f1ProjectFile).ret;
 			if (!exists) {
 				return null;
 			}
-			const settings: F1ProjectSettings = fs.readJSON<F1ProjectSettings>(f1ProjectFile);
-			if (settings == null) {
+			const project = fs.readJSON<F1Project>(f1ProjectFile);
+			if (project == null) {
 				// cannot read project file correctly
 				return null;
 			}
-			if (isBlank(settings.name)) {
-				settings.name = project.name;
+			if (isBlank(project.name)) {
+				project.name = recent.name;
 			}
-			settings.directory = directory;
-			return settings;
+			project.directory = directory;
+			return project;
 		}).filter(x => x != null);
 	}
 }
