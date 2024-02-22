@@ -18,10 +18,10 @@ export const D9Settings = (props: { project: F1ProjectSettings; module: D9Module
 
 	const [state, setState] = useState<D9SettingsState>({});
 	useModuleValidate({
-		base: ProjectModuleBase.D9, index, validate: async () => {
+		base: ProjectModuleBase.MODULE, index, validate: async () => {
 			let nameMessage = validateModuleName(module.name);
 			if (nameMessage == null) {
-				nameMessage = validateModuleNameDuplication({settings: project, base: ProjectModuleBase.D9, index});
+				nameMessage = validateModuleNameDuplication({settings: project, base: ProjectModuleBase.MODULE, index});
 			}
 			const n3n5Message = validateD9N3N5(dependencies['@rainbow-d9/n3'], dependencies['@rainbow-d9/n5']);
 			setState(state => ({...state, nameMessage, n3n5Message}));
@@ -36,7 +36,7 @@ export const D9Settings = (props: { project: F1ProjectSettings; module: D9Module
 		}
 	};
 
-	return <ModuleSettings project={project} module={module} base={ProjectModuleBase.D9} index={index}
+	return <ModuleSettings project={project} module={module} base={ProjectModuleBase.MODULE} index={index}
 	                       title="D9 Module Settings"
 	                       state={state} setState={setState}>
 		<ComponentsTitle>Official components</ComponentsTitle>

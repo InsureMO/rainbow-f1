@@ -9,7 +9,7 @@ import {
 } from '@rainbow-d9/n2';
 import {useNavigate} from 'react-router-dom';
 import {ButtonBarSpacer} from '../../renderer-common/widgets';
-import {CommandLines, F1ProjectSettings} from '../../shared';
+import {CommandLines, D9ModuleSettings, F1ModuleType, F1ProjectSettings} from '../../shared';
 import {CreateProjectEventTypes, useCreateProjectEventBus} from './event-bus';
 import {ProjectModuleBase} from './types';
 import {
@@ -36,18 +36,21 @@ export const Bar = (props: { settings: F1ProjectSettings }) => {
 				() => validateProjectName(settings.name),
 				() => validateProjectDirectory(settings.directory)
 			].map(validate => ({validate, base: ProjectModuleBase.BASIC, index: 0})),
-			...(settings.d9 ?? []).map((d9, index) => {
+			...(settings.modules ?? []).map((module, index) => {
 				return [
-					() => validateModuleName(d9.name),
-					() => validateModuleNameDuplication({settings, base: ProjectModuleBase.D9, index}),
-					() => validateD9N3N5(d9.dependencies?.['@rainbow-d9/n3'], d9.dependencies?.['@rainbow-d9/n5'])
-				].map(validate => ({validate, base: ProjectModuleBase.D9, index}));
-			}).flat(),
-			...(settings.o23 ?? []).map((o23, index) => {
-				return [
-					() => validateModuleName(o23.name),
-					() => validateModuleNameDuplication({settings, base: ProjectModuleBase.O23, index})
-				].map(validate => ({validate, base: ProjectModuleBase.O23, index}));
+					() => validateModuleName(module.name),
+					() => validateModuleNameDuplication({settings, base: ProjectModuleBase.MODULE, index}),
+					...(() => {
+						if (module.type === F1ModuleType.D9) {
+							const d9 = module as D9ModuleSettings;
+							return [
+								() => validateD9N3N5(d9.dependencies?.['@rainbow-d9/n3'], d9.dependencies?.['@rainbow-d9/n5'])
+							];
+						} else {
+							return [];
+						}
+					})()
+				].map(validate => ({validate, base: ProjectModuleBase.MODULE, index}));
 			}).flat(),
 			...[
 				'node', 'npm', 'yarn', 'volta'

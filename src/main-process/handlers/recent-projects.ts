@@ -108,7 +108,7 @@ class ApplicationRecentProjects {
 	}
 
 	protected removeRecentProjectFromParent(ancestorOrParent: RecentProjectHolder, projectId: string): boolean {
-		let foundIndex = ancestorOrParent.projects?.findIndex(p => p.id !== projectId);
+		let foundIndex = ancestorOrParent.projects?.findIndex(p => p.id === projectId);
 		if (foundIndex !== -1) {
 			ancestorOrParent.projects?.splice(foundIndex, 1);
 			return true;

@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {F1ProjectSettings} from '../../shared';
+import {D9ModuleSettings, F1ModuleSettings, F1ModuleType, F1ProjectSettings, O23ModuleSettings} from '../../shared';
 import {BasicSettings} from './basic-settings';
 import {D9Settings} from './d9-settings';
 import {EnvsSettings} from './envs-settings';
@@ -28,10 +28,7 @@ export const Content = (props: { settings: F1ProjectSettings }) => {
 				case ProjectModuleBase.ENVS:
 					setState({base, index: 0, validate});
 					break;
-				case ProjectModuleBase.D9:
-					setState({base, index, validate});
-					break;
-				case ProjectModuleBase.O23:
+				case ProjectModuleBase.MODULE:
 					setState({base, index, validate});
 					break;
 			}
@@ -53,13 +50,25 @@ export const Content = (props: { settings: F1ProjectSettings }) => {
 		}
 	}, [fire, state.validate]);
 
+	const Module = (props: { module?: F1ModuleSettings }) => {
+		const {module} = props;
+
+		switch (module.type) {
+			case F1ModuleType.D9:
+				return <D9Settings project={settings} module={module as D9ModuleSettings}
+				                   index={state.index}/>;
+			case F1ModuleType.O23:
+				return <O23Settings project={settings} module={module as O23ModuleSettings}
+				                    index={state.index}/>;
+			default:
+				return null;
+		}
+	};
+
 	return <CreateProjectContent>
 		{(state.base === ProjectModuleBase.BASIC && state.index === 0) ? <BasicSettings project={settings}/> : null}
-		{(state.base === ProjectModuleBase.D9)
-			? <D9Settings project={settings} module={settings.d9[state.index]} index={state.index}/>
-			: null}
-		{(state.base === ProjectModuleBase.O23)
-			? <O23Settings project={settings} module={settings.o23[state.index]} index={state.index}/>
+		{(state.base === ProjectModuleBase.MODULE)
+			? <Module module={settings.modules?.[state.index]}/>
 			: null}
 		{(state.base === ProjectModuleBase.ENVS && state.index === 0) ? <EnvsSettings project={settings}/> : null}
 	</CreateProjectContent>;

@@ -13,7 +13,7 @@ export const O23Settings = (props: { project: F1ProjectSettings; module: O23Modu
 
 	const [state, setState] = useState<ModuleSettingsState>({});
 	useModuleValidate({
-		base: ProjectModuleBase.D9, index, validate: async () => {
+		base: ProjectModuleBase.MODULE, index, validate: async () => {
 			let nameMessage = validateModuleName(module.name);
 			if (nameMessage == null) {
 				nameMessage = validateModuleNameDuplication({settings: project, base: ProjectModuleBase.O23, index});
@@ -26,7 +26,7 @@ export const O23Settings = (props: { project: F1ProjectSettings; module: O23Modu
 		dependencies[key] = selected;
 	};
 
-	return <ModuleSettings project={project} module={module} base={ProjectModuleBase.D9} index={index}
+	return <ModuleSettings project={project} module={module} base={ProjectModuleBase.MODULE} index={index}
 	                       title="O23 Module Settings"
 	                       state={state} setState={setState}>
 		<ComponentsTitle>Plugins</ComponentsTitle>

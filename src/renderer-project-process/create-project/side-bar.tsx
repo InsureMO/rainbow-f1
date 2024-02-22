@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react';
 import {F1ModuleSettings, F1ProjectSettings} from '../../shared';
 import {CreateProjectEventTypes, useCreateProjectEventBus} from './event-bus';
 import {BaseState, ProjectModuleBase} from './types';
+import {getModuleType} from './utils';
 import {CreateProjectBaseItem, CreateProjectSidebar} from './widgets';
 
 export const SideBar = (props: { settings: F1ProjectSettings }) => {
@@ -44,20 +45,12 @@ export const SideBar = (props: { settings: F1ProjectSettings }) => {
 		                       onClick={onItemClicked(ProjectModuleBase.BASIC, 0)}>
 			<span>Basic</span>
 		</CreateProjectBaseItem>
-		{settings.d9.map((d9, index) => {
-			return <CreateProjectBaseItem data-active={state.base === ProjectModuleBase.D9 && state.index === index}
-			                              onClick={onItemClicked(ProjectModuleBase.D9, index)}
+		{(settings.modules ?? []).map((module, index) => {
+			return <CreateProjectBaseItem data-active={state.base === ProjectModuleBase.MODULE && state.index === index}
+			                              onClick={onItemClicked(ProjectModuleBase.MODULE, index)}
 			                              key={`d9-${index}`}>
-				{getDisplayName(d9, index)}
-				<span>@Rainbow-D9</span>
-			</CreateProjectBaseItem>;
-		})}
-		{settings.o23.map((o23, index) => {
-			return <CreateProjectBaseItem data-active={state.base === ProjectModuleBase.O23 && state.index === index}
-			                              onClick={onItemClicked(ProjectModuleBase.O23, index)}
-			                              key={`o23-${index}`}>
-				{getDisplayName(o23, index + settings.d9.length)}
-				<span>@Rainbow-O23</span>
+				{getDisplayName(module, index)}
+				<span>@Rainbow-{getModuleType(module)}</span>
 			</CreateProjectBaseItem>;
 		})}
 		<CreateProjectBaseItem data-active={state.base === ProjectModuleBase.ENVS && state.index === 0}

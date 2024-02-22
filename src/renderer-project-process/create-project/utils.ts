@@ -4,6 +4,8 @@ import {
 	CommandLine,
 	CommandLines,
 	D9ModuleSettings,
+	F1ModuleSettings,
+	F1ModuleType,
 	F1ProjectSettings,
 	isBlank,
 	isNodeVersionValid,
@@ -14,9 +16,20 @@ import {
 } from '../../shared';
 import {ProjectModuleBase} from './types';
 
+export const getModuleType = (module: F1ModuleSettings): string => {
+	switch (module.type) {
+		case F1ModuleType.D9:
+			return 'd9';
+		case F1ModuleType.O23:
+			return 'o23';
+		default:
+			return '';
+	}
+};
 export const createD9ModuleSettings = (): D9ModuleSettings => {
 	return {
 		name: 'awesome-d9',
+		type: F1ModuleType.D9,
 		dependencies: {
 			'@rainbow-d9/n1': true,
 			'@rainbow-d9/n2': true,
@@ -31,6 +44,7 @@ export const createD9ModuleSettings = (): D9ModuleSettings => {
 export const createO23ModuleSettings = (): O23ModuleSettings => {
 	return {
 		name: 'awesome-o23',
+		type: F1ModuleType.O23,
 		dependencies: {
 			'@rainbow-o23/n90': true,
 			'@rainbow-o23/n91': false,
@@ -42,8 +56,7 @@ export const createO23ModuleSettings = (): O23ModuleSettings => {
 export const createF1ProjectSettings = (): F1ProjectSettings => {
 	return {
 		name: '',
-		d9: [createD9ModuleSettings()],
-		o23: [createO23ModuleSettings()]
+		modules: [createD9ModuleSettings(), createO23ModuleSettings()]
 	};
 };
 
@@ -87,25 +100,14 @@ export const validateModuleNameDuplication = (options: {
 	base: ProjectModuleBase; index: number;
 }): string | undefined => {
 	const {settings, base, index} = options;
-	let name: string;
-	switch (base) {
-		case ProjectModuleBase.D9:
-			name = settings.d9?.[index]?.name;
-			break;
-		case ProjectModuleBase.O23:
-			name = settings.o23?.[index]?.name;
-			break;
-		default:
-			return (void 0);
-	}
+	let name = settings.modules?.[index]?.name;
 	if (VUtils.isBlank(name)) {
 		return (void 0);
 	}
 	name = name.trim().toLowerCase();
-	const duplicated = [
-		...(settings.d9 ?? []).filter((d9, i) => base !== ProjectModuleBase.D9 || index !== i),
-		...(settings.o23 ?? []).filter((d9, i) => base !== ProjectModuleBase.O23 || index !== i)
-	].some(module => (module.name ?? '').trim().toLowerCase() === name);
+	const duplicated = (settings.modules ?? [])
+		.filter((_, i) => base !== ProjectModuleBase.MODULE || index !== i)
+		.some(module => (module.name ?? '').trim().toLowerCase() === name);
 	if (duplicated) {
 		return 'Module name is duplicated.';
 	} else {

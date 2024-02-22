@@ -140,7 +140,7 @@ class ApplicationF1Project {
 		});
 		// module dependencies are not needed, since they are in module package.json
 		// @ts-ignore
-		[...(json.d9 ?? []), ...(json.o23 ?? [])].forEach(module => module.dependencies = []);
+		(json.modules ?? []).forEach(module => module.dependencies = []);
 		return JSON.stringify(json, (_, value) => value == null ? (void 0) : value, '\t');
 	}
 
@@ -159,13 +159,9 @@ class ApplicationF1Project {
 		const run = hasYarn ? 'yarn' : 'npm run';
 		return JSON.stringify({
 			private: true,
-			workspaces: [...(settings.d9 || []), ...(settings.o23 || [])].map(module => module.name),
+			workspaces: (settings.modules || []).map(module => module.name),
 			scripts: {
-				...(settings.d9 || []).reduce((scripts, module) => {
-					scripts[`${module.name}:start`] = `cd ./${module.name} && ${run} start`;
-					return scripts;
-				}, {} as Record<string, string>),
-				...(settings.o23 || []).reduce((scripts, module) => {
+				...(settings.modules || []).reduce((scripts, module) => {
 					scripts[`${module.name}:start`] = `cd ./${module.name} && ${run} start`;
 					return scripts;
 				}, {} as Record<string, string>)
@@ -183,7 +179,7 @@ class ApplicationF1Project {
 	}
 
 	public async create(settings: F1ProjectSettings): Promise<F1ProjectCreated> {
-		const {name, directory, envs, d9, o23} = settings;
+		const {name, directory, envs, modules = []} = settings;
 		// check name, cannot be empty, and must be a valid name
 		if (isBlank(name)) {
 			return {success: false, project: settings, message: 'Project name cannot be blank.'};
@@ -204,18 +200,13 @@ class ApplicationF1Project {
 		}
 
 		// check module names
-		for (let module of d9) {
+		for (let module of modules) {
 			const nameMessage = this.checkModuleName(module);
 			if (nameMessage != null) {
 				return {success: false, project: settings, message: nameMessage};
 			}
 		}
-		for (let module of o23) {
-			const nameMessage = this.checkModuleName(module);
-			if (nameMessage != null) {
-				return {success: false, project: settings, message: nameMessage};
-			}
-		}
+		// TODO CHECK NAME DUPLICATION
 
 		// create directory if not exists
 		if (!directoryExists) {
@@ -227,7 +218,7 @@ class ApplicationF1Project {
 		}
 
 		// create module folders
-		for (let module of [...d9, ...o23]) {
+		for (let module of modules) {
 			const moduleDirectory = path.resolve(directory, module.name);
 			const {success, ret, message} = fs.mkdir(moduleDirectory);
 			if (!success || !ret) {
@@ -303,14 +294,10 @@ class ApplicationF1Project {
 			return map;
 		}, {} as Record<string, true>);
 		// compare folders with settings modules, fix it if needed
-		['d9', 'o23'].forEach(k => {
-			const key = k as 'd9' | 'o23';
-			// @ts-ignore
-			settings[key] = (settings[key] ?? []).filter(module => folderMap[module.name] === true);
-			if (settings[key].length === 0) {
-				delete settings[key];
-			}
-		});
+		settings.modules = (settings.modules ?? []).filter(module => folderMap[module.name] === true);
+		if (settings.modules.length === 0) {
+			delete settings.modules;
+		}
 		// save it again
 		this.replaceF1ProjectFile(directory, settings);
 		return {success: true, project: settings};
