@@ -11,7 +11,7 @@ export const FirstScene = () => {
 			if (success) {
 				fire(MainEventTypes.SET_PROJECT, project);
 			} else {
-				fire(MainEventTypes.ASK_PROJECT_FAILED, message);
+				fire(MainEventTypes.SET_FAILED_TO_ASK_PROJECT, message);
 			}
 		})();
 	}, [fire]);

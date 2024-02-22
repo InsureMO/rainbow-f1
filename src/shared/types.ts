@@ -24,8 +24,6 @@ export interface RecentProject {
 	path: string;
 	// given path exists or not
 	exists: boolean;
-	// given path is initialized or not
-	initialized: boolean;
 }
 
 export type RecentProjects = Array<RecentProject>;
@@ -120,6 +118,12 @@ export interface F1ProjectCreated {
 	message?: string;
 }
 
+export interface F1ProjectExisted {
+	success: boolean;
+	project?: F1ProjectSettings;
+	message?: string;
+}
+
 export interface F1ProjectLoaded {
 	success: boolean;
 	project?: F1Project;
@@ -129,7 +133,9 @@ export interface F1ProjectLoaded {
 export enum F1ProjectEvent {
 	CREATE = 'f1-project-create',
 	OPEN = 'f1-project-open',
-	ASK = 'f1-project-ask'
+	TRY_TO_OPEN = 'f1-project-try-to-open',
+	ASK = 'f1-project-ask',
+	OPENED = 'f1-project-opened'
 }
 
 export enum CommandLinesEvent {

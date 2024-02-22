@@ -5,9 +5,11 @@ import {
 	F1_PROJECT_FILE,
 	F1_PROJECT_WORKSPACE_FILE,
 	F1ModuleSettings,
+	F1Project,
 	F1ProjectCreated,
 	F1ProjectEnvs,
 	F1ProjectEvent,
+	F1ProjectExisted,
 	F1ProjectLoaded,
 	F1ProjectSettings,
 	isBlank,
@@ -21,12 +23,15 @@ import WindowManager, {WindowType} from '../window-manager';
 import cli from './command-lines';
 import fs from './fs';
 import path from './path';
+import recentProjects from './recent-projects';
 
 class ApplicationF1Project {
 	constructor() {
 		ipcMain.handle(F1ProjectEvent.CREATE, async (_, settings: F1ProjectSettings): Promise<F1ProjectCreated> => await this.create(settings));
 		ipcMain.on(F1ProjectEvent.OPEN, (event, settings: F1ProjectSettings) => this.open(settings, BrowserWindow.fromWebContents(event.sender)));
+		ipcMain.handle(F1ProjectEvent.TRY_TO_OPEN, async (_, directory: string) => await this.tryToOpen(directory));
 		ipcMain.handle(F1ProjectEvent.ASK, async (event) => await this.loadProject(BrowserWindow.fromWebContents(event.sender)));
+		ipcMain.on(F1ProjectEvent.OPENED, (_, project: F1Project) => this.onProjectOpened(project));
 	}
 
 	protected async checkCliNode(node?: CommandLine): Promise<string | undefined> {
@@ -241,14 +246,39 @@ class ApplicationF1Project {
 
 	public open(settings: F1ProjectSettings, window?: BrowserWindow) {
 		const main = createMainWindow(settings, false);
-		main.once('show', () => {
-			if (window != null && WindowManager.type(window) !== WindowType.MAIN) {
-				// close it
-				window.close();
-			}
-		});
 		main.maximize();
 		main.show();
+		if (window != null && WindowManager.type(window) !== WindowType.MAIN) {
+			// close it
+			window.close();
+		}
+	}
+
+	public async tryToOpen(directory: string): Promise<F1ProjectExisted> {
+		// check directory, must be empty
+		if (isBlank(directory)) {
+			return {success: false, message: 'Project directory cannot be blank.'};
+		}
+
+		const directoryExists = fs.exists(directory).ret;
+		if (!directoryExists) {
+			return {success: false, message: 'Project directory does not exist.'};
+		}
+
+		const f1JsonFile = path.resolve(directory, F1_PROJECT_FILE);
+		const f1JsonFileExists = fs.exists(f1JsonFile).ret;
+		if (!f1JsonFileExists) {
+			return {success: false, message: `Project file[${F1_PROJECT_FILE}] does not exist.`};
+		}
+		const settings = fs.readJSON<F1ProjectSettings>(f1JsonFile);
+		if (settings == null) {
+			return {success: false, message: `Failed to read project file[${F1_PROJECT_FILE}].`};
+		}
+		if (isBlank(settings.name)) {
+			settings.name = path.basename(directory);
+		}
+		settings.directory = directory;
+		return {success: true, project: settings};
 	}
 
 	public async loadProject(window: BrowserWindow): Promise<F1ProjectLoaded> {
@@ -284,6 +314,10 @@ class ApplicationF1Project {
 		// save it again
 		this.replaceF1ProjectFile(directory, settings);
 		return {success: true, project: settings};
+	}
+
+	public onProjectOpened(project: F1Project) {
+		recentProjects.addLastProject(project);
 	}
 }
 

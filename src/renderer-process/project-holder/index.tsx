@@ -1,5 +1,5 @@
 import {Fragment, useEffect, useState} from 'react';
-import {F1ProjectSettings, isNotBlank} from '../../shared';
+import {F1Project, F1ProjectSettings, isNotBlank} from '../../shared';
 import {MainEventTypes, useMainEventBus} from '../event-bus';
 
 interface ProjectHolderState {
@@ -19,10 +19,10 @@ export const ProjectHolder = () => {
 			setState(state => ({...state, message}));
 		};
 		on(MainEventTypes.SET_PROJECT, onSetProject);
-		on(MainEventTypes.ASK_PROJECT_FAILED, onAskProjectFailed);
+		on(MainEventTypes.SET_FAILED_TO_ASK_PROJECT, onAskProjectFailed);
 		return () => {
 			off(MainEventTypes.SET_PROJECT, onSetProject);
-			off(MainEventTypes.ASK_PROJECT_FAILED, onAskProjectFailed);
+			off(MainEventTypes.SET_FAILED_TO_ASK_PROJECT, onAskProjectFailed);
 		};
 	}, [on, off]);
 	useEffect(() => {
@@ -33,9 +33,12 @@ export const ProjectHolder = () => {
 		}
 
 		const onAskProjectFailure = (callback: (message: string) => void) => callback(state.message);
+		const onAskProject = (callback: (project: F1Project) => void) => callback(state.project);
 		on(MainEventTypes.ASK_PROJECT_FAILURE, onAskProjectFailure);
+		on(MainEventTypes.ASK_PROJECT, onAskProject);
 		return () => {
 			off(MainEventTypes.ASK_PROJECT_FAILURE, onAskProjectFailure);
+			off(MainEventTypes.ASK_PROJECT, onAskProject);
 		};
 	}, [fire, state.project, state.message]);
 

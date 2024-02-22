@@ -33,6 +33,6 @@ export const createSplashWindow = () => {
 	window.center();
 	setTimeout(() => {
 		window.close();
-		firstWindows.forEach(window => window.show());
+		firstWindows.forEach(([, show]) => show());
 	}, 5000);
 };

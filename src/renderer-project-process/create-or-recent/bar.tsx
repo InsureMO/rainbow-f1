@@ -1,4 +1,5 @@
 import {
+	AlertLabel,
 	ButtonFill,
 	ButtonInk,
 	GlobalEventTypes,
@@ -42,12 +43,17 @@ export const Bar = () => {
 	const onCreateProjectClicked = () => {
 		navigate('/create-project');
 	};
-	const onOpenFolderClicked = () => {
+	const onOpenFolderClicked = async () => {
 		const {canceled, filePaths: [path]} = selectProjectFolder();
 		if (canceled) {
 			return;
 		}
-		// TODO OPEN PROJECT
+		const {success, project, message} = await window.electron.f1.tryToOpen(path);
+		if (!success) {
+			fire(GlobalEventTypes.SHOW_ALERT, <AlertLabel>{message}</AlertLabel>);
+		} else {
+			window.electron.f1.open(project);
+		}
 	};
 
 	const recentProjectsRoot = window.electron.recentProjects.get();

@@ -1,11 +1,12 @@
 import {useCreateEventBus} from '@rainbow-d9/n1';
 import {createContext, ReactNode, useContext} from 'react';
-import {F1ProjectSettings} from '../shared';
+import {F1Project, F1ProjectSettings} from '../shared';
 
 export enum MainEventTypes {
 	SET_PROJECT = 'set-project',
 	PROJECT_SETTLED = 'project-settled',
-	ASK_PROJECT_FAILED = 'ask-project-failed',
+	ASK_PROJECT = 'ask-project',
+	SET_FAILED_TO_ASK_PROJECT = 'set-failed-to-ask-project',
 	FAILURE_SETTLED = 'failure-settled',
 	ASK_PROJECT_FAILURE = 'ask-project-failure'
 }
@@ -23,11 +24,17 @@ export interface MainEventBus {
 
 	off(type: MainEventTypes.PROJECT_SETTLED, listener: (project: F1ProjectSettings) => void): this;
 
-	fire(type: MainEventTypes.ASK_PROJECT_FAILED, message: string): this;
+	fire(type: MainEventTypes.ASK_PROJECT, callback: (project: F1Project) => void): this;
 
-	on(type: MainEventTypes.ASK_PROJECT_FAILED, listener: (message: string) => void): this;
+	on(type: MainEventTypes.ASK_PROJECT, listener: (callback: (project: F1Project) => void) => void): this;
 
-	off(type: MainEventTypes.ASK_PROJECT_FAILED, listener: (message: string) => void): this;
+	off(type: MainEventTypes.ASK_PROJECT, listener: (callback: (project: F1Project) => void) => void): this;
+
+	fire(type: MainEventTypes.SET_FAILED_TO_ASK_PROJECT, message: string): this;
+
+	on(type: MainEventTypes.SET_FAILED_TO_ASK_PROJECT, listener: (message: string) => void): this;
+
+	off(type: MainEventTypes.SET_FAILED_TO_ASK_PROJECT, listener: (message: string) => void): this;
 
 	fire(type: MainEventTypes.FAILURE_SETTLED, message: string): this;
 

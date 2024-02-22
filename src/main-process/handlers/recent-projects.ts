@@ -1,7 +1,9 @@
 import {ipcMain} from 'electron';
+import {nanoid} from 'nanoid';
 import {
 	F1_PROJECT_FILE,
 	F1ProjectSettings,
+	isBlank,
 	RecentProject,
 	RecentProjectCategory,
 	RecentProjectHolder,
@@ -189,18 +191,39 @@ class ApplicationRecentProjects {
 		store.set(StoreKey.RECENT_PROJECTS, root);
 	}
 
-	public getLastProjects(): Array<F1ProjectSettings> {
-		const lastProjectIds = store.get(StoreKey.LAST_PROJECT) as Array<string> | undefined;
-		if (lastProjectIds == null || lastProjectIds.length === 0) {
-			return [];
-		}
-
+	protected getRecentProjectAsMap(): [RecentProjectRoot, Record<string, RecentProject>] {
 		const root = this.getRecentProjects();
 		const allProjects = this.findAllRecentProjects(root);
 		const projectMap = allProjects.reduce((map, project) => {
 			map[project.id] = project;
 			return map;
 		}, {} as Record<string, RecentProject>);
+		return [root, projectMap];
+	}
+
+	public addLastProject(project: F1ProjectSettings) {
+		let projectId;
+		const lastProjectIds = store.get(StoreKey.LAST_PROJECT) as Array<string> | undefined;
+		if (lastProjectIds == null || lastProjectIds.length === 0) {
+			projectId = nanoid(32);
+			store.set(StoreKey.LAST_PROJECT, [projectId]);
+		}
+		const [root, projectMap] = this.getRecentProjectAsMap();
+		const exists = Object.values(projectMap).find(p => p.path === project.directory);
+		if (exists == null) {
+			root.projects = root.projects || [];
+			root.projects.push({id: projectId, name: project.name, path: project.directory, exists: true});
+			store.set(StoreKey.RECENT_PROJECTS, root);
+		}
+	}
+
+	public getLastProjects(): Array<F1ProjectSettings> {
+		const lastProjectIds = store.get(StoreKey.LAST_PROJECT) as Array<string> | undefined;
+		if (lastProjectIds == null || lastProjectIds.length === 0) {
+			return [];
+		}
+
+		const [, projectMap] = this.getRecentProjectAsMap();
 		const found = lastProjectIds.map(lastProjectId => projectMap[lastProjectId]).filter(x => x != null);
 		if (found.length === 0) {
 			store.delete(StoreKey.LAST_PROJECT);
@@ -215,8 +238,16 @@ class ApplicationRecentProjects {
 			if (!exists) {
 				return null;
 			}
-			const settings: F1ProjectSettings = (fs.readJSON(f1ProjectFile) ?? {}) as F1ProjectSettings;
+			const settings: F1ProjectSettings = fs.readJSON<F1ProjectSettings>(f1ProjectFile);
+			if (settings == null) {
+				// cannot read project file correctly
+				return null;
+			}
+			if (isBlank(settings.name)) {
+				settings.name = project.name;
+			}
 			settings.directory = directory;
+			return settings;
 		}).filter(x => x != null);
 	}
 }
