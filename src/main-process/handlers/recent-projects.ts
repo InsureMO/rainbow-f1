@@ -3,7 +3,6 @@ import {nanoid} from 'nanoid';
 import {
 	F1_PROJECT_FILE,
 	F1Project,
-	F1ProjectSettings,
 	isBlank,
 	RecentProject,
 	RecentProjectCategory,
@@ -202,7 +201,7 @@ class ApplicationRecentProjects {
 		return [root, projectMap];
 	}
 
-	public addLastProject(project: F1ProjectSettings) {
+	public addLastProject(project: F1Project) {
 		let projectId;
 		const lastProjectIds = store.get(StoreKey.LAST_PROJECT) as Array<string> | undefined;
 		if (lastProjectIds == null || lastProjectIds.length === 0) {
@@ -215,6 +214,17 @@ class ApplicationRecentProjects {
 			root.projects = root.projects || [];
 			root.projects.push({id: projectId, name: project.name, path: project.directory, exists: true});
 			store.set(StoreKey.RECENT_PROJECTS, root);
+		}
+	}
+
+	public removeLastProject(project: F1Project) {
+		const [, projectMap] = this.getRecentProjectAsMap();
+		const exists = Object.values(projectMap).find(p => p.path === project.directory);
+		if (exists != null) {
+			const projectId = exists.id;
+			let lastProjectIds = (store.get(StoreKey.LAST_PROJECT) as Array<string> | undefined ?? [])
+				.filter(id => id !== projectId);
+			store.set(StoreKey.LAST_PROJECT, lastProjectIds);
 		}
 	}
 
