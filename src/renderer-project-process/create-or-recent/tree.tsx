@@ -1,5 +1,5 @@
 import {PROPERTY_PATH_ME, PropValue, Undefinable} from '@rainbow-d9/n1';
-import {GlobalEventTypes, TreeNodeDef, UnwrappedTree, useGlobalEventBus} from '@rainbow-d9/n2';
+import {AlertLabel, GlobalEventTypes, TreeNodeDef, UnwrappedTree, useGlobalEventBus} from '@rainbow-d9/n2';
 import {MouseEvent} from 'react';
 import {ContextMenuItem, showContextMenu} from '../../renderer-common/context-menu';
 import {EllipsisVertical, FolderClosed, FolderClosedEmpty, FolderOpen} from '../../renderer-common/icons';
@@ -37,8 +37,13 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 			recentProjectsEventBus.fire(RecentProjectsEventTypes.REPAINT);
 		}, () => fire(GlobalEventTypes.HIDE_DIALOG));
 	};
-	const openProject = (project: RecentProject) => {
-		// TODO OPEN PROJECT
+	const openProject = async (recentProject: RecentProject) => {
+		const {success, project, message} = await window.electron.f1.tryToOpen(recentProject.path);
+		if (!success) {
+			fire(GlobalEventTypes.SHOW_ALERT, <AlertLabel>{message}</AlertLabel>);
+		} else {
+			window.electron.f1.open(project);
+		}
 	};
 	const moveProject = (parent: RecentProjectHolder, project: RecentProject) => {
 		// TODO MOVE PROJECT
@@ -74,10 +79,10 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 			}
 		].filter(x => x != null) as Array<ContextMenuItem>);
 	};
-	const onProjectClicked = (project: RecentProject) => (event: MouseEvent<HTMLSpanElement>) => {
+	const onProjectClicked = (project: RecentProject) => async (event: MouseEvent<HTMLSpanElement>) => {
 		event.stopPropagation();
 		event.preventDefault();
-		openProject(project);
+		await openProject(project);
 	};
 	const onProjectOperatorClicked = (parent: RecentProjectHolder, project: RecentProject) => (event: MouseEvent<HTMLSpanElement>) => {
 		event.stopPropagation();

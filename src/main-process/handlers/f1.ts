@@ -211,7 +211,14 @@ class ApplicationF1Project {
 				return {success: false, project, message: nameMessage};
 			}
 		}
-		// TODO CHECK NAME DUPLICATION
+		// check name duplication
+		const moduleNameMap = modules.reduce((map, {name}) => {
+			map[(name ?? '').trim().toLowerCase()] = true;
+			return map;
+		}, {} as Record<string, boolean>);
+		if (Object.keys(moduleNameMap).length !== modules.length) {
+			return {success: false, project, message: 'Duplicated names detected on modules.'};
+		}
 
 		// create directory if not exists
 		if (!directoryExists) {
