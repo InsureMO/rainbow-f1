@@ -116,7 +116,6 @@ class ApplicationRecentProjects {
 	public moveRecentProject(projectId: string, newParentCategoryId?: string): void {
 		const root = this.getRecentProjects();
 		const found = this.findRecentProject(root, projectId);
-		console.log(projectId, found);
 		if (found != null) {
 			this.removeRecentProjectFromParent(root, projectId);
 			if (isBlank(newParentCategoryId)) {
