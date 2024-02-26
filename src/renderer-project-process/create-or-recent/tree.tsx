@@ -6,6 +6,7 @@ import {EllipsisVertical, FolderClosed, FolderClosedEmpty, FolderOpen} from '../
 import {RecentProject, RecentProjectCategory, RecentProjectHolder, RecentProjectRoot} from '../../shared';
 import {useCategory} from './category';
 import {RecentProjectsEventTypes, useRecentProjectsEventBus} from './event-bus';
+import {useProject} from './project';
 
 const computeShortName = (name: string): string => {
 	return (name ?? '').trim().split(/[\s-_]/).map(s => s[0].toUpperCase()).filter((_, i) => i < 2).join('');
@@ -17,6 +18,7 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 	const {fire} = useGlobalEventBus();
 	const recentProjectsEventBus = useRecentProjectsEventBus();
 	const {performCategoryOperation} = useCategory();
+	const {performProjectOperation} = useProject();
 
 	const createSubCategory = (category: RecentProjectCategory) => {
 		performCategoryOperation({parentCategory: category});
@@ -46,7 +48,7 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 		}
 	};
 	const moveProject = (parent: RecentProjectHolder, project: RecentProject) => {
-		// TODO MOVE PROJECT
+		performProjectOperation({parentCategory: parent, project});
 	};
 	const removeProject = (_parent: RecentProjectHolder, project: RecentProject) => {
 		fire(GlobalEventTypes.SHOW_YES_NO_DIALOG, <>
@@ -88,7 +90,7 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 		event.stopPropagation();
 		event.preventDefault();
 		// when project is under root, and no category exists, cannot perform moving
-		const movable = parent !== root || (parent.categories ?? []).length > 1;
+		const movable = parent !== root || (parent.categories ?? []).length >= 1;
 		showContextMenu([
 			{label: 'Open', click: 'open-project', invoke: () => openProject(project)},
 			{type: 'separator'},

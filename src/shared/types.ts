@@ -51,6 +51,7 @@ export enum RecentProjectsEvent {
 	GET_ALL = 'recent-projects-get-all',
 	ADD_PROJECT = 'recent-projects-add-project',
 	RENAME_PROJECT = 'recent-projects-rename-project',
+	MOVE_PROJECT = 'recent-projects-move-project',
 	REMOVE_PROJECT = 'recent-projects-remove-project',
 	ADD_CATEGORY = 'recent-projects-add-category',
 	RENAME_CATEGORY = 'recent-projects-rename-category',

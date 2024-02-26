@@ -37,6 +37,7 @@ declare global {
 		get: () => RecentProjectRoot;
 		addProject: (project: RecentProject, categoryId?: string) => void;
 		renameProject: (projectId: string, newName: string) => void;
+		moveProject: (projectId: string, newParentCategoryId?: string) => void;
 		removeProject: (projectId: string) => void;
 		clear: () => void;
 		addCategory: (category: RecentProjectCategory, parentCategoryId?: string) => void;

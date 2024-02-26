@@ -1,9 +1,7 @@
-import {DropdownOption, GlobalEventTypes, useGlobalEventBus} from '@rainbow-d9/n2';
-import {Fragment} from 'react';
-import {RecentProjectCategory, RecentProjectHolder, RecentProjectRootId, RecentProjectRootName} from '../../../shared';
+import {GlobalEventTypes, useGlobalEventBus} from '@rainbow-d9/n2';
+import {RecentProjectCategory, RecentProjectHolder, RecentProjectRootId} from '../../../shared';
 import {CategoryDialog} from './category-dialog';
-import {RecentProjectCategoryCandidate} from './types';
-import {transformCategoriesToMap, transformCategoriesToOptions} from './utils';
+import {getCategoryCandidates} from './utils';
 
 export interface CategoryOperation {
 	/** the parent to perform category operation, could be root */
@@ -21,27 +19,7 @@ export const useCategory = () => {
 
 	const performCategoryOperation = (operation?: CategoryOperation) => {
 		const recentProjectsRoot = window.electron.recentProjects.get();
-		const options = [
-			// add root manually
-			{value: RecentProjectRootId, label: RecentProjectRootName, parentCategoryIds: []},
-			// all categories
-			...transformCategoriesToOptions(recentProjectsRoot, '/', []).sort((a: DropdownOption, b: DropdownOption) => {
-				return (a.label as string).localeCompare(b.label as string);
-			})
-		].map(option => {
-			return {
-				value: option.value,
-				label: (option.label as string).split('/').map((part, index) => {
-					return <Fragment key={index}>
-						<span>{part}</span>
-						<span data-hierarchy-slash="">/</span>
-					</Fragment>;
-				}),
-				stringify: () => option.label,
-				parentCategoryIds: option.parentCategoryIds
-			} as RecentProjectCategoryCandidate;
-		});
-		const map = transformCategoriesToMap(recentProjectsRoot);
+		const {options, map} = getCategoryCandidates(recentProjectsRoot);
 		fire(GlobalEventTypes.SHOW_DIALOG,
 			<CategoryDialog root={recentProjectsRoot} options={options} map={map}
 			                parentCategoryId={operation?.parentCategory?.id ?? RecentProjectRootId}

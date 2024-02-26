@@ -17,7 +17,7 @@ import {InvalidMessage} from '../../../renderer-common/widgets';
 import {RecentProjectCategory, RecentProjectHolder, RecentProjectRoot, RecentProjectRootId} from '../../../shared';
 import {RecentProjectsEventTypes, useRecentProjectsEventBus} from '../event-bus';
 import {RecentProjectCategoryCandidate} from './types';
-import {filterAvailableCategories, generateCategoryId} from './utils';
+import {filterAvailableCategoriesForMoveCategory, generateCategoryId, getSelectedParentCategoryId} from './utils';
 
 interface CreateCategoryDialogState {
 	changed: boolean;
@@ -47,7 +47,7 @@ export const CategoryDialog = (props: {
 		return {
 			changed: false,
 			// leave undefined if it is a moving operation
-			parentCategoryId: move ? (void 0) : parentCategoryId,
+			parentCategoryId: move ? getSelectedParentCategoryId(filterAvailableCategoriesForMoveCategory(options, currentCategoryId, parentCategoryId)) : parentCategoryId,
 			name: (category as RecentProjectCategory)?.name ?? ''
 		};
 	});
@@ -128,17 +128,7 @@ export const CategoryDialog = (props: {
 	const title = rename ? 'Rename category' : (move ? 'Move category to' : 'Create new category');
 	const parentLabel = move ? 'Move to' : 'Parent category';
 	// filter myself and all my descendants when move is true
-	const availableOptions = move ? filterAvailableCategories(options, currentCategoryId, parentCategoryId) : options;
-	const selectedParentCategoryId = (() => {
-		if (state.parentCategoryId != null) {
-			return state.parentCategoryId;
-		}
-		if (availableOptions[0]?.value !== parentCategoryId) {
-			return availableOptions[0]?.value ?? RecentProjectRootId;
-		} else {
-			return availableOptions[1]?.value ?? RecentProjectRootId;
-		}
-	})();
+	const availableOptions = move ? filterAvailableCategoriesForMoveCategory(options, currentCategoryId, parentCategoryId) : options;
 	const okButtonLabel = rename ? 'Rename' : (move ? 'Move' : 'Create');
 
 	return <>
@@ -148,7 +138,7 @@ export const CategoryDialog = (props: {
 		<DialogBody data-flex-column={true} ref={containerRef}>
 			<UnwrappedCaption>{parentLabel}</UnwrappedCaption>
 			<UnwrappedDropdown options={availableOptions} onValueChange={onParentChanged}
-			                   value={selectedParentCategoryId}
+			                   value={getSelectedParentCategoryId(availableOptions, state.parentCategoryId)}
 			                   disabled={rename} clearable={false}/>
 			<UnwrappedCaption>Category name</UnwrappedCaption>
 			<UnwrappedInput onValueChange={onNameChanged} value={state.name} disabled={move} ref={inputRef}/>
