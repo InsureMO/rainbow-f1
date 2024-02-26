@@ -1,6 +1,6 @@
 import {useCreateEventBus} from '@rainbow-d9/n1';
 import {createContext, ReactNode, useContext} from 'react';
-import {F1Project, F1ProjectSettings} from '../shared';
+import {F1Project} from '../shared';
 
 export enum MainEventTypes {
 	SET_PROJECT = 'set-project',
@@ -12,17 +12,17 @@ export enum MainEventTypes {
 }
 
 export interface MainEventBus {
-	fire(type: MainEventTypes.SET_PROJECT, project: F1ProjectSettings): this;
+	fire(type: MainEventTypes.SET_PROJECT, project: F1Project): this;
 
-	on(type: MainEventTypes.SET_PROJECT, listener: (project: F1ProjectSettings) => void): this;
+	on(type: MainEventTypes.SET_PROJECT, listener: (project: F1Project) => void): this;
 
-	off(type: MainEventTypes.SET_PROJECT, listener: (project: F1ProjectSettings) => void): this;
+	off(type: MainEventTypes.SET_PROJECT, listener: (project: F1Project) => void): this;
 
-	fire(type: MainEventTypes.PROJECT_SETTLED, project: F1ProjectSettings): this;
+	fire(type: MainEventTypes.PROJECT_SETTLED, project: F1Project): this;
 
-	on(type: MainEventTypes.PROJECT_SETTLED, listener: (project: F1ProjectSettings) => void): this;
+	on(type: MainEventTypes.PROJECT_SETTLED, listener: (project: F1Project) => void): this;
 
-	off(type: MainEventTypes.PROJECT_SETTLED, listener: (project: F1ProjectSettings) => void): this;
+	off(type: MainEventTypes.PROJECT_SETTLED, listener: (project: F1Project) => void): this;
 
 	fire(type: MainEventTypes.ASK_PROJECT, callback: (project: F1Project) => void): this;
 

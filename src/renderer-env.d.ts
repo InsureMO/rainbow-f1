@@ -62,6 +62,9 @@ declare global {
 
 		tryToOpen(directory: string): Promise<F1ProjectExisted>;
 
+		/** try to close current window, when failed to open project */
+		closeOnFailedOpen(): void;
+
 		/**
 		 * ask project, only used in main window, and project was bound this window already
 		 */

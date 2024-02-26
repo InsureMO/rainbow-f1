@@ -31,6 +31,7 @@ class ApplicationF1Project {
 		ipcMain.handle(F1ProjectEvent.CREATE, async (_, settings: F1ProjectSettings): Promise<F1ProjectCreated> => await this.create(settings));
 		ipcMain.on(F1ProjectEvent.OPEN, (event, project: F1Project) => this.open(project, BrowserWindow.fromWebContents(event.sender)));
 		ipcMain.handle(F1ProjectEvent.TRY_TO_OPEN, async (_, directory: string) => await this.tryToOpen(directory));
+		ipcMain.on(F1ProjectEvent.CLOSE_ON_FAILED_OPEN, (event) => this.closeOnFailedOpen(BrowserWindow.fromWebContents(event.sender)));
 		ipcMain.handle(F1ProjectEvent.ASK, async (event) => await this.loadProject(BrowserWindow.fromWebContents(event.sender)));
 		ipcMain.on(F1ProjectEvent.OPENED, (_, project: F1Project) => this.onProjectOpened(project));
 	}
@@ -282,6 +283,10 @@ class ApplicationF1Project {
 		}
 		project.directory = directory;
 		return {success: true, project};
+	}
+
+	public closeOnFailedOpen(window: BrowserWindow) {
+		window.close();
 	}
 
 	public async loadProject(window: BrowserWindow): Promise<F1ProjectLoaded> {

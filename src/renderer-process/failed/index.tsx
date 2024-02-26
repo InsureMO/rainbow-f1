@@ -49,7 +49,8 @@ export const Failed = () => {
 	}, [fire]);
 
 	const onCloseClicked = () => {
-		// TODO ASK CLOSE THIS WINDOW SINCE FAILED TO LOAD PROJECT
+		// close this window since failed to load project
+		window.electron.f1.closeOnFailedOpen();
 	};
 
 	return <Container>

@@ -1,9 +1,9 @@
 import {Fragment, useEffect, useState} from 'react';
-import {F1Project, F1ProjectSettings, isNotBlank} from '../../shared';
+import {F1Project, isNotBlank} from '../../shared';
 import {MainEventTypes, useMainEventBus} from '../event-bus';
 
 interface ProjectHolderState {
-	project?: F1ProjectSettings;
+	project?: F1Project;
 	message?: string;
 }
 
@@ -12,7 +12,7 @@ export const ProjectHolder = () => {
 	const [state, setState] = useState<ProjectHolderState>({});
 
 	useEffect(() => {
-		const onSetProject = (project: F1ProjectSettings) => {
+		const onSetProject = (project: F1Project) => {
 			setState(state => ({...state, project}));
 		};
 		const onAskProjectFailed = (message: string) => {
