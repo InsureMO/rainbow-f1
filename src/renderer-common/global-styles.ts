@@ -69,6 +69,13 @@ export const GlobalStyles: any = createGlobalStyle`
         --d9-form-cell-invalid-message-font-weight: 600;
         --d9-form-cell-invalid-message-color: var(--d9-danger-color);
 
+        // workbench
+        --f1-wb-bar-background-color: #f2f2f2;
+        --f1-wb-location-bar-height: 32px;
+        --f1-wb-left-bar-width: 40px;
+        --f1-wb-right-bar-width: 40px;
+        --f1-wb-status-bar-height: 28px;
+
         color: var(--f1-font-color);
         background-color: var(--f1-background-color);
     }

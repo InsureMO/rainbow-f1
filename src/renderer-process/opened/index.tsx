@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import {F1Project} from '../../shared';
 import {MainEventTypes, useMainEventBus} from '../event-bus';
+import {ProjectWorkbench} from './workbench';
 
 interface State {
 	initialized: boolean;
@@ -13,6 +14,7 @@ export const Opened = () => {
 	useEffect(() => {
 		const onAskProject = (project: F1Project) => {
 			setState({initialized: true, project});
+			document.title = `${project.name} - ${project.directory}`;
 			window.electron.f1.opened(project);
 		};
 		fire(MainEventTypes.ASK_PROJECT, onAskProject);
@@ -22,7 +24,5 @@ export const Opened = () => {
 		return null;
 	}
 
-	return <div>
-		{JSON.stringify(state.project)}
-	</div>;
+	return <ProjectWorkbench/>;
 };
