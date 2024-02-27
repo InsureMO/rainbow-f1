@@ -28,7 +28,7 @@ export const createProjectWindow = (options: {
 	});
 	WindowManager.register(window, WindowType.PROJECT);
 
-	// and load the project.html of the app.
+	// and load project.html of the app.
 	if (dev) {
 		// noinspection JSIgnoredPromiseFromCall
 		window.loadURL(`${MAIN_WINDOW_VITE_DEV_SERVER_URL}/project.html`);
@@ -37,14 +37,12 @@ export const createProjectWindow = (options: {
 		window.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/project.html`));
 	}
 
-	const menuTemplate: Array<MenuItemConstructorOptions> = [
-		...createDevQuitMenu(dev),
-		...createEditMenu(dev), ...createWindowMenu(dev), ...createDevMenu(dev)
-	];
-	const appMenu = Menu.buildFromTemplate(menuTemplate);
-
 	window.on('focus', () => {
-		Menu.setApplicationMenu(appMenu);
+		const menuTemplate: Array<MenuItemConstructorOptions> = [
+			...createDevQuitMenu({should: true}),
+			...createEditMenu(dev), ...createWindowMenu(dev), ...createDevMenu(dev)
+		];
+		Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate));
 	});
 
 	if (showImmediate) {

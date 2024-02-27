@@ -51,6 +51,7 @@ export const SideBarButtonContainer = styled.span.attrs({[DOM_KEY_WIDGET]: 'f1-s
         box-shadow: var(--f1-wb-side-bar-button-tooltip-shadow);
         padding: 0 16px;
         border: var(--f1-border);
+        border-color: var(--f1-wb-border-color);
         border-radius: var(--f1-border-radius);
         z-index: 10000;
 

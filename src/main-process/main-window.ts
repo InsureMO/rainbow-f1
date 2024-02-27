@@ -16,10 +16,10 @@ export const createMainWindow = (project: F1Project, showImmediate: boolean): Br
 	WindowManager.registerMain(window, project);
 
 	window.on('focus', () => {
-		createAppMenu();
+		createAppMenu({quit: () => window.close()});
 		createDockMenu();
 	});
-	window.on('close', () => {
+	window.once('close', () => {
 		if (WindowManager.projects().length === 1) {
 			// last opened main window will close, call project window
 			const window = createProjectWindow({showImmediate});

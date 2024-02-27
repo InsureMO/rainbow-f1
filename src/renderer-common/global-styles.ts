@@ -179,8 +179,8 @@ export const GlobalStyles: any = createGlobalStyle`
             --f1-wb-location-segment-hover-color: #393b40;
             --f1-wb-side-bar-button-icon-color: #d6d2cd;
             --f1-wb-side-bar-button-hover-color: #4e5156;
-            --f1-wb-side-bar-button-tooltip-background-color: #f7f7f7;
-            --f1-wb-side-bar-button-tooltip-shadow: 0px 0px 10px 3px #c3c3c3;
+            --f1-wb-side-bar-button-tooltip-background-color: #393b40;
+            --f1-wb-side-bar-button-tooltip-shadow: 0px 0px 10px 3px #1a1c1d;
         }
     }
 

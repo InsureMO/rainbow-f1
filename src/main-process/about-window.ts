@@ -20,7 +20,7 @@ export const openAboutWindow = (parent: BrowserWindow) => {
 	});
 	WindowManager.register(window, WindowType.ABOUT);
 
-	// and load the about.html of the app.
+	// and load about.html of the app.
 	if (isDev()) {
 		// noinspection JSIgnoredPromiseFromCall
 		window.loadURL(`${MAIN_WINDOW_VITE_DEV_SERVER_URL}/about.html`);

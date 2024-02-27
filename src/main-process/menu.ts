@@ -23,22 +23,29 @@ const createThemeChangeMenuHandler = (source: ThemeSource) => {
 	};
 };
 
-export const createQuitMenuItem = (check: boolean) => {
+export const createQuitMenuItem = (options: { action?: () => void; check: boolean }) => {
+	const {action} = options;
+
 	return {
 		label: 'Quit @Rainbow-F1', accelerator: 'CmdOrCtrl+Q',
 		click: () => {
 			// TODO CHECK IF THERE IS ANY UNSAVED WORK
-			app.quit();
+			if (action != null) {
+				action();
+			} else {
+				app.quit();
+			}
 		}
 	};
 };
 
-export const createDevQuitMenu = (should: boolean) => {
+export const createDevQuitMenu = (options: { action?: () => void; should: boolean }) => {
+	const {action, should} = options;
 	if (should) {
 		return [{
 			label: app.getName(),
 			submenu: [
-				createQuitMenuItem(false)
+				createQuitMenuItem({action, check: false})
 			]
 		}];
 	} else {
@@ -65,11 +72,11 @@ export const createWindowMenu = (should: boolean) => {
 					label: 'Appearance', submenu: [
 						{
 							label: 'Light', type: 'radio', checked: theme === Theme.LIGHT,
-							click: createThemeChangeMenuHandler(Theme.LIGHT)
+							click: createThemeChangeMenuHandler(Theme.LIGHT), accelerator: 'CmdOrCtrl+Shift+L'
 						} as MenuItemConstructorOptions,
 						{
 							label: 'Dark', type: 'radio', checked: theme === Theme.DARK,
-							click: createThemeChangeMenuHandler(Theme.DARK)
+							click: createThemeChangeMenuHandler(Theme.DARK), accelerator: 'CmdOrCtrl+Shift+D'
 						} as MenuItemConstructorOptions,
 						{
 							label: 'Auto-follow system', type: 'radio', checked: theme === Theme.SYSTEM,
@@ -104,7 +111,9 @@ export const createDevMenu = (should: boolean) => {
 	}
 };
 
-export const createAppMenu = () => {
+export const createAppMenu = (options: { quit?: () => void }) => {
+	const {quit} = options;
+
 	let aboutWindow: BrowserWindow;
 	const aboutMenuItem = {
 		label: 'About @Rainbow-F1', click: () => {
@@ -132,7 +141,7 @@ export const createAppMenu = () => {
 				aboutMenuItem,
 				checkForUpdatesMenuItem,
 				{type: 'separator'} as MenuItemConstructorOptions,
-				createQuitMenuItem(true)
+				createQuitMenuItem({action: quit, check: true})
 			]
 		} : null,
 		{
@@ -145,7 +154,7 @@ export const createAppMenu = () => {
 				{type: 'separator'} as MenuItemConstructorOptions,
 				{label: 'Close Project'},
 				mac ? null : {type: 'separator'} as MenuItemConstructorOptions,
-				mac ? null : createQuitMenuItem(true)
+				mac ? null : createQuitMenuItem({action: quit, check: true})
 			].filter(menu => menu != null)
 		},
 		...createEditMenu(true),
