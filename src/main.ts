@@ -1,5 +1,5 @@
-import {app} from 'electron';
-import {createSplashWindow} from './main-process';
+import {app, BrowserWindow} from 'electron';
+import {createFirstWindow, createSplashWindow} from './main-process';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -16,19 +16,19 @@ app.on('ready', createSplashWindow);
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
 	// quit app when all closed, even on macOS
-	// if (process.platform !== 'darwin') {
-	app.quit();
-	// }
+	if (process.platform !== 'darwin') {
+		app.quit();
+	}
 });
-//
-// app.on('activate', () => {
-// 	// On OS X it's common to re-create a window in the app when the
-// 	// dock icon is clicked and there are no other windows open.
-// 	if (BrowserWindow.getAllWindows().length === 0) {
-// 		// do not show splash window when activate again
-// 		createFirstWindow(true);
-// 	}
-// });
+
+app.on('activate', () => {
+	// On OS X it's common to re-create a window in the app when the
+	// dock icon is clicked and there are no other windows open.
+	if (BrowserWindow.getAllWindows().length === 0) {
+		// do not show splash window when activate again
+		createFirstWindow(true);
+	}
+});
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
