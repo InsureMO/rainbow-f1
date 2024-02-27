@@ -24,5 +24,5 @@ export const Opened = () => {
 		return null;
 	}
 
-	return <ProjectWorkbench/>;
+	return <ProjectWorkbench project={state.project}/>;
 };

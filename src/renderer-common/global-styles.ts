@@ -3,15 +3,17 @@ import {createGlobalStyle} from 'styled-components';
 
 export const GlobalStyles: any = createGlobalStyle`
     html, body {
-        font-family: 'Noto Sans SC', 'Noto Sans JP', 'Roboto Mono', Arial, Helvetica, sans-serif;
+        font-family: 'Roboto Mono', 'Noto Sans SC', 'Noto Sans JP', Arial, Helvetica, sans-serif;
         font-size: 14px;
 
         *, *:before, *:after {
+            font-family: 'Roboto Mono', 'Noto Sans SC', 'Noto Sans JP', Arial, Helvetica, sans-serif;
             box-sizing: border-box;
         }
     }
 
     body {
+        --f1-font-family: 'Roboto Mono', 'Noto Sans SC', 'Noto Sans JP', Arial, Helvetica, sans-serif;
         --f1-row-height: 32px;
         // color
         --f1-background-color: #fdfdfd;
@@ -52,6 +54,8 @@ export const GlobalStyles: any = createGlobalStyle`
         --d9-font-variant: none;
         // d9 common
         --d9-input-height: var(--f1-row-height);
+        // d9 caption
+        --d9-caption-font-family: var(--f1-font-family);
         // d9 dialog
         --d9-dialog-margin-top: max(96px, 20vh);
         --d9-dialog-margin-left: calc(50vw - var(--d9-dialog-width) / 2 - 32px);
@@ -70,10 +74,17 @@ export const GlobalStyles: any = createGlobalStyle`
         --d9-form-cell-invalid-message-color: var(--d9-danger-color);
 
         // workbench
+        --f1-wb-border-color: #d5d5d5;
         --f1-wb-bar-background-color: #f2f2f2;
         --f1-wb-location-bar-height: 32px;
+        --f1-wb-location-segment-icon-color: #292d32;
+        --f1-wb-location-segment-hover-color: #dfdfdf;
         --f1-wb-left-bar-width: 40px;
         --f1-wb-right-bar-width: 40px;
+        --f1-wb-side-bar-button-hover-color: #d1d1d1;
+        --f1-wb-side-bar-button-icon-color: #292d32;
+        --f1-wb-side-bar-button-tooltip-background-color: #f7f7f7;
+        --f1-wb-side-bar-button-tooltip-shadow: 0px 0px 10px 3px #c3c3c3;
         --f1-wb-status-bar-height: 28px;
 
         color: var(--f1-font-color);
@@ -161,6 +172,15 @@ export const GlobalStyles: any = createGlobalStyle`
             --f1-primary-shadow: 0 0 0 3px ${color('#6b95f8').alpha(0.4).toString()};
             --f1-primary-hover-shadow: 0 0 0 3px ${color('#6b95f8').alpha(0.2).toString()};
             --f1-dialog-shadow: 0 0 18px 6px ${color('#fff').alpha(0.4).toString()};
+
+            --f1-wb-border-color: #1e1f22;
+            --f1-wb-bar-background-color: #2b2d30;
+            --f1-wb-location-segment-icon-color: #d6d2cd;
+            --f1-wb-location-segment-hover-color: #393b40;
+            --f1-wb-side-bar-button-icon-color: #d6d2cd;
+            --f1-wb-side-bar-button-hover-color: #4e5156;
+            --f1-wb-side-bar-button-tooltip-background-color: #f7f7f7;
+            --f1-wb-side-bar-button-tooltip-shadow: 0px 0px 10px 3px #c3c3c3;
         }
     }
 

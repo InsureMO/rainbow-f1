@@ -2,96 +2,96 @@
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 100;
-    src: local('Roboto Mono Thin'), local('RobotoMono-Thin'), url(./static/RobotoMono-Thin.ttf) format('ttf');
+    src: local('Roboto Mono Thin'), local('RobotoMono-Thin'), url(./static/RobotoMono-Thin.ttf) format('truetype');
 }
 
 @font-face {
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 100;
-    src: local('Roboto Mono ThinItalic'), local('RobotoMono-ThinItalic'), url(./static/RobotoMono-ThinItalic.ttf) format('ttf');
+    src: local('Roboto Mono ThinItalic'), local('RobotoMono-ThinItalic'), url(./static/RobotoMono-ThinItalic.ttf) format('truetype');
 }
 
 @font-face {
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 200;
-    src: local('Roboto Mono ExtraLight'), local('RobotoMono-ExtraLight'), url(./static/RobotoMono-ExtraLight.ttf) format('ttf');
+    src: local('Roboto Mono ExtraLight'), local('RobotoMono-ExtraLight'), url(./static/RobotoMono-ExtraLight.ttf) format('truetype');
 }
 
 @font-face {
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 200;
-    src: local('Roboto Mono ExtraLightItalic'), local('RobotoMono-ExtraLightItalic'), url(./static/RobotoMono-ExtraLightItalic.ttf) format('ttf');
+    src: local('Roboto Mono ExtraLightItalic'), local('RobotoMono-ExtraLightItalic'), url(./static/RobotoMono-ExtraLightItalic.ttf) format('truetype');
 }
 
 @font-face {
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 300;
-    src: local('Roboto Mono Light'), local('RobotoMono-Light'), url(./static/RobotoMono-Light.ttf) format('ttf');
+    src: local('Roboto Mono Light'), local('RobotoMono-Light'), url(./static/RobotoMono-Light.ttf) format('truetype');
 }
 
 @font-face {
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 300;
-    src: local('Roboto Mono LightItalic'), local('RobotoMono-LightItalic'), url(./static/RobotoMono-LightItalic.ttf) format('ttf');
+    src: local('Roboto Mono LightItalic'), local('RobotoMono-LightItalic'), url(./static/RobotoMono-LightItalic.ttf) format('truetype');
 }
 
 @font-face {
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 400;
-    src: local('Roboto Mono'), local('RobotoMono-Regular'), url(./static/RobotoMono-Regular.ttf) format('ttf');
+    src: local('Roboto Mono'), local('RobotoMono-Regular'), url(./static/RobotoMono-Regular.ttf) format('truetype');
 }
 
 @font-face {
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 400;
-    src: local('Roboto Mono Italic'), local('RobotoMono-Italic'), url(./static/RobotoMono-Italic.ttf) format('ttf');
+    src: local('Roboto Mono Italic'), local('RobotoMono-Italic'), url(./static/RobotoMono-Italic.ttf) format('truetype');
 }
 
 @font-face {
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 500;
-    src: local('Roboto Mono Medium'), local('RobotoMono-Medium'), url(./static/RobotoMono-Medium.ttf) format('ttf');
+    src: local('Roboto Mono Medium'), local('RobotoMono-Medium'), url(./static/RobotoMono-Medium.ttf) format('truetype');
 }
 
 @font-face {
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 500;
-    src: local('Roboto Mono MediumItalic'), local('RobotoMono-MediumItalic'), url(./static/RobotoMono-MediumItalic.ttf) format('ttf');
+    src: local('Roboto Mono MediumItalic'), local('RobotoMono-MediumItalic'), url(./static/RobotoMono-MediumItalic.ttf) format('truetype');
 }
 
 @font-face {
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 600;
-    src: local('Roboto Mono SemiBold'), local('RobotoMono-SemiBold'), url(./static/RobotoMono-SemiBold.ttf) format('ttf');
+    src: local('Roboto Mono SemiBold'), local('RobotoMono-SemiBold'), url(./static/RobotoMono-SemiBold.ttf) format('truetype');
 }
 
 @font-face {
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 600;
-    src: local('Roboto Mono SemiBoldItalic'), local('RobotoMono-SemiBoldItalic'), url(./static/RobotoMono-SemiBoldItalic.ttf) format('ttf');
+    src: local('Roboto Mono SemiBoldItalic'), local('RobotoMono-SemiBoldItalic'), url(./static/RobotoMono-SemiBoldItalic.ttf) format('truetype');
 }
 
 @font-face {
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 700;
-    src: local('Roboto Mono Bold'), local('RobotoMono-Bold'), url(./static/RobotoMono-Bold.ttf) format('ttf');
+    src: local('Roboto Mono Bold'), local('RobotoMono-Bold'), url(./static/RobotoMono-Bold.ttf) format('truetype');
 }
 
 @font-face {
     font-family: 'Roboto Mono';
     font-style: italic;
     font-weight: 700;
-    src: local('Roboto Mono BoldItalic'), local('RobotoMono-BoldItalic'), url(./static/RobotoMono-BoldItalic.ttf) format('ttf');
+    src: local('Roboto Mono BoldItalic'), local('RobotoMono-BoldItalic'), url(./static/RobotoMono-BoldItalic.ttf) format('truetype');
 }
