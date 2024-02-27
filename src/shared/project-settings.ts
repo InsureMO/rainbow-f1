@@ -19,7 +19,6 @@ export interface D9ModuleDependencies extends F1ModuleDependencies {
 	'@rainbow-d9/n1': boolean;
 	'@rainbow-d9/n2': boolean;
 	'@rainbow-d9/n3': boolean;
-	'@rainbow-d9/n5': boolean;
 	'@rainbow-d9/echarts': boolean;
 	'@rainbow-d9/thai-plan-selection': boolean;
 }

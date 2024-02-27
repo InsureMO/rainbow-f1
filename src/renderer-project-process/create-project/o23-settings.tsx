@@ -16,7 +16,7 @@ export const O23Settings = (props: { project: F1ProjectSettings; module: O23Modu
 		base: ProjectModuleBase.MODULE, index, validate: async () => {
 			let nameMessage = validateModuleName(module.name);
 			if (nameMessage == null) {
-				nameMessage = validateModuleNameDuplication({settings: project, base: ProjectModuleBase.O23, index});
+				nameMessage = validateModuleNameDuplication({settings: project, base: ProjectModuleBase.MODULE, index});
 			}
 			setState(state => ({...state, nameMessage}));
 		}

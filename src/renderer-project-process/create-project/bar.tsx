@@ -9,11 +9,10 @@ import {
 } from '@rainbow-d9/n2';
 import {useNavigate} from 'react-router-dom';
 import {ButtonBarSpacer} from '../../renderer-common/widgets';
-import {CommandLines, D9ModuleSettings, F1ModuleType, F1ProjectSettings} from '../../shared';
+import {CommandLines, F1ProjectSettings} from '../../shared';
 import {CreateProjectEventTypes, useCreateProjectEventBus} from './event-bus';
 import {ProjectModuleBase} from './types';
 import {
-	validateD9N3N5,
 	validateEnvCli,
 	validateModuleName,
 	validateModuleNameDuplication,
@@ -39,17 +38,7 @@ export const Bar = (props: { settings: F1ProjectSettings }) => {
 			...(settings.modules ?? []).map((module, index) => {
 				return [
 					() => validateModuleName(module.name),
-					() => validateModuleNameDuplication({settings, base: ProjectModuleBase.MODULE, index}),
-					...(() => {
-						if (module.type === F1ModuleType.D9) {
-							const d9 = module as D9ModuleSettings;
-							return [
-								() => validateD9N3N5(d9.dependencies?.['@rainbow-d9/n3'], d9.dependencies?.['@rainbow-d9/n5'])
-							];
-						} else {
-							return [];
-						}
-					})()
+					() => validateModuleNameDuplication({settings, base: ProjectModuleBase.MODULE, index})
 				].map(validate => ({validate, base: ProjectModuleBase.MODULE, index}));
 			}).flat(),
 			...[

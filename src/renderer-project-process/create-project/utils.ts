@@ -33,8 +33,7 @@ export const createD9ModuleSettings = (): D9ModuleSettings => {
 		dependencies: {
 			'@rainbow-d9/n1': true,
 			'@rainbow-d9/n2': true,
-			'@rainbow-d9/n3': false,
-			'@rainbow-d9/n5': true,
+			'@rainbow-d9/n3': true,
 			'@rainbow-d9/echarts': false,
 			'@rainbow-d9/thai-plan-selection': false
 		}
@@ -110,14 +109,6 @@ export const validateModuleNameDuplication = (options: {
 		.some(module => (module.name ?? '').trim().toLowerCase() === name);
 	if (duplicated) {
 		return 'Module name is duplicated.';
-	} else {
-		return (void 0);
-	}
-};
-
-export const validateD9N3N5 = (n3?: boolean, n5?: boolean): string | undefined => {
-	if (n3 !== true && n5 !== true) {
-		return 'Select at least one between @rainbow-d9/n3 and @rainbow-d9/n5.';
 	} else {
 		return (void 0);
 	}
