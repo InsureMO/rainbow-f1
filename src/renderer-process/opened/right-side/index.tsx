@@ -1,6 +1,6 @@
 import {DatabaseIcon, NotificationIcon} from '../../../assets/icons';
 import {SideBarButton} from '../side-bar';
-import {RightBarContainer} from './widgets';
+import {RightBar, RightBarContainer, RightContainer} from './widgets';
 
 const RightBarUppers = () => {
 	return <>
@@ -9,6 +9,9 @@ const RightBarUppers = () => {
 	</>;
 };
 
-export const RightBar = () => {
-	return <RightBarContainer uppers={<RightBarUppers/>}/>;
+export const RightSide = () => {
+	return <RightBarContainer>
+		<RightContainer/>
+		<RightBar uppers={<RightBarUppers/>}/>
+	</RightBarContainer>;
 };

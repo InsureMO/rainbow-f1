@@ -8,7 +8,7 @@ import {
 	TodoIcon
 } from '../../../assets/icons';
 import {SideBarButton} from '../side-bar';
-import {LeftBarContainer} from './widgets';
+import {LeftBar, LeftContainer, LeftSideContainer} from './widgets';
 
 const LeftBarUppers = () => {
 	return <>
@@ -32,6 +32,9 @@ const LeftBarBottoms = () => {
 	</>;
 };
 
-export const LeftBar = () => {
-	return <LeftBarContainer uppers={<LeftBarUppers/>} lowers={<LeftBarLowers/>} bottoms={<LeftBarBottoms/>}/>;
+export const LeftSide = () => {
+	return <LeftSideContainer>
+		<LeftBar uppers={<LeftBarUppers/>} lowers={<LeftBarLowers/>} bottoms={<LeftBarBottoms/>}/>
+		<LeftContainer></LeftContainer>
+	</LeftSideContainer>;
 };

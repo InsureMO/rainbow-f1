@@ -61,7 +61,7 @@ export const SideBarButtonContainer = styled.span.attrs({[DOM_KEY_WIDGET]: 'f1-s
         }
     }
 `;
-export const SidebarSeparator = styled.span.attrs({[DOM_KEY_WIDGET]: 'f1-side-bar-separator'})`
+export const SideBarSeparator = styled.span.attrs({[DOM_KEY_WIDGET]: 'f1-side-bar-separator'})`
     display: block;
     position: relative;
     margin: 8px 0;
@@ -71,7 +71,7 @@ export const SidebarSeparator = styled.span.attrs({[DOM_KEY_WIDGET]: 'f1-side-ba
     border-color: var(--f1-wb-border-color);
     opacity: 0.7;
 `;
-export const SidebarSpaceHolder = styled.span.attrs({[DOM_KEY_WIDGET]: 'f1-side-bar-space-holder'})`
+export const SideBarSpaceHolder = styled.span.attrs({[DOM_KEY_WIDGET]: 'f1-side-bar-space-holder'})`
     display: block;
     position: relative;
     flex-grow: 1;
