@@ -2,6 +2,7 @@ import {useEffect, useState} from 'react';
 import {F1Project} from '../../shared';
 import {MainEventTypes, useMainEventBus} from '../event-bus';
 import {ProjectWorkbench} from './workbench';
+import {WorkbenchEventBusProvider} from './workbench/event-bus';
 
 interface State {
 	initialized: boolean;
@@ -24,5 +25,7 @@ export const Opened = () => {
 		return null;
 	}
 
-	return <ProjectWorkbench project={state.project}/>;
+	return <WorkbenchEventBusProvider>
+		<ProjectWorkbench project={state.project}/>
+	</WorkbenchEventBusProvider>;
 };

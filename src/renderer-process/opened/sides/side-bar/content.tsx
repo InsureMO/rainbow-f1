@@ -1,9 +1,14 @@
 import {JSX, useEffect, useState} from 'react';
-import {SideContentKey, SideContentPosition, SideEventTypes, useSideEventBus} from './event-bus';
+import {
+	SideContentKey,
+	SideContentPosition,
+	useWorkbenchEventBus,
+	WorkbenchEventTypes
+} from '../../workbench/event-bus';
 import {SideContentContainer, SideContentPartContainer} from './widgets';
 
 export enum SideContentResizeOn {
-	LEFT = 'left', RIGHT = 'right'
+	TOP = 'top', LEFT = 'left', RIGHT = 'right'
 }
 
 export type SwitchFrame = (key: SideContentKey, pos: SideContentPosition) => JSX.Element | undefined;
@@ -13,7 +18,7 @@ export interface SideContentPartState {
 }
 
 const useSideContentPart = (switchFrame: SwitchFrame, position: SideContentPosition) => {
-	const {on, off, fire} = useSideEventBus();
+	const {on, off, fire} = useWorkbenchEventBus();
 	const [state, setState] = useState<SideContentPartState>({});
 	useEffect(() => {
 		const onOpen = (key: SideContentKey, pos: SideContentPosition) => {
@@ -24,7 +29,7 @@ const useSideContentPart = (switchFrame: SwitchFrame, position: SideContentPosit
 				return;
 			}
 			setState({key});
-			fire(SideEventTypes.OPENED, key, position);
+			fire(WorkbenchEventTypes.OPENED, key, position);
 		};
 		const onClose = (key: SideContentKey, pos: SideContentPosition) => {
 			if (pos !== position) {
@@ -34,33 +39,33 @@ const useSideContentPart = (switchFrame: SwitchFrame, position: SideContentPosit
 				return;
 			}
 			setState({});
-			fire(SideEventTypes.CLOSED, key, position);
+			fire(WorkbenchEventTypes.CLOSED, key, position);
 		};
-		on(SideEventTypes.OPEN, onOpen);
-		on(SideEventTypes.CLOSE, onClose);
+		on(WorkbenchEventTypes.OPEN, onOpen);
+		on(WorkbenchEventTypes.CLOSE, onClose);
 		return () => {
-			off(SideEventTypes.OPEN, onOpen);
-			off(SideEventTypes.CLOSE, onClose);
+			off(WorkbenchEventTypes.OPEN, onOpen);
+			off(WorkbenchEventTypes.CLOSE, onClose);
 		};
 	}, [on, off, state.key, position]);
 
 	return switchFrame(state.key, position);
 };
 
-export const SideContentUpper = (props: { switch: SwitchFrame }) => {
-	const {switch: switchFrame} = props;
+export const SideContentUpper = (props: { contentPosition: SideContentPosition; switch: SwitchFrame }) => {
+	const {contentPosition, switch: switchFrame} = props;
 
-	const part = useSideContentPart(switchFrame, SideContentPosition.UPPER);
+	const part = useSideContentPart(switchFrame, contentPosition);
 
 	return <SideContentPartContainer>
 		{part}
 	</SideContentPartContainer>;
 };
 
-export const SideContentLower = (props: { switch: SwitchFrame }) => {
-	const {switch: switchFrame} = props;
+export const SideContentLower = (props: { contentPosition: SideContentPosition; switch: SwitchFrame }) => {
+	const {contentPosition, switch: switchFrame} = props;
 
-	const part = useSideContentPart(switchFrame, SideContentPosition.LOWER);
+	const part = useSideContentPart(switchFrame, contentPosition);
 
 	return <SideContentPartContainer>
 		{part}
@@ -69,6 +74,7 @@ export const SideContentLower = (props: { switch: SwitchFrame }) => {
 
 export interface SideContentProps {
 	resizeOn: SideContentResizeOn;
+	positions: [SideContentPosition, SideContentPosition] | [SideContentPosition];
 	switchFrame: SwitchFrame;
 }
 
@@ -80,37 +86,42 @@ export interface SideContentState {
 }
 
 export const SideContent = (props: SideContentProps) => {
-	const {resizeOn, switchFrame, ...rest} = props;
+	const {resizeOn, positions, switchFrame, ...rest} = props;
 
-	const {on, off} = useSideEventBus();
+	const {on, off} = useWorkbenchEventBus();
 	const [state, setState] = useState<SideContentState>({upper: false, lower: false});
 	useEffect(() => {
 		const onOpened = (key: SideContentKey, pos: SideContentPosition) => {
-			if (pos === SideContentPosition.UPPER || pos === SideContentPosition.BOTTOM) {
+			const [first, second] = positions;
+			if (pos === first) {
 				setState(state => ({...state, upper: true}));
-			} else {
+			} else if (pos === second) {
 				setState(state => ({...state, lower: true}));
 			}
 		};
 		const onClosed = (key: SideContentKey, pos: SideContentPosition) => {
-			if (pos === SideContentPosition.UPPER || pos === SideContentPosition.BOTTOM) {
+			const [first, second] = positions;
+			if (pos === first) {
 				setState(state => ({...state, upper: false}));
-			} else {
+			} else if (pos === second) {
 				setState(state => ({...state, lower: false}));
 			}
 		};
-		on(SideEventTypes.OPENED, onOpened);
-		on(SideEventTypes.CLOSED, onClosed);
+		on(WorkbenchEventTypes.OPENED, onOpened);
+		on(WorkbenchEventTypes.CLOSED, onClosed);
 		return () => {
-			off(SideEventTypes.OPENED, onOpened);
-			off(SideEventTypes.CLOSED, onClosed);
+			off(WorkbenchEventTypes.OPENED, onOpened);
+			off(WorkbenchEventTypes.CLOSED, onClosed);
 		};
-	}, [on, off]);
+	}, [on, off, positions]);
+
+	const [first, second] = positions;
 
 	return <SideContentContainer upper={state.upper} lower={state.lower}
+	                             vertical={first === SideContentPosition.BOTTOM}
 	                             contentSize={state.contentSize} lowerHeight={state.lowerHeight}
 	                             {...rest}>
-		<SideContentUpper switch={switchFrame}/>
-		<SideContentLower switch={switchFrame}/>
+		<SideContentUpper contentPosition={first} switch={switchFrame}/>
+		{second != null ? <SideContentLower contentPosition={second} switch={switchFrame}/> : null}
 	</SideContentContainer>;
 };

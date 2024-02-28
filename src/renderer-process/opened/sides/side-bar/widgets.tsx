@@ -86,28 +86,32 @@ export const SideBarSpaceHolder = styled.span.attrs({[DOM_KEY_WIDGET]: 'f1-wb-si
     flex-grow: 1;
 `;
 export const SideContentContainer = styled.div.attrs<{
-	upper: boolean; lower: boolean; contentSize?: string | number; lowerHeight?: string | number
-}>(({upper, lower, contentSize, lowerHeight}) => {
+	upper: boolean; lower: boolean; vertical: boolean; contentSize?: string | number; lowerHeight?: string | number
+}>(({upper, lower, vertical, contentSize, lowerHeight}) => {
 	return {
 		[DOM_KEY_WIDGET]: 'f1-wb-side-content-container',
-		'data-upper': upper,
-		'data-lower': lower,
+		'data-upper': upper ? '' : (void 0),
+		'data-lower': lower ? '' : (void 0),
 		style: {
-			'--min-width': (upper || lower) ? 'max(300px, 25vw)' : (void 0),
-			'--width': (upper || lower) ? (contentSize != null ? Utils.toCssSize(contentSize) : 'max(300px, 25vw)') : 0,
+			'--min-width': vertical ? (void 0) : ((upper || lower) ? 'max(300px, 25vw)' : (void 0)),
+			'--width': vertical ? (void 0) : ((upper || lower) ? (contentSize != null ? Utils.toCssSize(contentSize) : 'max(300px, 25vw)') : 0),
+			'--min-height': !vertical ? (void 0) : ((upper || lower) ? 'max(300px, 30vh)' : (void 0)),
+			'--height': !vertical ? (void 0) : ((upper || lower) ? (contentSize != null ? Utils.toCssSize(contentSize) : 'max(300px, 30vh)') : 0),
 			'--border': (upper || lower) ? '1px' : 0,
 			'--grid-rows': lower ? (upper ? (lowerHeight != null ? `1fr ${Utils.toCssSize(lowerHeight)}` : '1fr 1fr') : '0px 1fr') : '1fr 0px'
 		}
 	};
-})<{ upper: boolean; lower: boolean; contentSize?: string | number; lowerHeight?: string | number }>`
+})<{ upper: boolean; lower: boolean; vertical: boolean; contentSize?: string | number; lowerHeight?: string | number }>`
     display: grid;
     position: relative;
     grid-template-columns: 1fr;
     grid-template-rows: var(--grid-rows);
     min-width: var(--min-width);
     width: var(--width);
+    min-height: var(--min-height);
+    height: var(--height);
 
-    &[data-upper=true][data-lower=true] {
+    &[data-upper][data-lower] {
         > div[data-w=f1-wb-side-content-part]:last-child {
             border-top: var(--f1-border);
             border-top-color: var(--f1-wb-border-color);

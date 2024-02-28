@@ -1,5 +1,10 @@
 import {ReactNode, useEffect, useState} from 'react';
-import {SideContentKey, SideContentPosition, SideEventTypes, useSideEventBus} from './event-bus';
+import {
+	SideContentKey,
+	SideContentPosition,
+	useWorkbenchEventBus,
+	WorkbenchEventTypes
+} from '../../workbench/event-bus';
 import {SideBarButtonContainer} from './widgets';
 
 export interface SideBarButtonProps {
@@ -14,7 +19,7 @@ export interface SideBarButtonProps {
 export const SideBarButton = (props: SideBarButtonProps) => {
 	const {icon, tooltip, left = false, contentKey, contentPosition} = props;
 
-	const {on, off, fire} = useSideEventBus();
+	const {on, off, fire} = useWorkbenchEventBus();
 	const [opened, setOpened] = useState(false);
 	useEffect(() => {
 		const onOpened = (key: SideContentKey, pos: SideContentPosition) => {
@@ -34,19 +39,19 @@ export const SideBarButton = (props: SideBarButtonProps) => {
 				setOpened(false);
 			}
 		};
-		on(SideEventTypes.OPENED, onOpened);
-		on(SideEventTypes.CLOSED, onClosed);
+		on(WorkbenchEventTypes.OPENED, onOpened);
+		on(WorkbenchEventTypes.CLOSED, onClosed);
 		return () => {
-			off(SideEventTypes.OPENED, onOpened);
-			off(SideEventTypes.CLOSED, onClosed);
+			off(WorkbenchEventTypes.OPENED, onOpened);
+			off(WorkbenchEventTypes.CLOSED, onClosed);
 		};
 	}, [on, off, contentKey, contentPosition]);
 
 	const onClicked = () => {
 		if (opened) {
-			fire(SideEventTypes.CLOSE, contentKey, contentPosition);
+			fire(WorkbenchEventTypes.CLOSE, contentKey, contentPosition);
 		} else {
-			fire(SideEventTypes.OPEN, contentKey, contentPosition);
+			fire(WorkbenchEventTypes.OPEN, contentKey, contentPosition);
 		}
 		setOpened(!opened);
 	};

@@ -7,23 +7,22 @@ import {
 	TerminalIcon,
 	TodoIcon
 } from '../../../../assets/icons';
+import {SideContentKey, SideContentPosition} from '../../workbench/event-bus';
 import {switchFrame} from '../frames';
-import {ProjectFrame} from '../project-frame';
 import {SideBarButton, SideContentResizeOn} from '../side-bar';
-import {SideContentKey, SideContentPosition} from '../side-bar/event-bus';
 import {LeftBar, LeftSideContainer, LeftSideContent} from './widgets';
 
 const LeftBarUppers = () => {
 	return <>
 		<SideBarButton icon={<FolderRootIcon/>} tooltip="Project"
-		               contentPosition={SideContentPosition.UPPER} contentKey={SideContentKey.PROJECT}/>
+		               contentPosition={SideContentPosition.LEFT_UPPER} contentKey={SideContentKey.PROJECT}/>
 	</>;
 };
 
 const LeftBarLowers = () => {
 	return <>
 		<SideBarButton icon={<StructureIcon/>} tooltip="Structure"
-		               contentPosition={SideContentPosition.LOWER} contentKey={SideContentKey.STRUCTURE}/>
+		               contentPosition={SideContentPosition.LEFT_LOWER} contentKey={SideContentKey.STRUCTURE}/>
 	</>;
 };
 
@@ -45,6 +44,8 @@ const LeftBarBottoms = () => {
 export const LeftSide = () => {
 	return <LeftSideContainer>
 		<LeftBar uppers={<LeftBarUppers/>} lowers={<LeftBarLowers/>} bottoms={<LeftBarBottoms/>}/>
-		<LeftSideContent resizeOn={SideContentResizeOn.RIGHT} switchFrame={switchFrame}/>
+		<LeftSideContent resizeOn={SideContentResizeOn.RIGHT}
+		                 positions={[SideContentPosition.LEFT_UPPER, SideContentPosition.LEFT_LOWER]}
+		                 switchFrame={switchFrame}/>
 	</LeftSideContainer>;
 };

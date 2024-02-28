@@ -1,6 +1,6 @@
 import {F1Project} from '../../../shared';
-import {LeftSide} from '../sides/left-side';
 import {LocationBar} from '../location-bar';
+import {LeftSide} from '../sides/left-side';
 import {RightSide} from '../sides/right-side';
 import {StatusBar} from '../status-bar';
 import {WorkArea} from '../work-area';

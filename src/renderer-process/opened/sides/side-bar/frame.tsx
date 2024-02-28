@@ -1,6 +1,11 @@
 import {ReactNode} from 'react';
 import {MinusIcon} from '../../../../assets/icons';
-import {SideContentKey, SideContentPosition, SideEventTypes, useSideEventBus} from './event-bus';
+import {
+	SideContentKey,
+	SideContentPosition,
+	useWorkbenchEventBus,
+	WorkbenchEventTypes
+} from '../../workbench/event-bus';
 import {SideFrameHeaderButton} from './frame-header-button';
 import {SideFrameBody, SideFrameContainer, SideFrameHeader, SideFrameHeaderSpaceHolder} from './widgets';
 
@@ -14,10 +19,10 @@ export interface SideFrameProps {
 export const SideFrame = (props: SideFrameProps) => {
 	const {title, contentKey, contentPosition, children, ...rest} = props;
 
-	const {fire} = useSideEventBus();
+	const {fire} = useWorkbenchEventBus();
 
 	const onHideClicked = async () => {
-		fire(SideEventTypes.CLOSE, contentKey, contentPosition);
+		fire(WorkbenchEventTypes.CLOSE, contentKey, contentPosition);
 	};
 
 	return <SideFrameContainer {...rest}>
