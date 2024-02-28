@@ -86,32 +86,37 @@ export const SideBarSpaceHolder = styled.span.attrs({[DOM_KEY_WIDGET]: 'f1-wb-si
     flex-grow: 1;
 `;
 export const SideContentContainer = styled.div.attrs<{
-	upper: boolean; lower: boolean; resizeTo?: string | number
-}>(({upper, lower, resizeTo}) => {
+	upper: boolean; lower: boolean; contentSize?: string | number; lowerHeight?: string | number
+}>(({upper, lower, contentSize, lowerHeight}) => {
 	return {
 		[DOM_KEY_WIDGET]: 'f1-wb-side-content-container',
+		'data-upper': upper,
+		'data-lower': lower,
 		style: {
 			'--min-width': (upper || lower) ? 'max(300px, 25vw)' : (void 0),
-			'--width': (upper || lower) ? (resizeTo != null ? Utils.toCssSize(resizeTo) : 'max(300px, 25vw)') : 0,
-			'--border': (upper || lower)? '1px' : 0
+			'--width': (upper || lower) ? (contentSize != null ? Utils.toCssSize(contentSize) : 'max(300px, 25vw)') : 0,
+			'--border': (upper || lower) ? '1px' : 0,
+			'--grid-rows': lower ? (upper ? (lowerHeight != null ? `1fr ${Utils.toCssSize(lowerHeight)}` : '1fr 1fr') : '0px 1fr') : '1fr 0px'
 		}
 	};
-})<{ upper: boolean; lower: boolean; resizeTo?: string | number }>`
+})<{ upper: boolean; lower: boolean; contentSize?: string | number; lowerHeight?: string | number }>`
     display: grid;
     position: relative;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr auto;
+    grid-template-rows: var(--grid-rows);
     min-width: var(--min-width);
     width: var(--width);
+
+    &[data-upper=true][data-lower=true] {
+        > div[data-w=f1-wb-side-content-part]:last-child {
+            border-top: var(--f1-border);
+            border-top-color: var(--f1-wb-border-color);
+        }
+    }
 `;
 export const SideContentPartContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-content-part'})`
     display: block;
     position: relative;
-
-    + div[data-w=f1-wb-side-content-part] {
-        border-top: var(--f1-border);
-        border-color: var(--f1-wb-border-color);
-    }
 `;
 export const SideFrameContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-frame-container'})`
     display: flex;

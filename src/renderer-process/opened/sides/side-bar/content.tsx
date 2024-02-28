@@ -75,6 +75,8 @@ export interface SideContentProps {
 export interface SideContentState {
 	upper: boolean;
 	lower: boolean;
+	contentSize?: number;
+	lowerHeight?: number;
 }
 
 export const SideContent = (props: SideContentProps) => {
@@ -105,7 +107,9 @@ export const SideContent = (props: SideContentProps) => {
 		};
 	}, [on, off]);
 
-	return <SideContentContainer upper={state.upper} lower={state.lower} {...rest}>
+	return <SideContentContainer upper={state.upper} lower={state.lower}
+	                             contentSize={state.contentSize} lowerHeight={state.lowerHeight}
+	                             {...rest}>
 		<SideContentUpper switch={switchFrame}/>
 		<SideContentLower switch={switchFrame}/>
 	</SideContentContainer>;
