@@ -79,13 +79,18 @@ export const GlobalStyles: any = createGlobalStyle`
         --f1-wb-location-bar-height: 32px;
         --f1-wb-location-segment-icon-color: #292d32;
         --f1-wb-location-segment-hover-color: #dfdfdf;
-        --f1-wb-left-bar-width: 40px;
-        --f1-wb-right-bar-width: 40px;
+        --f1-wb-side-bar-width: 40px;
         --f1-wb-side-bar-button-hover-color: #d1d1d1;
         --f1-wb-side-bar-button-icon-color: #292d32;
         --f1-wb-side-bar-button-tooltip-background-color: #f7f7f7;
         --f1-wb-side-bar-button-tooltip-shadow: 0px 0px 10px 3px #c3c3c3;
         --f1-wb-status-bar-height: 28px;
+        --f1-wb-side-frame-header-height: 40px;
+        --f1-wb-side-frame-header-background-color: #f2f2f2;
+        --f1-wb-side-frame-header-button-hover-color: #d1d1d1;
+        --f1-wb-side-frame-header-button-icon-color: #292d32;
+        --f1-wb-side-frame-header-button-tooltip-background-color: #f7f7f7;
+        --f1-wb-side-frame-header-button-tooltip-shadow: 0px 0px 10px 3px #c3c3c3;
 
         color: var(--f1-font-color);
         background-color: var(--f1-background-color);
@@ -177,10 +182,15 @@ export const GlobalStyles: any = createGlobalStyle`
             --f1-wb-bar-background-color: #2b2d30;
             --f1-wb-location-segment-icon-color: #d6d2cd;
             --f1-wb-location-segment-hover-color: #393b40;
-            --f1-wb-side-bar-button-icon-color: #d6d2cd;
             --f1-wb-side-bar-button-hover-color: #4e5156;
+            --f1-wb-side-bar-button-icon-color: #d6d2cd;
             --f1-wb-side-bar-button-tooltip-background-color: #393b40;
             --f1-wb-side-bar-button-tooltip-shadow: 0px 0px 10px 3px #1a1c1d;
+            --f1-wb-side-frame-header-background-color: #2b2d30;
+            --f1-wb-side-frame-header-button-hover-color: #4e5156;
+            --f1-wb-side-frame-header-button-icon-color: #d6d2cd;
+            --f1-wb-side-frame-header-button-tooltip-background-color: #393b40;
+            --f1-wb-side-frame-header-button-tooltip-shadow: 0px 0px 10px 3px #1a1c1d;
         }
     }
 
