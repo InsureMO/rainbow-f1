@@ -107,6 +107,11 @@ export const SideContentContainer = styled.div.attrs<{
 export const SideContentPartContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-content-part'})`
     display: block;
     position: relative;
+
+    + div[data-w=f1-wb-side-content-part] {
+        border-top: var(--f1-border);
+        border-color: var(--f1-wb-border-color);
+    }
 `;
 export const SideFrameContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-frame-container'})`
     display: flex;
