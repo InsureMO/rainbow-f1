@@ -14,8 +14,6 @@ export const SideBarContainer = styled.div`
     width: var(--f1-wb-side-bar-width);
     height: calc(100vh - var(--f1-wb-location-bar-height) - var(--f1-wb-status-bar-height));
     padding: 4px 0;
-    border-right: var(--f1-border);
-    border-right-color: var(--f1-wb-border-color);
     background-color: var(--f1-wb-bar-background-color);
 `;
 export const SideBarButtonContainer = styled.span.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-bar-button'})`
@@ -27,13 +25,19 @@ export const SideBarButtonContainer = styled.span.attrs({[DOM_KEY_WIDGET]: 'f1-w
     min-height: calc(var(--f1-wb-side-bar-width) * 0.8);
     border-radius: var(--f1-border-radius);
     cursor: pointer;
+    transition: color 300ms ease-in-out, background-color 300ms ease-in-out;
 
-    &:hover {
+    &[data-active=true] {
+        color: var(--f1-wb-side-bar-button-active-color);
+        background-color: var(--f1-wb-side-bar-button-active-background-color);
+    }
+
+    &[data-active=false]:hover {
         background-color: var(--f1-wb-side-bar-button-hover-color);
+    }
 
-        > span[data-tooltip] {
-            display: flex;
-        }
+    &:hover > span[data-tooltip] {
+        display: flex;
     }
 
     + span[data-w=f1-wb-side-bar-button] {
@@ -87,8 +91,9 @@ export const SideContentContainer = styled.div.attrs<{
 	return {
 		[DOM_KEY_WIDGET]: 'f1-wb-side-content-container',
 		style: {
-			'--min-width': (upper || lower) ? 'max(300px, 25vw)' : 'unset',
-			'--width': (upper || lower) ? (resizeTo != null ? Utils.toCssSize(resizeTo) : 'max(300px, 25vw)') : 0
+			'--min-width': (upper || lower) ? 'max(300px, 25vw)' : (void 0),
+			'--width': (upper || lower) ? (resizeTo != null ? Utils.toCssSize(resizeTo) : 'max(300px, 25vw)') : 0,
+			'--border': (upper || lower)? '1px' : 0
 		}
 	};
 })<{ upper: boolean; lower: boolean; resizeTo?: string | number }>`
@@ -116,6 +121,8 @@ export const SideFrameHeader = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-f
     height: var(--f1-wb-side-frame-header-height);
     padding: 0 8px 0 16px;
     background-color: var(--f1-wb-side-frame-header-background-color);
+    border-bottom: var(--f1-border);
+    border-bottom-color: var(--f1-wb-border-color);
 `;
 export const SideFrameHeaderSpaceHolder = styled.span.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-frame-space-holder'})`
     display: block;

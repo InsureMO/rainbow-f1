@@ -1,5 +1,4 @@
 import {JSX, useEffect, useState} from 'react';
-import {isNotBlank} from '../../../../shared';
 import {SideContentKey, SideContentPosition, SideEventTypes, useSideEventBus} from './event-bus';
 import {SideContentContainer, SideContentPartContainer} from './widgets';
 
@@ -21,11 +20,11 @@ const useSideContentPart = (switchFrame: SwitchFrame, position: SideContentPosit
 			if (pos !== position) {
 				return;
 			}
-			if (isNotBlank(state.key) && key !== state.key) {
+			if (key === state.key) {
 				return;
 			}
 			setState({key});
-			fire(SideEventTypes.OPENED, state.key, position);
+			fire(SideEventTypes.OPENED, key, position);
 		};
 		const onClose = (key: SideContentKey, pos: SideContentPosition) => {
 			if (pos !== position) {
@@ -35,7 +34,7 @@ const useSideContentPart = (switchFrame: SwitchFrame, position: SideContentPosit
 				return;
 			}
 			setState({});
-			fire(SideEventTypes.CLOSED, state.key, position);
+			fire(SideEventTypes.CLOSED, key, position);
 		};
 		on(SideEventTypes.OPEN, onOpen);
 		on(SideEventTypes.CLOSE, onClose);
@@ -43,11 +42,9 @@ const useSideContentPart = (switchFrame: SwitchFrame, position: SideContentPosit
 			off(SideEventTypes.OPEN, onOpen);
 			off(SideEventTypes.CLOSE, onClose);
 		};
-	}, [on, off]);
+	}, [on, off, state.key, position]);
 
-	const part = switchFrame(state.key, position);
-	// TODO DEAL WITH NO PART NEED TO BE SWITCH
-	return part;
+	return switchFrame(state.key, position);
 };
 
 export const SideContentUpper = (props: { switch: SwitchFrame }) => {
@@ -107,8 +104,6 @@ export const SideContent = (props: SideContentProps) => {
 			off(SideEventTypes.CLOSED, onClosed);
 		};
 	}, [on, off]);
-
-	console.log(state);
 
 	return <SideContentContainer upper={state.upper} lower={state.lower} {...rest}>
 		<SideContentUpper switch={switchFrame}/>

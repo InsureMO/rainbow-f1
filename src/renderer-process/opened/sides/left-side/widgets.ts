@@ -11,4 +11,5 @@ export const LeftBar = styled(SideBar).attrs({[DOM_KEY_WIDGET]: 'f1-wb-left-side
 export const LeftSideContent = styled(SideContent).attrs({[DOM_KEY_WIDGET]: 'f1-wb-left-side-content'})`
     border-right: var(--f1-border);
     border-right-color: var(--f1-wb-border-color);
+    border-right-width: var(--border);
 `;
