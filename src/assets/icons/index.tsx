@@ -1,6 +1,7 @@
 import {Icons} from '@rainbow-d9/n2';
 import {DatabaseIcon} from './database';
 import {FolderRootIcon} from './folder-root';
+import {FunctionIcon} from './function';
 import {MinusIcon} from './minus';
 import {NotificationIcon} from './notification';
 import {ProblemIcon} from './problem';
@@ -15,6 +16,7 @@ import {TodoIcon} from './todo';
 Icons.Registrar.register({
 	f1Database: () => <DatabaseIcon/>,
 	f1FolderRoot: () => <FolderRootIcon/>,
+	f1Function: () => <FunctionIcon/>,
 	f1Minus: () => <MinusIcon/>,
 	f1Notification: () => <NotificationIcon/>,
 	f1Problem: () => <ProblemIcon/>,
@@ -29,7 +31,7 @@ Icons.Registrar.register({
 
 export {
 	DatabaseIcon,
-	FolderRootIcon,
+	FolderRootIcon, FunctionIcon,
 	MinusIcon,
 	NotificationIcon,
 	ProblemIcon, ProjectIcon,

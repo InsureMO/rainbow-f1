@@ -86,6 +86,7 @@ export const GlobalStyles: any = createGlobalStyle`
         --f1-wb-side-bar-button-active-background-color: #d1d1d1;
         --f1-wb-side-bar-button-tooltip-background-color: #f7f7f7;
         --f1-wb-side-bar-button-tooltip-shadow: 0px 0px 10px 3px #c3c3c3;
+        --f1-wb-side-slider-background-color: var(--f1-hover-color);
         --f1-wb-status-bar-height: 28px;
         --f1-wb-side-frame-header-height: 40px;
         --f1-wb-side-frame-header-background-color: #f2f2f2;

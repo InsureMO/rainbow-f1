@@ -111,10 +111,85 @@ export const SideContentContainer = styled.div.attrs<{
     min-height: var(--min-height);
     height: var(--height);
 
+    &[data-upper], &[data-lower] {
+        > div[data-w=f1-wb-side-slider] {
+            display: block;
+        }
+    }
+
     &[data-upper][data-lower] {
         > div[data-w=f1-wb-side-content-part]:last-child {
             border-top: var(--f1-border);
             border-top-color: var(--f1-wb-border-color);
+        }
+    }
+
+    > div[data-w=f1-wb-side-slider] {
+        display: none;
+    }
+`;
+
+export enum SideContentResizeOn {
+	TOP = 'top', LEFT = 'left', RIGHT = 'right'
+}
+
+export const SideSlider = styled.div.attrs<{ active: boolean; resizeOn: SideContentResizeOn }>(
+	({active, resizeOn}) => {
+		let top, left, width, height, handleTop, handleLeft, handleWidth, handleHeight, cursor;
+		switch (resizeOn) {
+			case SideContentResizeOn.TOP:
+				[top, left, width, height] = [active ? 0 : '-3px', 0, active ? '100vw' : '100%', active ? '100vh' : '7px'];
+				[handleTop, handleLeft, handleWidth, handleHeight] = [0, 0, '100%', '100%'];
+				cursor = 'ns-resize';
+				break;
+			case SideContentResizeOn.RIGHT:
+				[top, left, width, height] = [0, active ? 0 : 'calc(100% - 3px)', active ? '100vw' : '7px', active ? '100vh' : '100%'];
+				[handleTop, handleLeft, handleWidth, handleHeight] = [0, 0, '100%', '100%'];
+				cursor = 'ew-resize';
+				break;
+			case SideContentResizeOn.LEFT:
+				[top, left, width, height] = [0, active ? 0 : '-3px', active ? '100vw' : '7px', active ? '100vh' : '100%'];
+				[handleTop, handleLeft, handleWidth, handleHeight] = [0, 0, '100%', '100%'];
+				cursor = 'ew-resize';
+				break;
+		}
+
+		return {
+			[DOM_KEY_WIDGET]: 'f1-wb-side-slider',
+			style: {
+				'--position': active ? 'fixed' : 'absolute',
+				'--top': top, '--left': left, '--width': width, '--height': height,
+				'--handle-top': handleTop, '--handle-left': handleLeft,
+				'--handle-width': handleWidth, '--handle-height': handleHeight,
+				'--cursor': cursor,
+				'--z-index': active ? 10000 : 1
+			}
+		};
+	})<{ active: boolean; resizeOn: SideContentResizeOn }>`
+    display: block;
+    position: var(--position);
+    top: var(--top);
+    left: var(--left);
+    width: var(--width);
+    height: var(--height);
+    cursor: var(--cursor);
+    z-index: var(--z-index);
+
+    &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: var(--handle-top);
+        left: var(--handle-left);
+        width: var(--handle-width);
+        height: var(--handle-height);
+        transition: background-color 300ms ease-in-out;
+    }
+
+    &:hover {
+
+        :before {
+            background-color: var(--f1-wb-side-slider-background-color);
         }
     }
 `;

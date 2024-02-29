@@ -7,6 +7,7 @@ import {
 	TerminalIcon,
 	TodoIcon
 } from '../../../../assets/icons';
+import {ProjectBaseProps} from '../../types';
 import {SideContentKey, SideContentPosition} from '../../workbench/event-bus';
 import {switchFrame} from '../frames';
 import {SideBarButton, SideContentResizeOn} from '../side-bar';
@@ -41,11 +42,19 @@ const LeftBarBottoms = () => {
 	</>;
 };
 
-export const LeftSide = () => {
+interface LeftSideProps extends ProjectBaseProps {
+}
+
+export const LeftSide = (props: LeftSideProps) => {
+	const {project} = props;
+
+	return <LeftSideContent project={project} resizeOn={SideContentResizeOn.RIGHT}
+	                        positions={[SideContentPosition.LEFT_UPPER, SideContentPosition.LEFT_LOWER]}
+	                        switchFrame={switchFrame}/>;
+};
+
+export const LeftSideBar = () => {
 	return <LeftSideContainer>
 		<LeftBar uppers={<LeftBarUppers/>} lowers={<LeftBarLowers/>} bottoms={<LeftBarBottoms/>}/>
-		<LeftSideContent resizeOn={SideContentResizeOn.RIGHT}
-		                 positions={[SideContentPosition.LEFT_UPPER, SideContentPosition.LEFT_LOWER]}
-		                 switchFrame={switchFrame}/>
 	</LeftSideContainer>;
 };

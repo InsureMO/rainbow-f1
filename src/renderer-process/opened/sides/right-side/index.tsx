@@ -1,4 +1,5 @@
 import {DatabaseIcon, NotificationIcon} from '../../../../assets/icons';
+import {ProjectBaseProps} from '../../types';
 import {SideContentKey, SideContentPosition} from '../../workbench/event-bus';
 import {switchFrame} from '../frames';
 import {SideBarButton, SideContentResizeOn} from '../side-bar';
@@ -13,11 +14,19 @@ const RightBarUppers = () => {
 	</>;
 };
 
-export const RightSide = () => {
+interface RightSideProps extends ProjectBaseProps {
+}
+
+export const RightSide = (props: RightSideProps) => {
+	const {project} = props;
+
+	return <RightContent project={project} resizeOn={SideContentResizeOn.LEFT}
+	                     positions={[SideContentPosition.RIGHT_UPPER, SideContentPosition.RIGHT_LOWER]}
+	                     switchFrame={switchFrame}/>;
+};
+
+export const RightSideBar = () => {
 	return <RightSideContainer>
-		<RightContent resizeOn={SideContentResizeOn.LEFT}
-		              positions={[SideContentPosition.RIGHT_UPPER, SideContentPosition.RIGHT_LOWER]}
-		              switchFrame={switchFrame}/>
 		<RightBar uppers={<RightBarUppers/>}/>
 	</RightSideContainer>;
 };

@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import {Side, SideContent} from '../side-bar';
 
 export const BottomSideContainer = styled(Side).attrs({[DOM_KEY_WIDGET]: 'f1-wb-bottom-side'})`
+	grid-column: 2 / span 3;
+	grid-row: 3;
 `;
 export const BottomContent = styled(SideContent).attrs({[DOM_KEY_WIDGET]: 'f1-wb-bottom-side-content'})`
     width: 100%;

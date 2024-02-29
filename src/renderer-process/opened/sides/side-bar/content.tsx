@@ -1,15 +1,12 @@
 import {JSX, useEffect, useState} from 'react';
+import {ProjectBaseProps} from '../../types';
 import {
 	SideContentKey,
 	SideContentPosition,
 	useWorkbenchEventBus,
 	WorkbenchEventTypes
 } from '../../workbench/event-bus';
-import {SideContentContainer, SideContentPartContainer} from './widgets';
-
-export enum SideContentResizeOn {
-	TOP = 'top', LEFT = 'left', RIGHT = 'right'
-}
+import {SideContentContainer, SideContentPartContainer, SideContentResizeOn, SideSlider} from './widgets';
 
 export type SwitchFrame = (key: SideContentKey, pos: SideContentPosition) => JSX.Element | undefined;
 
@@ -72,11 +69,25 @@ export const SideContentLower = (props: { contentPosition: SideContentPosition; 
 	</SideContentPartContainer>;
 };
 
-export interface SideContentProps {
+export interface SideContentProps extends ProjectBaseProps {
 	resizeOn: SideContentResizeOn;
 	positions: [SideContentPosition, SideContentPosition] | [SideContentPosition];
 	switchFrame: SwitchFrame;
 }
+
+export interface SideContentSliderState {
+	active: boolean;
+}
+
+export {SideContentResizeOn};
+
+export const SideContentSlider = (props: { resizeOn: SideContentResizeOn }) => {
+	const {resizeOn} = props;
+
+	const [state, setState] = useState<SideContentSliderState>({active: false});
+
+	return <SideSlider active={false} resizeOn={resizeOn}/>;
+};
 
 export interface SideContentState {
 	upper: boolean;
@@ -123,5 +134,6 @@ export const SideContent = (props: SideContentProps) => {
 	                             {...rest}>
 		<SideContentUpper contentPosition={first} switch={switchFrame}/>
 		{second != null ? <SideContentLower contentPosition={second} switch={switchFrame}/> : null}
+		<SideContentSlider resizeOn={resizeOn}/>
 	</SideContentContainer>;
 };
