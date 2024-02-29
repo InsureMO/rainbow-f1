@@ -1,4 +1,4 @@
-import {JSX, useEffect, useState} from 'react';
+import {JSX, MouseEvent, useEffect, useRef, useState} from 'react';
 import {ProjectBaseProps} from '../../types';
 import {
 	SideContentKey,
@@ -6,7 +6,13 @@ import {
 	useWorkbenchEventBus,
 	WorkbenchEventTypes
 } from '../../workbench/event-bus';
-import {SideContentContainer, SideContentPartContainer, SideContentResizeOn, SideSlider} from './widgets';
+import {
+	SideContentContainer,
+	SideContentPartContainer,
+	SideContentResizeOn,
+	SideSlider,
+	SideSliderProps
+} from './widgets';
 
 export type SwitchFrame = (key: SideContentKey, pos: SideContentPosition) => JSX.Element | undefined;
 
@@ -69,25 +75,71 @@ export const SideContentLower = (props: { contentPosition: SideContentPosition; 
 	</SideContentPartContainer>;
 };
 
+export {SideContentResizeOn};
+
+export interface SideContentSliderState extends SideSliderProps {
+	parentWidth?: number;
+	parentHeight?: number;
+}
+
+export type ComputeNewSize = (
+	parentWidth: number, parentHeight: number,
+	mouseStartX: number, mouseStartY: number,
+	mouseCurrentX: number, mouseCurrentY: number) => {
+	currentX: number; currentY: number; resizeToWidth: number; resizeToHeight: number
+}
+
+export const SideContentSlider = (props: {
+	resizeOn: SideContentResizeOn; resizeTo: (width: number, height: number) => void; computeNewSize: ComputeNewSize
+}) => {
+	const {resizeOn, resizeTo, computeNewSize} = props;
+
+	const ref = useRef<HTMLDivElement>(null);
+	const [state, setState] = useState<SideContentSliderState>({active: false});
+
+	const onMouseDown = (event: MouseEvent<HTMLDivElement>) => {
+		if (event.button === 0) {
+			// respond to primary button only
+			const {
+				top: sliderTop, left: sliderLeft,
+				width: sliderWidth, height: sliderHeight
+			} = ref.current.getBoundingClientRect();
+			const {width: parentWidth, height: parentHeight} = ref.current.parentElement.getBoundingClientRect();
+			const {screenX: startX, screenY: startY} = event;
+			setState(state => ({
+				...state,
+				active: true,
+				startX, startY, currentX: startX, currentY: startY,
+				sliderTop, sliderLeft, sliderWidth, sliderHeight,
+				parentWidth, parentHeight
+			}));
+		}
+	};
+	const onMouseUp = (_event: MouseEvent<HTMLDivElement>) => {
+		setState(state => ({...state, active: false}));
+	};
+	const onMouseMove = (event: MouseEvent<HTMLDivElement>) => {
+		if (!state.active) {
+			return;
+		}
+		const {screenX, screenY} = event;
+		// compute resize to
+		const {currentX, currentY, resizeToWidth, resizeToHeight} =
+			computeNewSize(state.parentWidth, state.parentHeight, state.startX, state.startY, screenX, screenY);
+		setState(state => ({...state, currentX, currentY}));
+		resizeTo(resizeToWidth, resizeToHeight);
+	};
+
+	return <SideSlider {...state} resizeOn={resizeOn}
+	                   onMouseDown={onMouseDown} onMouseUp={onMouseUp} onMouseMove={onMouseMove}
+	                   ref={ref}/>;
+};
+
 export interface SideContentProps extends ProjectBaseProps {
 	resizeOn: SideContentResizeOn;
 	positions: [SideContentPosition, SideContentPosition] | [SideContentPosition];
 	switchFrame: SwitchFrame;
 }
-
-export interface SideContentSliderState {
-	active: boolean;
-}
-
-export {SideContentResizeOn};
-
-export const SideContentSlider = (props: { resizeOn: SideContentResizeOn }) => {
-	const {resizeOn} = props;
-
-	const [state, setState] = useState<SideContentSliderState>({active: false});
-
-	return <SideSlider active={false} resizeOn={resizeOn}/>;
-};
 
 export interface SideContentState {
 	upper: boolean;
@@ -96,13 +148,67 @@ export interface SideContentState {
 	lowerHeight?: number;
 }
 
+const createComputeNewSize = (position: SideContentPosition): ComputeNewSize => (
+	parentWidth: number, parentHeight: number,
+	mouseStartX: number, mouseStartY: number,
+	mouseCurrentX: number, mouseCurrentY: number) => {
+	const MIN_SIDE_SIZE = 200;
+
+	let currentX = mouseCurrentX, currentY = mouseCurrentY;
+
+	let resizeToWidth: number;
+	if (position === SideContentPosition.LEFT_UPPER) {
+		resizeToWidth = parentWidth - mouseStartX + mouseCurrentX;
+	} else {
+		resizeToWidth = parentWidth + mouseStartX - mouseCurrentX;
+	}
+	let resizeToHeight: number;
+	if (position === SideContentPosition.BOTTOM) {
+		resizeToHeight = parentHeight + mouseStartY - mouseCurrentY;
+	} else {
+		resizeToHeight = parentHeight - mouseStartY + mouseCurrentY;
+	}
+	let shouldComputeCurrentX = false;
+	if (resizeToWidth < MIN_SIDE_SIZE) {
+		resizeToWidth = MIN_SIDE_SIZE;
+		shouldComputeCurrentX = true;
+	} else if (resizeToWidth > window.innerWidth * 0.4) {
+		resizeToWidth = window.innerWidth * 0.4;
+		shouldComputeCurrentX = true;
+	}
+	if (shouldComputeCurrentX) {
+		if (position === SideContentPosition.BOTTOM || position === SideContentPosition.RIGHT_UPPER) {
+			currentX = parentWidth + mouseStartX - resizeToWidth;
+		} else {
+			currentX = resizeToWidth - parentWidth + mouseStartX;
+		}
+	}
+	let shouldComputeCurrentY = false;
+	if (resizeToHeight < MIN_SIDE_SIZE) {
+		resizeToHeight = MIN_SIDE_SIZE;
+		shouldComputeCurrentY = true;
+	} else if (resizeToHeight > window.innerHeight * 0.8) {
+		resizeToHeight = window.innerHeight * 0.8;
+		shouldComputeCurrentY = true;
+	}
+	if (shouldComputeCurrentY) {
+		if (position === SideContentPosition.BOTTOM) {
+			currentY = parentHeight + mouseStartY - resizeToHeight;
+		} else {
+			currentY = resizeToHeight - parentHeight + mouseStartY;
+		}
+	}
+
+	return {currentX, currentY, resizeToWidth, resizeToHeight};
+};
+
 export const SideContent = (props: SideContentProps) => {
 	const {resizeOn, positions, switchFrame, ...rest} = props;
 
 	const {on, off} = useWorkbenchEventBus();
 	const [state, setState] = useState<SideContentState>({upper: false, lower: false});
 	useEffect(() => {
-		const onOpened = (key: SideContentKey, pos: SideContentPosition) => {
+		const onOpened = (_key: SideContentKey, pos: SideContentPosition) => {
 			const [first, second] = positions;
 			if (pos === first) {
 				setState(state => ({...state, upper: true}));
@@ -110,7 +216,7 @@ export const SideContent = (props: SideContentProps) => {
 				setState(state => ({...state, lower: true}));
 			}
 		};
-		const onClosed = (key: SideContentKey, pos: SideContentPosition) => {
+		const onClosed = (_key: SideContentKey, pos: SideContentPosition) => {
 			const [first, second] = positions;
 			if (pos === first) {
 				setState(state => ({...state, upper: false}));
@@ -128,12 +234,20 @@ export const SideContent = (props: SideContentProps) => {
 
 	const [first, second] = positions;
 
+	const resize = (width: number, height: number) => {
+		if (first === SideContentPosition.BOTTOM) {
+			setState(state => ({...state, contentSize: height}));
+		} else {
+			setState(state => ({...state, contentSize: width}));
+		}
+	};
+
 	return <SideContentContainer upper={state.upper} lower={state.lower}
 	                             vertical={first === SideContentPosition.BOTTOM}
 	                             contentSize={state.contentSize} lowerHeight={state.lowerHeight}
 	                             {...rest}>
 		<SideContentUpper contentPosition={first} switch={switchFrame}/>
 		{second != null ? <SideContentLower contentPosition={second} switch={switchFrame}/> : null}
-		<SideContentSlider resizeOn={resizeOn}/>
+		<SideContentSlider resizeOn={resizeOn} resizeTo={resize} computeNewSize={createComputeNewSize(first)}/>
 	</SideContentContainer>;
 };

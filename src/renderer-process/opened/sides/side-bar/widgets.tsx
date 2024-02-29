@@ -93,9 +93,9 @@ export const SideContentContainer = styled.div.attrs<{
 		'data-upper': upper ? '' : (void 0),
 		'data-lower': lower ? '' : (void 0),
 		style: {
-			'--min-width': vertical ? (void 0) : ((upper || lower) ? 'max(300px, 25vw)' : (void 0)),
+			'--min-width': vertical ? (void 0) : ((upper || lower) ? (contentSize != null ? Utils.toCssSize(contentSize) : 'max(300px, 25vw)') : (void 0)),
 			'--width': vertical ? (void 0) : ((upper || lower) ? (contentSize != null ? Utils.toCssSize(contentSize) : 'max(300px, 25vw)') : 0),
-			'--min-height': !vertical ? (void 0) : ((upper || lower) ? 'max(300px, 30vh)' : (void 0)),
+			'--min-height': !vertical ? (void 0) : ((upper || lower) ? (contentSize != null ? Utils.toCssSize(contentSize) : 'max(300px, 30vh)') : (void 0)),
 			'--height': !vertical ? (void 0) : ((upper || lower) ? (contentSize != null ? Utils.toCssSize(contentSize) : 'max(300px, 30vh)') : 0),
 			'--border': (upper || lower) ? '1px' : 0,
 			'--grid-rows': lower ? (upper ? (lowerHeight != null ? `1fr ${Utils.toCssSize(lowerHeight)}` : '1fr 1fr') : '0px 1fr') : '1fr 0px'
@@ -133,23 +133,49 @@ export enum SideContentResizeOn {
 	TOP = 'top', LEFT = 'left', RIGHT = 'right'
 }
 
-export const SideSlider = styled.div.attrs<{ active: boolean; resizeOn: SideContentResizeOn }>(
-	({active, resizeOn}) => {
+export interface SideSliderProps {
+	active: boolean;
+	startX?: number;
+	startY?: number;
+	currentX?: number;
+	currentY?: number;
+	sliderTop?: number;
+	sliderLeft?: number;
+	sliderWidth?: number;
+	sliderHeight?: number;
+}
+
+export const SideSlider = styled.div.attrs<SideSliderProps & { resizeOn: SideContentResizeOn }>(
+	({
+		 active,
+		 startX, startY, currentX, currentY,
+		 sliderTop, sliderLeft, sliderWidth, sliderHeight,
+		 resizeOn
+	 }) => {
 		let top, left, width, height, handleTop, handleLeft, handleWidth, handleHeight, cursor;
 		switch (resizeOn) {
 			case SideContentResizeOn.TOP:
 				[top, left, width, height] = [active ? 0 : '-3px', 0, active ? '100vw' : '100%', active ? '100vh' : '7px'];
-				[handleTop, handleLeft, handleWidth, handleHeight] = [0, 0, '100%', '100%'];
+				[handleTop, handleLeft, handleWidth, handleHeight] = [
+					active ? Utils.toCssSize(currentY - startY + sliderTop) : 0, active ? Utils.toCssSize(sliderLeft) : 0,
+					active ? Utils.toCssSize(sliderWidth) : '100%', active ? '7px' : '100%'
+				];
 				cursor = 'ns-resize';
 				break;
 			case SideContentResizeOn.RIGHT:
 				[top, left, width, height] = [0, active ? 0 : 'calc(100% - 3px)', active ? '100vw' : '7px', active ? '100vh' : '100%'];
-				[handleTop, handleLeft, handleWidth, handleHeight] = [0, 0, '100%', '100%'];
+				[handleTop, handleLeft, handleWidth, handleHeight] = [
+					active ? Utils.toCssSize(sliderTop) : 0, active ? Utils.toCssSize(currentX - startX + sliderLeft) : 0,
+					active ? '7px' : '100%', active ? Utils.toCssSize(sliderHeight) : '100%'
+				];
 				cursor = 'ew-resize';
 				break;
 			case SideContentResizeOn.LEFT:
 				[top, left, width, height] = [0, active ? 0 : '-3px', active ? '100vw' : '7px', active ? '100vh' : '100%'];
-				[handleTop, handleLeft, handleWidth, handleHeight] = [0, 0, '100%', '100%'];
+				[handleTop, handleLeft, handleWidth, handleHeight] = [
+					active ? Utils.toCssSize(sliderTop) : 0, active ? Utils.toCssSize(currentX - startX + sliderLeft) : 0,
+					active ? '7px' : '100%', active ? Utils.toCssSize(sliderHeight) : '100%'
+				];
 				cursor = 'ew-resize';
 				break;
 		}
@@ -165,7 +191,7 @@ export const SideSlider = styled.div.attrs<{ active: boolean; resizeOn: SideCont
 				'--z-index': active ? 10000 : 1
 			}
 		};
-	})<{ active: boolean; resizeOn: SideContentResizeOn }>`
+	})<SideSliderProps & { resizeOn: SideContentResizeOn }>`
     display: block;
     position: var(--position);
     top: var(--top);
@@ -187,7 +213,6 @@ export const SideSlider = styled.div.attrs<{ active: boolean; resizeOn: SideCont
     }
 
     &:hover {
-
         :before {
             background-color: var(--f1-wb-side-slider-background-color);
         }
