@@ -1,5 +1,4 @@
 import {JSX, MouseEvent, useEffect, useRef, useState} from 'react';
-import {ProjectBaseProps} from '../../types';
 import {
 	SideContentKey,
 	SideContentPosition,
@@ -32,7 +31,7 @@ const useSideContentPart = (switchFrame: SwitchFrame, position: SideContentPosit
 				return;
 			}
 			setState({key});
-			fire(WorkbenchEventTypes.OPENED, key, position);
+			fire(WorkbenchEventTypes.SIDE_FRAME_OPENED, key, position);
 		};
 		const onClose = (key: SideContentKey, pos: SideContentPosition) => {
 			if (pos !== position) {
@@ -42,13 +41,13 @@ const useSideContentPart = (switchFrame: SwitchFrame, position: SideContentPosit
 				return;
 			}
 			setState({});
-			fire(WorkbenchEventTypes.CLOSED, key, position);
+			fire(WorkbenchEventTypes.SIDE_FRAME_CLOSED, key, position);
 		};
-		on(WorkbenchEventTypes.OPEN, onOpen);
-		on(WorkbenchEventTypes.CLOSE, onClose);
+		on(WorkbenchEventTypes.OPEN_SIDE_FRAME, onOpen);
+		on(WorkbenchEventTypes.CLOSE_SIDE_FRAME, onClose);
 		return () => {
-			off(WorkbenchEventTypes.OPEN, onOpen);
-			off(WorkbenchEventTypes.CLOSE, onClose);
+			off(WorkbenchEventTypes.OPEN_SIDE_FRAME, onOpen);
+			off(WorkbenchEventTypes.CLOSE_SIDE_FRAME, onClose);
 		};
 	}, [on, off, state.key, position]);
 
@@ -135,7 +134,7 @@ export const SideContentSlider = (props: {
 	                   ref={ref}/>;
 };
 
-export interface SideContentProps extends ProjectBaseProps {
+export interface SideContentProps {
 	resizeOn: SideContentResizeOn;
 	positions: [SideContentPosition, SideContentPosition] | [SideContentPosition];
 	switchFrame: SwitchFrame;
@@ -248,11 +247,11 @@ export const SideContent = (props: SideContentProps) => {
 				setState(state => ({...state, lower: false}));
 			}
 		};
-		on(WorkbenchEventTypes.OPENED, onOpened);
-		on(WorkbenchEventTypes.CLOSED, onClosed);
+		on(WorkbenchEventTypes.SIDE_FRAME_OPENED, onOpened);
+		on(WorkbenchEventTypes.SIDE_FRAME_CLOSED, onClosed);
 		return () => {
-			off(WorkbenchEventTypes.OPENED, onOpened);
-			off(WorkbenchEventTypes.CLOSED, onClosed);
+			off(WorkbenchEventTypes.SIDE_FRAME_OPENED, onOpened);
+			off(WorkbenchEventTypes.SIDE_FRAME_CLOSED, onClosed);
 		};
 	}, [on, off, positions]);
 

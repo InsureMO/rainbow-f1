@@ -39,19 +39,19 @@ export const SideBarButton = (props: SideBarButtonProps) => {
 				setOpened(false);
 			}
 		};
-		on(WorkbenchEventTypes.OPENED, onOpened);
-		on(WorkbenchEventTypes.CLOSED, onClosed);
+		on(WorkbenchEventTypes.SIDE_FRAME_OPENED, onOpened);
+		on(WorkbenchEventTypes.SIDE_FRAME_CLOSED, onClosed);
 		return () => {
-			off(WorkbenchEventTypes.OPENED, onOpened);
-			off(WorkbenchEventTypes.CLOSED, onClosed);
+			off(WorkbenchEventTypes.SIDE_FRAME_OPENED, onOpened);
+			off(WorkbenchEventTypes.SIDE_FRAME_CLOSED, onClosed);
 		};
 	}, [on, off, contentKey, contentPosition]);
 
 	const onClicked = () => {
 		if (opened) {
-			fire(WorkbenchEventTypes.CLOSE, contentKey, contentPosition);
+			fire(WorkbenchEventTypes.CLOSE_SIDE_FRAME, contentKey, contentPosition);
 		} else {
-			fire(WorkbenchEventTypes.OPEN, contentKey, contentPosition);
+			fire(WorkbenchEventTypes.OPEN_SIDE_FRAME, contentKey, contentPosition);
 		}
 		setOpened(!opened);
 	};

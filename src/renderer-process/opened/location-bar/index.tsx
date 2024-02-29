@@ -1,20 +1,26 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {ProjectIcon} from '../../../assets/icons';
 import {F1Project} from '../../../shared';
-import {ProjectBaseProps} from '../types';
+import {useProject} from '../workbench/use-project';
 import {LocationBarContainer, LocationSegment} from './widgets';
 
-interface LocationBarProps extends ProjectBaseProps {
-}
-
 interface LocationState {
-	project: F1Project;
+	project?: F1Project;
 }
 
-export const LocationBar = (props: LocationBarProps) => {
-	const {project} = props;
+export const LocationBar = () => {
+	const [locations, setLocations] = useState<LocationState>({});
+	const {ask} = useProject();
+	useEffect(() => {
+		(async () => {
+			const project = await ask();
+			setLocations({project});
+		})();
+	}, []);
 
-	const [locations, setLocations] = useState<LocationState>({project});
+	if (locations.project == null) {
+		return <LocationBarContainer/>;
+	}
 
 	return <LocationBarContainer>
 		<LocationSegment>

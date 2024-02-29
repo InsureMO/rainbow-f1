@@ -6,6 +6,7 @@ import {RightSide, RightSideBar} from '../sides/right-side';
 import {StatusBar} from '../status-bar';
 import {WorkArea} from '../work-area';
 import {WorkbenchEventBusProvider} from './event-bus';
+import {ProjectHolder} from './project-holder';
 import {ProjectWorkbenchContainer} from './widgets';
 
 export const ProjectWorkbench = (props: { project: F1Project }) => {
@@ -13,13 +14,14 @@ export const ProjectWorkbench = (props: { project: F1Project }) => {
 
 	return <WorkbenchEventBusProvider>
 		<ProjectWorkbenchContainer>
-			<LocationBar project={project}/>
+			<ProjectHolder project={project}/>
+			<LocationBar/>
 			<LeftSideBar/>
-			<LeftSide project={project}/>
+			<LeftSide/>
 			<WorkArea/>
-			<RightSide project={project}/>
+			<RightSide/>
 			<RightSideBar/>
-			<BottomSide project={project}/>
+			<BottomSide/>
 			<StatusBar/>
 		</ProjectWorkbenchContainer>
 	</WorkbenchEventBusProvider>;

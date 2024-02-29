@@ -22,7 +22,7 @@ export const SideFrame = (props: SideFrameProps) => {
 	const {fire} = useWorkbenchEventBus();
 
 	const onHideClicked = async () => {
-		fire(WorkbenchEventTypes.CLOSE, contentKey, contentPosition);
+		fire(WorkbenchEventTypes.CLOSE_SIDE_FRAME, contentKey, contentPosition);
 	};
 
 	return <SideFrameContainer {...rest}>
