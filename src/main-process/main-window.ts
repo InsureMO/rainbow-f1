@@ -11,6 +11,8 @@ export const createMainWindow = (project: F1Project, showImmediate: boolean): Br
 	const window = new BrowserWindow({
 		show: false,
 		icon: 'asserts/logo.png',
+		minWidth: 800,
+		minHeight: 600,
 		webPreferences: {preload: path.join(__dirname, 'preload.js')}
 	});
 	WindowManager.registerMain(window, project);

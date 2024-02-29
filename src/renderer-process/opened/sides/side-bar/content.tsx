@@ -205,8 +205,32 @@ const createComputeNewSize = (position: SideContentPosition): ComputeNewSize => 
 export const SideContent = (props: SideContentProps) => {
 	const {resizeOn, positions, switchFrame, ...rest} = props;
 
+	const ref = useRef<HTMLDivElement>(null);
 	const {on, off} = useWorkbenchEventBus();
 	const [state, setState] = useState<SideContentState>({upper: false, lower: false});
+	useEffect(() => {
+		const observer = new ResizeObserver(() => {
+			const {innerWidth, innerHeight} = window;
+			const [first] = positions;
+			// min width and height are controlled in main window,
+			// to make sure the computed value from window width and height will not be smaller than min content size
+			if (first === SideContentPosition.BOTTOM) {
+				if (state.contentSize > innerHeight * 0.8) {
+					setState(state => ({...state, contentSize: innerHeight * 0.8}));
+				}
+			} else {
+				if (state.contentSize > innerWidth * 0.4) {
+					setState(state => ({...state, contentSize: innerWidth * 0.4}));
+				}
+			}
+		});
+		if (ref.current != null) {
+			observer.observe(ref.current);
+		}
+		return () => {
+			observer.disconnect();
+		};
+	}, [state]);
 	useEffect(() => {
 		const onOpened = (_key: SideContentKey, pos: SideContentPosition) => {
 			const [first, second] = positions;
@@ -245,7 +269,7 @@ export const SideContent = (props: SideContentProps) => {
 	return <SideContentContainer upper={state.upper} lower={state.lower}
 	                             vertical={first === SideContentPosition.BOTTOM}
 	                             contentSize={state.contentSize} lowerHeight={state.lowerHeight}
-	                             {...rest}>
+	                             {...rest} ref={ref}>
 		<SideContentUpper contentPosition={first} switch={switchFrame}/>
 		{second != null ? <SideContentLower contentPosition={second} switch={switchFrame}/> : null}
 		<SideContentSlider resizeOn={resizeOn} resizeTo={resize} computeNewSize={createComputeNewSize(first)}/>
