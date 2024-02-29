@@ -146,7 +146,7 @@ class ApplicationF1Project {
 		});
 		// module dependencies are not needed, since they are in module package.json
 		// @ts-ignore
-		(json.modules ?? []).forEach(module => module.dependencies = []);
+		(json.modules ?? []).forEach(module => delete module.dependencies);
 		return JSON.stringify(json, (_, value) => value == null ? (void 0) : value, '\t');
 	}
 
