@@ -885,10 +885,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@rainbow-d9/n1@1.0.52", "@rainbow-d9/n1@^1.0.52":
-  version "1.0.52"
-  resolved "https://registry.yarnpkg.com/@rainbow-d9/n1/-/n1-1.0.52.tgz#fb98b364bd108641b7588d29c9ead84e209489e5"
-  integrity sha512-AA9h8BhP2qlUJ9RNom5/xnyvFPlKqR9EZYreq8h0gdiIR1u5r6gL7lXlKjgqZBlbIZKOpOjDHTxsRSjKc8ynRA==
+"@rainbow-d9/n1@1.0.55", "@rainbow-d9/n1@^1.0.55":
+  version "1.0.55"
+  resolved "https://registry.yarnpkg.com/@rainbow-d9/n1/-/n1-1.0.55.tgz#2047c36e902d100671f4b15cf4dd07a57686aedb"
+  integrity sha512-gAs+XbQYEbLtS6hNR83mr2GV6zTO3r105meZTA+XTQxXIykdf/2FtnD66m5mYhDvvNZ4ISUCuc+REXbqIjdXpQ==
   dependencies:
     buffer "^6.0.3"
     events "^3.3.0"
@@ -896,12 +896,12 @@
     react "^18.2.0"
     react-dom "^18.2.0"
 
-"@rainbow-d9/n2@^1.0.52":
-  version "1.0.52"
-  resolved "https://registry.yarnpkg.com/@rainbow-d9/n2/-/n2-1.0.52.tgz#5a85178142c26cb9d63ad22bd8e1a11a14e8d02f"
-  integrity sha512-TBSF4TkfpX+YGYHQk16rmZUWgkzQIDpqYuLi+76F9JYmFYsK3WbF5rwDz0fWAHFutBJm/YpNTOqRB4DA/+C80A==
+"@rainbow-d9/n2@^1.0.55":
+  version "1.0.55"
+  resolved "https://registry.yarnpkg.com/@rainbow-d9/n2/-/n2-1.0.55.tgz#568802dc2a4df300a93dca311a918bd130a2e1f4"
+  integrity sha512-7Dug4g3T7jVFmrq5POKpzeX1kNXVuijXcrs6v1XeJU3rqyWiFsCjuTkUg+LauF2IEC8TF5tZqkP8SDs5DSlcTg==
   dependencies:
-    "@rainbow-d9/n1" "1.0.52"
+    "@rainbow-d9/n1" "1.0.55"
     color "^4.2.3"
     dayjs "^1.11.7"
     react "^18.2.0"
@@ -2210,10 +2210,10 @@ electron-winstaller@^5.0.0:
     lodash.template "^4.2.2"
     temp "^0.9.0"
 
-electron@29.0.0-alpha.8:
-  version "29.0.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-29.0.0-alpha.8.tgz#254c08ea4d8293e0aa6675e0c1b5a1b6fcd86f24"
-  integrity sha512-aE2TBNhFzOV0HOwAJfgueH4QOtFsIpWA0rzx+jHRhEZBzX8mwWPxTUdfNQFggIbH5NSM6etzvdb39skaGv89+A==
+electron@29.0.1:
+  version "29.0.1"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-29.0.1.tgz#936c0623a1bbf272dea423305f074de6ac016967"
+  integrity sha512-hsQr9clm8NCAMv4uhHlXThHn52UAgrHgyz3ubBAxZIPuUcpKVDtg4HPmx4hbmHIbYICI5OyLN3Ztp7rS+Dn4Lw==
   dependencies:
     "@electron/get" "^2.0.0"
     "@types/node" "^20.9.0"

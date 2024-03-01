@@ -36,15 +36,15 @@
 		"@typescript-eslint/eslint-plugin": "^5.0.0",
 		"@typescript-eslint/parser": "^5.0.0",
 		"@vitejs/plugin-react": "^4.2.1",
-		"electron": "29.0.0-alpha.8",
+		"electron": "29.0.1",
 		"eslint": "^8.0.1",
 		"eslint-plugin-import": "^2.25.0",
 		"ts-node": "^10.0.0",
 		"typescript": "~4.5.4"
 	},
 	"dependencies": {
-		"@rainbow-d9/n1": "^1.0.52",
-		"@rainbow-d9/n2": "^1.0.52",
+		"@rainbow-d9/n1": "^1.0.55",
+		"@rainbow-d9/n2": "^1.0.55",
 		"color": "^4.2.3",
 		"electron-log": "^5.1.1",
 		"electron-squirrel-startup": "^1.0.0",
