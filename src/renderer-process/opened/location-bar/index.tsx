@@ -1,7 +1,7 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {ProjectIcon} from '../../../assets/icons';
 import {F1Project} from '../../../shared';
-import {useProject} from '../workbench/use-project';
+import {useAskProject, useProject} from '../workbench/use-project';
 import {LocationBarContainer, LocationSegment} from './widgets';
 
 interface LocationState {
@@ -9,23 +9,18 @@ interface LocationState {
 }
 
 export const LocationBar = () => {
-	const [locations, setLocations] = useState<LocationState>({});
 	const {ask} = useProject();
-	useEffect(() => {
-		(async () => {
-			const project = await ask();
-			setLocations({project});
-		})();
-	}, []);
+	const [state, setState] = useState<LocationState>({});
+	useAskProject(ask, (project) => setState({project}));
 
-	if (locations.project == null) {
+	if (state.project == null) {
 		return <LocationBarContainer/>;
 	}
 
 	return <LocationBarContainer>
 		<LocationSegment>
 			<ProjectIcon/>
-			<span>{locations.project.name}</span>
+			<span>{state.project.name}</span>
 		</LocationSegment>
 	</LocationBarContainer>;
 };
