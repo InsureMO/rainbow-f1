@@ -6,7 +6,7 @@ export const FileSystemBridge: ElectronBridges.WindowElectronFileSystem = {
 		return ipcRenderer.sendSync(FileSystemEvent.EXISTS, path);
 	},
 	empty: (directory: string): FileSystemBooleanResult => {
-		return ipcRenderer.sendSync(FileSystemEvent.EMPTY, directory);
+		return ipcRenderer.sendSync(FileSystemEvent.IS_EMPTY_DIR, directory);
 	},
 	mkdir: (directory: string): FileSystemBooleanResult => {
 		return ipcRenderer.sendSync(FileSystemEvent.MKDIR, directory);

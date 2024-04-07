@@ -1,3 +1,3 @@
 export enum ApplicationEvent {
-	GET_VERSION = 'get-app-version'
+	GET_VERSION = 'app-get-version'
 }

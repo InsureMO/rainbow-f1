@@ -14,7 +14,7 @@ export interface FileSystemFoldersResult extends FileSystemOperationResult<Array
 
 export enum FileSystemEvent {
 	EXISTS = 'fs-exists',
-	EMPTY = 'fs-empty',
+	IS_EMPTY_DIR = 'fs-is-empty-dir',
 	MKDIR = 'fs-mkdir',
 	CREATE_FILE = 'fs-create-file',
 }

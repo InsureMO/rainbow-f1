@@ -1,27 +1,30 @@
+export type RecentProjectEntityId = string;
+export type RecentProjectEntityName = string;
+export type RecentProjectPath = string;
+
 export interface RecentProject {
-	id: string;
-	name: string;
+	id: RecentProjectEntityId;
+	name: RecentProjectEntityName;
 	// absolute path to project
-	path: string;
-	// given path exists or not
-	exists: boolean;
+	path: RecentProjectPath;
+	/**
+	 * given path exists or not, transient value only for display purpose.
+	 * must check before touch anything physically with project
+	 */
+	exists?: boolean;
 }
 
-export type RecentProjects = Array<RecentProject>;
-
 export interface RecentProjectHolder {
-	id: string;
-	projects?: RecentProjects;
-	categories?: RecentProjectCategories;
+	id: RecentProjectEntityId;
+	projects?: Array<RecentProject>;
+	categories?: Array<RecentProjectCategory>;
 }
 
 export interface RecentProjectCategory extends RecentProjectHolder {
-	name: string;
+	name: RecentProjectEntityName;
 }
 
-export type RecentProjectCategories = Array<RecentProjectCategory>;
-
-export const RecentProjectRootId = '';
+export const RecentProjectRootId = '$@#__root__#@$';
 export const RecentProjectRootName = '';
 
 export interface RecentProjectRoot extends RecentProjectHolder {

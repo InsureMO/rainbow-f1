@@ -7,7 +7,7 @@ class ContextMenuWorker {
 			return this.transformTemplateItem(item, event);
 		});
 		const menu = Menu.buildFromTemplate(transformed);
-		menu.on('menu-will-close', () => event.sender.send(ContextMenuEvent.WILL_CLOSE));
+		menu.on('menu-will-close', () => event.sender.send(ContextMenuEvent.ON_WILL_CLOSE));
 		menu.popup({window: BrowserWindow.fromWebContents(event.sender)});
 	}
 
@@ -15,7 +15,7 @@ class ContextMenuWorker {
 		return {
 			...item,
 			submenu: item.submenu?.map(subItem => this.transformTemplateItem(subItem, event)),
-			click: item.click != null ? () => event.sender.send(ContextMenuEvent.CLICKED, item.click) : (void 0)
+			click: item.click != null ? () => event.sender.send(ContextMenuEvent.ON_CLICK, item.click) : (void 0)
 		};
 	};
 }

@@ -18,7 +18,7 @@ import {StoreKey, StoreWorker} from './store';
 class RecentProjectsWorker {
 	public getRecentProjects(): RecentProjectRoot {
 		const root = StoreWorker.get<RecentProjectRoot>(StoreKey.RECENT_PROJECTS, {id: RecentProjectRootId});
-		if (root.id == null) {
+		if (isBlank(root.id)) {
 			root.id = RecentProjectRootId;
 		}
 		return root;
@@ -215,7 +215,7 @@ class RecentProjectsWorker {
 
 	public addLastProject(project: F1Project) {
 		let projectId;
-		const lastProjectIds = StoreWorker.get(StoreKey.LAST_PROJECT) as Array<string> | undefined;
+		const lastProjectIds = StoreWorker.get<Array<string>>(StoreKey.LAST_PROJECT);
 		if (lastProjectIds == null || lastProjectIds.length === 0) {
 			projectId = nanoid(32);
 			StoreWorker.set(StoreKey.LAST_PROJECT, [projectId]);
@@ -234,20 +234,22 @@ class RecentProjectsWorker {
 		const exists = Object.values(projectMap).find(p => p.path === project.directory);
 		if (exists != null) {
 			const projectId = exists.id;
-			let lastProjectIds = (StoreWorker.get(StoreKey.LAST_PROJECT) as Array<string> | undefined ?? [])
+			const lastProjectIds = StoreWorker.get<Array<string>>(StoreKey.LAST_PROJECT, [])
 				.filter(id => id !== projectId);
 			StoreWorker.set(StoreKey.LAST_PROJECT, lastProjectIds);
 		}
 	}
 
 	public getLastProjects(): Array<F1Project> {
-		const lastProjectIds = StoreWorker.get(StoreKey.LAST_PROJECT) as Array<string> | undefined;
+		const lastProjectIds = StoreWorker.get<Array<string>>(StoreKey.LAST_PROJECT, []);
 		if (lastProjectIds == null || lastProjectIds.length === 0) {
 			return [];
 		}
 
 		const [, projectMap] = this.getRecentProjectAsMap();
-		const found = lastProjectIds.map(lastProjectId => projectMap[lastProjectId]).filter(x => x != null);
+		const found = lastProjectIds
+			.map(lastProjectId => projectMap[lastProjectId])
+			.filter(x => x != null);
 		if (found.length === 0) {
 			StoreWorker.delete(StoreKey.LAST_PROJECT);
 			return [];

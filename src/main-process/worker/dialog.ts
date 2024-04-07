@@ -14,7 +14,7 @@ class DialogWorker {
 
 const INSTANCE = (() => {
 	const worker = new DialogWorker();
-	ipcMain.on(DialogEvent.SHOW_OPEN_DIALOG, (event: Electron.IpcMainEvent, options: OpenDialogOptions): void => {
+	ipcMain.on(DialogEvent.SHOW_OPEN, (event: Electron.IpcMainEvent, options: OpenDialogOptions): void => {
 		worker.showOpenDialog(event, options);
 	});
 	return worker;

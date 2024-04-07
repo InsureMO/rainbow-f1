@@ -1,4 +1,5 @@
 import {contextBridge} from 'electron';
+import {ElectronBridges} from '../shared';
 import {ContextMenuBridge} from './context-menu';
 import {DialogBridge} from './dialog';
 import {FileSystemBridge} from './file-system';
@@ -21,4 +22,4 @@ contextBridge.exposeInMainWorld('electron', {
 	recentProjects: RecentProjectsBridge,
 	cli: ProjectCliBridge,
 	project: ProjectBridge
-} as WindowElectronBridge);
+} as ElectronBridges.WindowElectronBridge);

@@ -148,7 +148,7 @@ const INSTANCE = (() => {
 	ipcMain.on(FileSystemEvent.EXISTS, (event: Electron.IpcMainEvent, path: string): void => {
 		event.returnValue = worker.exists(path);
 	});
-	ipcMain.on(FileSystemEvent.EMPTY, (event: Electron.IpcMainEvent, directory: string): void => {
+	ipcMain.on(FileSystemEvent.IS_EMPTY_DIR, (event: Electron.IpcMainEvent, directory: string): void => {
 		event.returnValue = worker.empty(directory);
 	});
 	ipcMain.on(FileSystemEvent.MKDIR, (event: Electron.IpcMainEvent, directory: string): void => {
