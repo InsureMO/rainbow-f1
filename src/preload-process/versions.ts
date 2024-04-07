@@ -1,7 +1,7 @@
 import {ipcRenderer} from 'electron';
-import {ApplicationEvent} from '../shared';
+import {ApplicationEvent, ElectronBridges} from '../shared';
 
-export const VersionsBridge: WindowElectronVersions = {
+export const VersionsBridge: ElectronBridges.WindowElectronVersions = {
 	chrome: process.versions.chrome,
 	node: process.versions.node,
 	electron: process.versions.electron,

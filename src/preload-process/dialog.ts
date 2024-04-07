@@ -1,7 +1,7 @@
 import {ipcRenderer} from 'electron';
-import {DialogEvent, OpenDialogOptions, OpenDialogResult} from '../shared';
+import {DialogEvent, ElectronBridges, OpenDialogOptions, OpenDialogResult} from '../shared';
 
-export const DialogBridge: WindowElectronDialog = {
+export const DialogBridge: ElectronBridges.WindowElectronDialog = {
 	open: (options: OpenDialogOptions): OpenDialogResult => {
 		return ipcRenderer.sendSync(DialogEvent.SHOW_OPEN_DIALOG, options);
 	}

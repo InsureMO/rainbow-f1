@@ -1,35 +1,35 @@
 import {ipcRenderer} from 'electron';
-import {RecentProject, RecentProjectCategory, RecentProjectRoot, RecentProjectsEvent} from '../shared';
+import {ElectronBridges, RecentProject, RecentProjectCategory, RecentProjectRoot, RecentProjectsEvent} from '../shared';
 
-export const RecentProjectsBridge: WindowElectronRecentProjects = {
+export const RecentProjectsBridge: ElectronBridges.WindowElectronRecentProjects = {
 	get: (): RecentProjectRoot => {
-		return ipcRenderer.sendSync(RecentProjectsEvent.GET_ALL)
+		return ipcRenderer.sendSync(RecentProjectsEvent.GET_ALL);
 	},
-	addProject: (project: RecentProject, categoryId?: string) => {
-		ipcRenderer.send(RecentProjectsEvent.ADD_PROJECT, project, categoryId)
+	addProject: (project: RecentProject, categoryId?: string): void => {
+		ipcRenderer.send(RecentProjectsEvent.ADD_PROJECT, project, categoryId);
 	},
-	renameProject: (projectId: string, newName: string) => {
-		ipcRenderer.send(RecentProjectsEvent.RENAME_PROJECT, projectId, newName)
+	renameProject: (projectId: string, newName: string): void => {
+		ipcRenderer.send(RecentProjectsEvent.RENAME_PROJECT, projectId, newName);
 	},
-	moveProject: (projectId: string, newParentCategoryId?: string) => {
-		ipcRenderer.send(RecentProjectsEvent.MOVE_PROJECT, projectId, newParentCategoryId)
+	moveProject: (projectId: string, newParentCategoryId?: string): void => {
+		ipcRenderer.send(RecentProjectsEvent.MOVE_PROJECT, projectId, newParentCategoryId);
 	},
-	removeProject: (projectId: string) => {
-		ipcRenderer.send(RecentProjectsEvent.REMOVE_PROJECT, projectId)
+	removeProject: (projectId: string): void => {
+		ipcRenderer.send(RecentProjectsEvent.REMOVE_PROJECT, projectId);
 	},
-	clear: () => {
-		ipcRenderer.send(RecentProjectsEvent.CLEAR_ALL)
+	clear: (): void => {
+		ipcRenderer.send(RecentProjectsEvent.CLEAR_ALL);
 	},
-	addCategory: (category: RecentProjectCategory, parentCategoryId?: string) => {
-		ipcRenderer.send(RecentProjectsEvent.ADD_CATEGORY, category, parentCategoryId)
+	addCategory: (category: RecentProjectCategory, parentCategoryId?: string): void => {
+		ipcRenderer.send(RecentProjectsEvent.ADD_CATEGORY, category, parentCategoryId);
 	},
-	renameCategory: (categoryId: string, newName: string) => {
-		ipcRenderer.send(RecentProjectsEvent.RENAME_CATEGORY, categoryId, newName)
+	renameCategory: (categoryId: string, newName: string): void => {
+		ipcRenderer.send(RecentProjectsEvent.RENAME_CATEGORY, categoryId, newName);
 	},
-	moveCategory: (categoryId: string, newParentCategoryId?: string) => {
-		ipcRenderer.send(RecentProjectsEvent.MOVE_CATEGORY, categoryId, newParentCategoryId)
+	moveCategory: (categoryId: string, newParentCategoryId?: string): void => {
+		ipcRenderer.send(RecentProjectsEvent.MOVE_CATEGORY, categoryId, newParentCategoryId);
 	},
-	removeCategory: (categoryId: string) => {
-		ipcRenderer.send(RecentProjectsEvent.REMOVE_CATEGORY, categoryId)
+	removeCategory: (categoryId: string): void => {
+		ipcRenderer.send(RecentProjectsEvent.REMOVE_CATEGORY, categoryId);
 	}
 };

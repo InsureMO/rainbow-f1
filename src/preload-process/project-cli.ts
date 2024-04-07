@@ -1,7 +1,7 @@
 import {ipcRenderer} from 'electron';
-import {ProjectCliEvent, ProjectCliSet} from '../shared';
+import {ElectronBridges, ProjectCliEvent, ProjectCliSet} from '../shared';
 
-export const ProjectCliBridge: WindowElectronProjectCli = {
+export const ProjectCliBridge: ElectronBridges.WindowElectronProjectCli = {
 	commands: async (commandLines?: ProjectCliSet): Promise<ProjectCliSet> => {
 		return await ipcRenderer.invoke(ProjectCliEvent.COMMANDS, commandLines);
 	},

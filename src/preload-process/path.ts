@@ -1,6 +1,8 @@
 import {ipcRenderer} from 'electron';
-import {PathEvent} from '../shared';
+import {ElectronBridges, PathEvent} from '../shared';
 
-export const PathBridge: WindowElectronPath = {
-	basename: (path: string, suffix?: string) => ipcRenderer.sendSync(PathEvent.BASENAME, path, suffix)
+export const PathBridge: ElectronBridges.WindowElectronPath = {
+	basename: (path: string, suffix?: string): string => {
+		return ipcRenderer.sendSync(PathEvent.BASENAME, path, suffix);
+	}
 };

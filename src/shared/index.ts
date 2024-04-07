@@ -15,3 +15,5 @@ export * from './project-cli-types';
 export * from './project-types';
 
 export * from './application-types';
+
+export * from './bridge-types';
