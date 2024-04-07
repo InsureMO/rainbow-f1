@@ -1,4 +1,4 @@
 export * from './types';
 
 export * from './main-window';
-export * from './project-window';
+export * from './project-select-window';

@@ -3,7 +3,7 @@ import {ipcRenderer} from 'electron';
 import {EventEmitter} from 'events';
 import {ContextMenu, ContextMenuEvent} from '../shared';
 
-class ContextMenuBridge {
+class ContextMenuClickBridge {
 	private readonly _eventBus = new EventEmitter();
 
 	constructor() {
@@ -26,11 +26,10 @@ class ContextMenuBridge {
 	}
 }
 
-const bridge = new ContextMenuBridge();
-
-export const ContextMenuHandlers: WindowElectronContextMenu = {
+const ClickBridge = new ContextMenuClickBridge();
+export const ContextMenuBridge: WindowElectronContextMenu = {
 	onClick: (listener: (command: string) => void) => {
-		bridge.onceMenuClicked(listener);
+		ClickBridge.onceMenuClicked(listener);
 	},
 	showContextMenu: (menu: ContextMenu) => {
 		ipcRenderer.send(ContextMenuEvent.SHOW, menu);

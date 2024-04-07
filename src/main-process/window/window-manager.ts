@@ -1,6 +1,6 @@
 import {BrowserWindow} from 'electron';
 import {F1Project} from '../../shared';
-import {recentProjects} from '../handlers';
+import {RecentProjectsWorker} from '../worker';
 
 export enum WindowType {
 	MAIN,
@@ -23,7 +23,7 @@ class WindowManager {
 		window.once('closed', () => {
 			const project = WINDOW_PROJECTS.get(window.id);
 			WINDOW_PROJECTS.delete(window.id);
-			recentProjects.removeLastProject(project);
+			RecentProjectsWorker.removeLastProject(project);
 		});
 		this.registerWindow(window, WindowType.MAIN);
 	}

@@ -10,10 +10,10 @@ export default defineConfig({
 	build: {
 		rollupOptions: {
 			input: {
-				index: 'index.html',
 				splash: 'splash.html',
-				project: 'project.html',
-				about: 'about.html'
+				about: 'about.html',
+				'project-select': 'project-select.html',
+				main: 'main.html',
 			}
 		}
 	}

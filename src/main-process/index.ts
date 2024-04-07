@@ -1,4 +1,4 @@
 import './initializer';
-import './handlers';
+import './worker';
 
 export * from './window';

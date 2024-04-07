@@ -1,24 +1,24 @@
 import {contextBridge} from 'electron';
-import {CommandLinesHandlers} from './command-lines';
-import {ContextMenuHandlers} from './context-menu';
-import {DialogHandlers} from './dialog';
-import {F1ProjectHandlers} from './f1';
-import {FileSystemHandlers} from './fs';
-import {PathHandlers} from './path';
-import {RecentProjectsHandlers} from './recent-projects';
-import {StoreHandlers} from './store';
-import {ThemeHandlers} from './theme';
-import {Versions} from './versions';
+import {ContextMenuBridge} from './context-menu';
+import {DialogBridge} from './dialog';
+import {FileSystemBridge} from './file-system';
+import {PathBridge} from './path';
+import {ProjectBridge} from './project';
+import {ProjectCliBridge} from './project-cli';
+import {RecentProjectsBridge} from './recent-projects';
+import {StoreBridge} from './store';
+import {ThemeBridge} from './theme';
+import {VersionsBridge} from './versions';
 
 contextBridge.exposeInMainWorld('electron', {
-	versions: Versions,
-	fs: FileSystemHandlers,
-	path: PathHandlers,
-	cli: CommandLinesHandlers,
-	store: StoreHandlers,
-	theme: ThemeHandlers,
-	recentProjects: RecentProjectsHandlers,
-	contextMenu: ContextMenuHandlers,
-	dialog: DialogHandlers,
-	f1: F1ProjectHandlers
-} as WindowElectronHandler);
+	versions: VersionsBridge,
+	fs: FileSystemBridge,
+	path: PathBridge,
+	store: StoreBridge,
+	theme: ThemeBridge,
+	contextMenu: ContextMenuBridge,
+	dialog: DialogBridge,
+	recentProjects: RecentProjectsBridge,
+	cli: ProjectCliBridge,
+	project: ProjectBridge
+} as WindowElectronBridge);

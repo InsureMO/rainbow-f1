@@ -1,7 +1,7 @@
 import {BrowserWindow} from 'electron';
-import {recentProjects} from '../handlers';
+import {RecentProjectsWorker} from '../worker';
 import {createMainWindow} from './main-window';
-import {createProjectWindow} from './project-window';
+import {createProjectSelectWindow} from './project-select-window';
 
 export interface FirstWindowOptions {
 	showImmediate: boolean;
@@ -17,7 +17,7 @@ export type OpenWindowFunction = () => void;
 export const createFirstWindow = (options: FirstWindowOptions): Array<[BrowserWindow, OpenWindowFunction]> => {
 	const {showImmediate} = options;
 
-	const lastProjects = recentProjects.getLastProjects();
+	const lastProjects = RecentProjectsWorker.getLastProjects();
 	if (lastProjects.length !== 0) {
 		return lastProjects.map(project => {
 			const window = createMainWindow({project, showImmediate});
@@ -27,7 +27,7 @@ export const createFirstWindow = (options: FirstWindowOptions): Array<[BrowserWi
 			}];
 		});
 	} else {
-		const window = createProjectWindow({showImmediate});
+		const window = createProjectSelectWindow({showImmediate});
 		return [[window, () => window.show()]];
 	}
 };

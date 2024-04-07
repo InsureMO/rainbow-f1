@@ -3,7 +3,7 @@ import path from 'path';
 import {F1Project} from '../../shared';
 import {Envs} from '../envs';
 import {createMainWindowMenu} from '../menu';
-import {createProjectWindow} from './project-window';
+import {createProjectSelectWindow} from './project-select-window';
 import {WindowManager} from './window-manager';
 
 export interface MainWindowOptions {
@@ -29,7 +29,7 @@ export const createMainWindow = (options: MainWindowOptions): BrowserWindow => {
 	window.once('close', () => {
 		if (WindowManager.projects().length === 1) {
 			// last opened main window will close, call project window
-			const window = createProjectWindow({showImmediate: true});
+			const window = createProjectSelectWindow({showImmediate: true});
 			window.show();
 		}
 	});
@@ -37,10 +37,10 @@ export const createMainWindow = (options: MainWindowOptions): BrowserWindow => {
 	// and load the index.html of the app
 	if (Envs.dev) {
 		// noinspection JSIgnoredPromiseFromCall
-		window.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
+		window.loadURL(`${MAIN_WINDOW_VITE_DEV_SERVER_URL}/main.html`);
 	} else {
 		// noinspection JSIgnoredPromiseFromCall
-		window.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
+		window.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/main.html`));
 	}
 
 	if (showImmediate) {

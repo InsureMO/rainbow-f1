@@ -1,17 +1,17 @@
 import {ipcMain, nativeTheme} from 'electron';
 import {Theme, ThemeSource} from '../../../shared';
-import {theme as ThemeHelper} from '../../handlers';
+import {ThemeWorker} from '../../worker';
 
 const createThemeChangeMenuHandler = (source: ThemeSource) => {
 	return () => {
 		nativeTheme.themeSource = source;
-		ThemeHelper.setTheme(source);
+		ThemeWorker.setTheme(source);
 		ipcMain.emit(Theme.EVENT_NAME, source);
 	};
 };
 
 export const createAppearanceMenu = (): Electron.MenuItemConstructorOptions => {
-	const theme = ThemeHelper.getTheme();
+	const theme = ThemeWorker.getTheme();
 
 	return {
 		label: 'Appearance',

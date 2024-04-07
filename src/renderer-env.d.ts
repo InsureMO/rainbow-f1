@@ -1,5 +1,4 @@
 import {
-	CommandLines,
 	ContextMenu,
 	F1Project,
 	F1ProjectCreated,
@@ -9,6 +8,7 @@ import {
 	FileSystemBooleanResult,
 	OpenDialogOptions,
 	OpenDialogResult,
+	ProjectCliSet,
 	RecentProject,
 	RecentProjectCategory,
 	RecentProjectRoot,
@@ -33,6 +33,26 @@ declare global {
 		get: () => ThemeSource;
 	}
 
+	interface WindowElectronContextMenu {
+		onClick: (listener: (command: string) => void) => void;
+		showContextMenu: (menu: ContextMenu) => void;
+	}
+
+	interface WindowElectronDialog {
+		open(options: OpenDialogOptions): OpenDialogResult;
+	}
+
+	interface WindowElectronFileSystem {
+		exists: (path: string) => FileSystemBooleanResult;
+		empty: (directory: string) => FileSystemBooleanResult;
+		mkdir: (directory: string) => FileSystemBooleanResult;
+		createFile: (path: string, content: string) => FileSystemBooleanResult;
+	}
+
+	interface WindowElectronPath {
+		basename: (path: string, suffix?: string) => string;
+	}
+
 	interface WindowElectronRecentProjects {
 		get: () => RecentProjectRoot;
 		addProject: (project: RecentProject, categoryId?: string) => void;
@@ -46,16 +66,12 @@ declare global {
 		removeCategory: (categoryId: string) => void;
 	}
 
-	interface WindowElectronContextMenu {
-		onClick: (listener: (command: string) => void) => void;
-		showContextMenu: (menu: ContextMenu) => void;
+	interface WindowElectronProjectCli {
+		commands: (set?: ProjectCliSet) => Promise<ProjectCliSet>;
+		version: (key: keyof ProjectCliSet, path: string) => Promise<string | undefined>;
 	}
 
-	interface WindowElectronDialog {
-		open(options: OpenDialogOptions): OpenDialogResult;
-	}
-
-	interface WindowElectronF1Project {
+	interface WindowElectronProject {
 		create(settings: F1ProjectSettings): Promise<F1ProjectCreated>;
 
 		open(project: F1Project): void;
@@ -76,36 +92,20 @@ declare global {
 		opened(project: F1Project): void;
 	}
 
-	interface WindowElectronFileSystem {
-		exists: (path: string) => FileSystemBooleanResult;
-		empty: (directory: string) => FileSystemBooleanResult;
-		mkdir: (directory: string) => FileSystemBooleanResult;
-		createFile: (path: string, content: string) => FileSystemBooleanResult;
-	}
-
-	interface WindowElectronPath {
-		basename: (path: string, suffix?: string) => string;
-	}
-
-	interface WindowElectronCommandLines {
-		commands: (commandLines?: CommandLines) => Promise<CommandLines>;
-		version: (key: keyof CommandLines, path: string) => Promise<string | undefined>;
-	}
-
-	interface WindowElectronHandler {
+	interface WindowElectronBridge {
 		versions: WindowElectronVersions;
-		fs: WindowElectronFileSystem;
-		path: WindowElectronPath;
-		cli: WindowElectronCommandLines;
 		store: WindowElectronStore;
 		theme: WindowElectronTheme;
-		recentProjects: WindowElectronRecentProjects;
 		contextMenu: WindowElectronContextMenu;
 		dialog: WindowElectronDialog;
-		f1: WindowElectronF1Project;
+		fs: WindowElectronFileSystem;
+		path: WindowElectronPath;
+		recentProjects: WindowElectronRecentProjects;
+		cli: WindowElectronProjectCli;
+		project: WindowElectronProject;
 	}
 
 	interface Window {
-		electron: WindowElectronHandler;
+		electron: WindowElectronBridge;
 	}
 }

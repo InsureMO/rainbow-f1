@@ -1,9 +1,9 @@
 import {BrowserWindow} from 'electron';
-import {createProjectWindow} from '../../window';
+import {createProjectSelectWindow} from '../../window';
 
 export const createRecentProjectsMenu = (): Electron.MenuItemConstructorOptions => {
 	return {
 		label: 'Recent Projects...',
-		click: () => createProjectWindow({showImmediate: true, parent: BrowserWindow.getFocusedWindow()})
+		click: () => createProjectSelectWindow({showImmediate: true, parent: BrowserWindow.getFocusedWindow()})
 	};
 };
