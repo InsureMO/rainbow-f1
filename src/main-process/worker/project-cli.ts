@@ -53,7 +53,7 @@ class ProjectCliWorker {
 				}
 			} else {
 				// only command name
-				const result = spawnSync('where', [command], {encoding: 'utf-8'});
+				const result = spawnSync('where', [`"${command}"`], {encoding: 'utf-8'});
 				if (result.error == null && result.stdout != null && result.stdout.trim().length !== 0) {
 					const stdout = result.stdout.trim();
 					if (stdout.includes(' not find ')) {
@@ -102,6 +102,8 @@ class ProjectCliWorker {
 		}
 		const version = await this.getVersion(path, ...(options.versionArgs ?? ['-v']));
 		if (version == null) {
+			// version not detected, either given or default
+			// also treated as command not found
 			return defined ? {command: options.commandLine.command, exists: false} : (void 0);
 		}
 		return {command: path, version, exists: true};
@@ -114,8 +116,9 @@ class ProjectCliWorker {
 	protected replaceBaseVolta(to: string, volta?: string): string | undefined {
 		if (volta == null) {
 			return null;
-		} else if (volta.endsWith('volta.exe')) {
-			return volta.replace('volta.exe', to);
+		} else if (volta.endsWith('\\volta.exe')) {
+			// windows
+			return volta.replace(/\\volta.exe$/, `\\${to}`);
 		} else {
 			return volta.replace(/\/volta$/, `/${to}`);
 		}
@@ -125,9 +128,7 @@ class ProjectCliWorker {
 		commandLines = commandLines ?? {};
 		commandLines.volta = await this.volta(commandLines.volta);
 		const volta = commandLines.volta?.command;
-		await Promise.all([
-			'node', 'npm', 'yarn'
-		].map(async key => {
+		await Promise.all(['node', 'npm', 'yarn'].map(async key => {
 			const name = key as keyof ProjectCliSet;
 			const def = commandLines[name];
 			commandLines[name] = await this.getCommandLine({
