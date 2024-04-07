@@ -118,6 +118,10 @@ export const GlobalStyles: any = createGlobalStyle`
         }
     }
 
+    *:focus {
+        outline: none;
+    }
+
     div[data-w=dialog-body] {
         &[data-flex-column=true] {
             display: flex;

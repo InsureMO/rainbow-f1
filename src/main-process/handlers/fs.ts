@@ -7,7 +7,7 @@ import {
 	FileSystemOperationResult,
 	MAC_INDEX_FILE
 } from '../../shared';
-import {isMac} from '../utils';
+import {Envs} from '../envs';
 import path from './path';
 
 class ApplicationFileSystem {
@@ -54,7 +54,7 @@ class ApplicationFileSystem {
 		const files = fs.readdirSync(directory) as Array<string>;
 		if (files.length === 0) {
 			return {success: true, ret: true};
-		} else if (isMac() && files.length === 1 && files[0] === MAC_INDEX_FILE) {
+		} else if (Envs.mac && files.length === 1 && files[0] === MAC_INDEX_FILE) {
 			return {success: true, ret: true};
 		} else {
 			return {success: false, ret: false};

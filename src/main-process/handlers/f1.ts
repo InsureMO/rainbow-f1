@@ -19,8 +19,7 @@ import {
 	MIN_NODE_VERSION,
 	MIN_NPM_VERSION
 } from '../../shared';
-import {createMainWindow} from '../main-window';
-import WindowManager, {WindowType} from '../window-manager';
+import {createMainWindow, WindowManager, WindowType} from '../window';
 import cli from './command-lines';
 import fs from './fs';
 import path from './path';
@@ -249,7 +248,7 @@ class ApplicationF1Project {
 	}
 
 	public open(project: F1Project, window?: BrowserWindow) {
-		const main = createMainWindow(project, false);
+		const main = createMainWindow({project, showImmediate: false});
 		main.maximize();
 		main.show();
 		if (window != null && WindowManager.type(window) !== WindowType.MAIN) {

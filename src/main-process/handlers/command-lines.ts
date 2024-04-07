@@ -2,7 +2,7 @@ import {spawnSync} from 'child_process';
 import {ipcMain} from 'electron';
 import log from 'electron-log/main';
 import {CommandLine, CommandLines, CommandLinesEvent, isNotBlank} from '../../shared';
-import {isWin} from '../utils';
+import {Envs} from '../envs';
 
 class ApplicationCommandLines {
 	constructor() {
@@ -11,7 +11,7 @@ class ApplicationCommandLines {
 	}
 
 	protected async getVersion(command: string, ...args: Array<string>): Promise<string | undefined> {
-		if (isWin() && command.includes(' ')) {
+		if (Envs.win && command.includes(' ')) {
 			command = `"${command}"`;
 		}
 		const result = spawnSync(command, args, {encoding: 'utf-8'});
@@ -45,7 +45,7 @@ class ApplicationCommandLines {
 	}
 
 	protected async getCommand(command: string): Promise<string | undefined> {
-		if (isWin()) {
+		if (Envs.win) {
 			if (command.includes('\\')) {
 				// absolute path
 				const result = spawnSync('type', [`"${command}"`], {encoding: 'utf-8'});

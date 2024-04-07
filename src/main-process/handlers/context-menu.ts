@@ -1,12 +1,11 @@
 import {BrowserWindow, ipcMain, Menu} from 'electron';
 import {ContextMenuEvent, ContextMenuTemplateItem} from '../../shared';
 import IpcMainEvent = Electron.IpcMainEvent;
-import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 
 class ApplicationContextMenu {
 	constructor() {
 		ipcMain.on(ContextMenuEvent.SHOW, (event, template: Array<ContextMenuTemplateItem>) => {
-			const transformed: Array<MenuItemConstructorOptions> = template.map(item => {
+			const transformed: Array<Electron.MenuItemConstructorOptions> = template.map(item => {
 				return this.transformTemplateItem(item, event);
 			});
 			const menu = Menu.buildFromTemplate(transformed);
@@ -15,7 +14,7 @@ class ApplicationContextMenu {
 		});
 	}
 
-	protected transformTemplateItem(item: ContextMenuTemplateItem, event: IpcMainEvent): MenuItemConstructorOptions {
+	protected transformTemplateItem(item: ContextMenuTemplateItem, event: IpcMainEvent): Electron.MenuItemConstructorOptions {
 		return {
 			...item,
 			submenu: item.submenu?.map(subItem => this.transformTemplateItem(subItem, event)),
