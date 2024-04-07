@@ -1,14 +1,20 @@
 import {PROPERTY_PATH_ME, PropValue, Undefinable} from '@rainbow-d9/n1';
 import {AlertLabel, GlobalEventTypes, TreeNodeDef, UnwrappedTree, useGlobalEventBus} from '@rainbow-d9/n2';
 import {MouseEvent} from 'react';
+import {
+	RecentProject,
+	RecentProjectCategory,
+	RecentProjectEntityName,
+	RecentProjectHolder,
+	RecentProjectRoot
+} from '../../../shared';
 import {ContextMenuItem, showContextMenu} from '../../common/context-menu';
 import {EllipsisVertical, FolderClosed, FolderClosedEmpty, FolderOpen} from '../../common/icons';
-import {RecentProject, RecentProjectCategory, RecentProjectHolder, RecentProjectRoot} from '../../../shared';
 import {useCategory} from './category';
 import {RecentProjectsEventTypes, useRecentProjectsEventBus} from './event-bus';
 import {useProject} from './project';
 
-const computeShortName = (name: string): string => {
+const computeShortName = (name: RecentProjectEntityName): string => {
 	return (name ?? '').trim().split(/[\s-_]/).map(s => s[0].toUpperCase()).filter((_, i) => i < 2).join('');
 };
 

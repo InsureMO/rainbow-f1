@@ -2,7 +2,7 @@ import {Tree} from './tree';
 import {useRepaint} from './use-repaint';
 import {NoRecentProject} from './widgets';
 
-export const RecentProjects = () => {
+export const RecentProjectsSection = () => {
 	useRepaint();
 
 	const recentProjectsRoot = window.electron.recentProjects.get();

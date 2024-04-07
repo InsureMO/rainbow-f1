@@ -3,7 +3,13 @@ import {OpenDialogOptions, OpenDialogResult} from './dialog-types';
 import {FileSystemBooleanResult} from './file-system-types';
 import {ProjectCliSet} from './project-cli-types';
 import {F1Project, F1ProjectCreated, F1ProjectExisted, F1ProjectLoaded, F1ProjectSettings} from './project-types';
-import {RecentProject, RecentProjectCategory, RecentProjectRoot} from './recent-projects-types';
+import {
+	RecentProject,
+	RecentProjectCategory,
+	RecentProjectEntityId,
+	RecentProjectEntityName,
+	RecentProjectRoot
+} from './recent-projects-types';
 import {ThemeSource} from './theme-types';
 
 export namespace ElectronBridges {
@@ -46,15 +52,15 @@ export namespace ElectronBridges {
 
 	export interface WindowElectronRecentProjects {
 		get: () => RecentProjectRoot;
-		addProject: (project: RecentProject, categoryId?: string) => void;
-		renameProject: (projectId: string, newName: string) => void;
-		moveProject: (projectId: string, newParentCategoryId?: string) => void;
-		removeProject: (projectId: string) => void;
+		addProject: (project: RecentProject, categoryId?: RecentProjectEntityId) => void;
+		renameProject: (projectId: RecentProjectEntityId, newName: RecentProjectEntityName) => void;
+		moveProject: (projectId: RecentProjectEntityId, newParentCategoryId?: RecentProjectEntityId) => void;
+		removeProject: (projectId: RecentProjectEntityId) => void;
 		clear: () => void;
-		addCategory: (category: RecentProjectCategory, parentCategoryId?: string) => void;
-		renameCategory: (categoryId: string, newName: string) => void;
-		moveCategory: (categoryId: string, newParentCategoryId: string) => void;
-		removeCategory: (categoryId: string) => void;
+		addCategory: (category: RecentProjectCategory, parentCategoryId?: RecentProjectEntityId) => void;
+		renameCategory: (categoryId: RecentProjectEntityId, newName: RecentProjectEntityName) => void;
+		moveCategory: (categoryId: RecentProjectEntityId, newParentCategoryId: RecentProjectEntityId) => void;
+		removeCategory: (categoryId: RecentProjectEntityId) => void;
 	}
 
 	export interface WindowElectronProjectCli {
@@ -63,24 +69,24 @@ export namespace ElectronBridges {
 	}
 
 	export interface WindowElectronProject {
-		create(settings: F1ProjectSettings): Promise<F1ProjectCreated>;
+		create: (settings: F1ProjectSettings) => Promise<F1ProjectCreated>;
 
-		open(project: F1Project): void;
+		open: (project: F1Project) => void;
 
-		tryToOpen(directory: string): Promise<F1ProjectExisted>;
+		tryToOpen: (directory: string) => Promise<F1ProjectExisted>;
 
 		/** try to close current window, when failed to open project */
-		closeOnFailedOpen(): void;
+		closeOnFailedOpen: () => void;
 
 		/**
 		 * ask project, only used in main window, and project was bound this window already
 		 */
-		ask(): Promise<F1ProjectLoaded>;
+		ask: () => Promise<F1ProjectLoaded>;
 
 		/**
 		 * notify main process that project opened
 		 */
-		opened(project: F1Project): void;
+		opened: (project: F1Project) => void;
 	}
 
 	export interface WindowElectronBridge {

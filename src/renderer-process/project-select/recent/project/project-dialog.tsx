@@ -13,7 +13,13 @@ import {
 	useGlobalEventBus
 } from '@rainbow-d9/n2';
 import {useEffect, useRef, useState} from 'react';
-import {RecentProject, RecentProjectHolder, RecentProjectRoot, RecentProjectRootId} from '../../../../shared';
+import {
+	RecentProject,
+	RecentProjectEntityId,
+	RecentProjectHolder,
+	RecentProjectRoot,
+	RecentProjectRootId
+} from '../../../../shared';
 import {InvalidMessage} from '../../../common/widgets';
 import {
 	filterAvailableCategoriesForMoveProject,
@@ -30,11 +36,11 @@ interface ProjectDialogState {
 }
 
 export const ProjectDialog = (props: {
-	root: RecentProjectRoot; options: Array<RecentProjectCategoryCandidate>; map: Record<string, RecentProjectHolder>;
-	parentCategoryId?: string; project: RecentProject;
+	root: RecentProjectRoot; options: Array<RecentProjectCategoryCandidate>; map: Record<RecentProjectEntityId, RecentProjectHolder>;
+	parentCategoryId?: RecentProjectEntityId; project: RecentProject;
 }) => {
 	const {
-		root, options, map,
+		options, map,
 		parentCategoryId = RecentProjectRootId, project
 	} = props;
 

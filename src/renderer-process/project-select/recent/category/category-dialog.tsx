@@ -13,7 +13,13 @@ import {
 	useGlobalEventBus
 } from '@rainbow-d9/n2';
 import {useEffect, useRef, useState} from 'react';
-import {RecentProjectCategory, RecentProjectHolder, RecentProjectRoot, RecentProjectRootId} from '../../../../shared';
+import {
+	RecentProjectCategory,
+	RecentProjectEntityId,
+	RecentProjectHolder,
+	RecentProjectRoot,
+	RecentProjectRootId
+} from '../../../../shared';
 import {InvalidMessage} from '../../../common/widgets';
 import {RecentProjectsEventTypes, useRecentProjectsEventBus} from '../event-bus';
 import {RecentProjectCategoryCandidate} from './types';
@@ -27,9 +33,9 @@ interface CreateCategoryDialogState {
 }
 
 export const CategoryDialog = (props: {
-	root: RecentProjectRoot; options: Array<RecentProjectCategoryCandidate>; map: Record<string, RecentProjectHolder>;
-	parentCategoryId?: string;
-	currentCategoryId?: string; rename?: boolean; move?: boolean;
+	root: RecentProjectRoot; options: Array<RecentProjectCategoryCandidate>; map: Record<RecentProjectEntityId, RecentProjectHolder>;
+	parentCategoryId?: RecentProjectEntityId;
+	currentCategoryId?: RecentProjectEntityId; rename?: boolean; move?: boolean;
 }) => {
 	const {
 		root, options, map,

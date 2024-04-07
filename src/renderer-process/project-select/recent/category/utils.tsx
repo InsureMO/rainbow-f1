@@ -3,6 +3,7 @@ import {nanoid} from 'nanoid';
 import {Fragment} from 'react';
 import {
 	RecentProjectCategory,
+	RecentProjectEntityId,
 	RecentProjectHolder,
 	RecentProjectRoot,
 	RecentProjectRootId,
@@ -10,7 +11,7 @@ import {
 } from '../../../../shared';
 import {RecentProjectCategoryCandidate} from './types';
 
-export const transformCategoriesToMap = (parent: RecentProjectHolder): Record<string, RecentProjectHolder> => {
+export const transformCategoriesToMap = (parent: RecentProjectHolder): Record<RecentProjectEntityId, RecentProjectHolder> => {
 	const holders: Record<string, RecentProjectHolder> = {};
 	const collectHolders = (holder: RecentProjectHolder) => {
 		holders[holder.id] = holder;
@@ -20,7 +21,7 @@ export const transformCategoriesToMap = (parent: RecentProjectHolder): Record<st
 	return holders;
 };
 
-export const transformCategoriesToOptions = (parent: RecentProjectHolder, prefix: string, parentCategoryIdsOfParent: Array<string>): Array<RecentProjectCategoryCandidate> => {
+export const transformCategoriesToOptions = (parent: RecentProjectHolder, prefix: string, parentCategoryIdsOfParent: Array<RecentProjectEntityId>): Array<RecentProjectCategoryCandidate> => {
 	const parentCategoryIds = [...parentCategoryIdsOfParent, parent.id].filter(x => x != null);
 	return (parent.categories ?? []).map((category: RecentProjectCategory) => {
 		return [
@@ -30,7 +31,7 @@ export const transformCategoriesToOptions = (parent: RecentProjectHolder, prefix
 	}).flat();
 };
 
-export const filterAvailableCategoriesForMoveCategory = (options: Array<RecentProjectCategoryCandidate>, currentCategoryId: string, parentCategoryId: string): Array<RecentProjectCategoryCandidate> => {
+export const filterAvailableCategoriesForMoveCategory = (options: Array<RecentProjectCategoryCandidate>, currentCategoryId: RecentProjectEntityId, parentCategoryId: RecentProjectEntityId): Array<RecentProjectCategoryCandidate> => {
 	return options.filter(option => {
 		// option is not my current parent, myself, and not my descendants
 		return option.value !== currentCategoryId
@@ -38,25 +39,25 @@ export const filterAvailableCategoriesForMoveCategory = (options: Array<RecentPr
 			&& !option.parentCategoryIds.some(id => id === currentCategoryId);
 	});
 };
-export const filterAvailableCategoriesForMoveProject = (options: Array<RecentProjectCategoryCandidate>, parentCategoryId: string): Array<RecentProjectCategoryCandidate> => {
+export const filterAvailableCategoriesForMoveProject = (options: Array<RecentProjectCategoryCandidate>, parentCategoryId: RecentProjectEntityId): Array<RecentProjectCategoryCandidate> => {
 	return options.filter(option => {
 		// option is not my current parent
 		return option.value !== parentCategoryId;
 	});
 };
 
-export const getSelectedParentCategoryId = (availableOptions: Array<RecentProjectCategoryCandidate>, parentCategoryId?: string): string => {
+export const getSelectedParentCategoryId = (availableOptions: Array<RecentProjectCategoryCandidate>, parentCategoryId?: RecentProjectEntityId): string => {
 	if (parentCategoryId != null) {
 		return parentCategoryId;
 	}
 	if (availableOptions[0]?.value !== parentCategoryId) {
-		return (availableOptions[0]?.value ?? RecentProjectRootId) as string;
+		return availableOptions[0]?.value ?? RecentProjectRootId;
 	} else {
-		return (availableOptions[1]?.value ?? RecentProjectRootId) as string;
+		return availableOptions[1]?.value ?? RecentProjectRootId;
 	}
 };
 
-export const generateCategoryId = (exists: Record<string, RecentProjectHolder>): string => {
+export const generateCategoryId = (exists: Record<RecentProjectEntityId, RecentProjectHolder>): RecentProjectEntityId => {
 	let id = nanoid(32);
 	while (exists[id] != null) {
 		id = nanoid(32);
@@ -69,18 +70,19 @@ export const getCategoryCandidates = (root: RecentProjectRoot) => {
 		// add root manually
 		{value: RecentProjectRootId, label: RecentProjectRootName, parentCategoryIds: []},
 		// all categories
-		...transformCategoriesToOptions(root, '/', []).sort((a: DropdownOption, b: DropdownOption) => {
-			return (a.label as string).localeCompare(b.label as string);
-		})
+		...transformCategoriesToOptions(root, '/', [])
+			.sort((a: DropdownOption, b: DropdownOption) => (a.label as string).localeCompare(b.label as string))
 	].map(option => {
 		return {
 			value: option.value,
-			label: (option.label as string).split('/').map((part, index) => {
-				return <Fragment key={index}>
-					<span>{part}</span>
-					<span data-hierarchy-slash="">/</span>
-				</Fragment>;
-			}),
+			label: (option.label as string)
+				.split('/')
+				.map((part, index) => {
+					return <Fragment key={index}>
+						<span>{part}</span>
+						<span data-hierarchy-slash="">/</span>
+					</Fragment>;
+				}),
 			stringify: () => option.label,
 			parentCategoryIds: option.parentCategoryIds
 		} as RecentProjectCategoryCandidate;

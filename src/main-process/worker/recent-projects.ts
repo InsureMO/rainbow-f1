@@ -6,6 +6,8 @@ import {
 	isBlank,
 	RecentProject,
 	RecentProjectCategory,
+	RecentProjectEntityId,
+	RecentProjectEntityName,
 	RecentProjectHolder,
 	RecentProjectRoot,
 	RecentProjectRootId,
@@ -24,7 +26,7 @@ class RecentProjectsWorker {
 		return root;
 	}
 
-	protected findRecentProjectCategory(ancestorOrParent: RecentProjectHolder, categoryId: string): [RecentProjectHolder, RecentProjectCategory] | [] {
+	protected findRecentProjectCategory(ancestorOrParent: RecentProjectHolder, categoryId: RecentProjectEntityId): [RecentProjectHolder, RecentProjectCategory] | [] {
 		if (ancestorOrParent.categories != null) {
 			const found = ancestorOrParent.categories.find(c => c.id === categoryId);
 			if (found != null) {
@@ -47,7 +49,7 @@ class RecentProjectsWorker {
 	/**
 	 * add to root when category not given or not found
 	 */
-	public addRecentProject(project: RecentProject, categoryId?: string): void {
+	public addRecentProject(project: RecentProject, categoryId?: RecentProjectEntityId): void {
 		const root = this.getRecentProjects();
 		if (`${categoryId ?? ''}`.trim().length === 0) {
 			root.projects = root.projects ?? [];
@@ -66,7 +68,7 @@ class RecentProjectsWorker {
 		StoreWorker.set(StoreKey.RECENT_PROJECTS, root);
 	}
 
-	protected findRecentProject(ancestorOrParent: RecentProjectHolder, projectId: string): RecentProject | undefined {
+	protected findRecentProject(ancestorOrParent: RecentProjectHolder, projectId: RecentProjectEntityId): RecentProject | undefined {
 		let found = ancestorOrParent.projects?.find(p => p.id === projectId);
 		if (found != null) {
 			return found;
@@ -88,7 +90,7 @@ class RecentProjectsWorker {
 		];
 	}
 
-	public renameRecentProject(projectId: string, newName: string): void {
+	public renameRecentProject(projectId: RecentProjectEntityId, newName: RecentProjectEntityName): void {
 		const root = this.getRecentProjects();
 		const found = this.findRecentProject(root, projectId);
 		if (found != null) {
@@ -100,7 +102,7 @@ class RecentProjectsWorker {
 	/**
 	 * move given project to root when parent category not given or not found
 	 */
-	public moveRecentProject(projectId: string, newParentCategoryId?: string): void {
+	public moveRecentProject(projectId: RecentProjectEntityId, newParentCategoryId?: RecentProjectEntityId): void {
 		const root = this.getRecentProjects();
 		const found = this.findRecentProject(root, projectId);
 		if (found != null) {
@@ -119,7 +121,7 @@ class RecentProjectsWorker {
 		StoreWorker.set(StoreKey.RECENT_PROJECTS, root);
 	}
 
-	protected removeRecentProjectFromParent(ancestorOrParent: RecentProjectHolder, projectId: string): boolean {
+	protected removeRecentProjectFromParent(ancestorOrParent: RecentProjectHolder, projectId: RecentProjectEntityId): boolean {
 		let foundIndex = ancestorOrParent.projects?.findIndex(p => p.id === projectId);
 		if (foundIndex !== -1) {
 			ancestorOrParent.projects?.splice(foundIndex, 1);
@@ -129,7 +131,7 @@ class RecentProjectsWorker {
 		}
 	}
 
-	public removeRecentProject(projectId: string): void {
+	public removeRecentProject(projectId: RecentProjectEntityId): void {
 		const root = this.getRecentProjects();
 		this.removeRecentProjectFromParent(root, projectId);
 		StoreWorker.set(StoreKey.RECENT_PROJECTS, root);
@@ -142,7 +144,7 @@ class RecentProjectsWorker {
 	/**
 	 * add to root when parent category not given or not found
 	 */
-	public addRecentProjectCategory(category: RecentProjectCategory, parentCategoryId?: string): void {
+	public addRecentProjectCategory(category: RecentProjectCategory, parentCategoryId?: RecentProjectEntityId): void {
 		const root = this.getRecentProjects();
 		if (`${parentCategoryId ?? ''}`.trim().length === 0 || root.categories == null) {
 			// no parent category given, or there is no category at all
@@ -160,7 +162,7 @@ class RecentProjectsWorker {
 		StoreWorker.set(StoreKey.RECENT_PROJECTS, root);
 	}
 
-	public renameRecentProjectCategory(categoryId: string, newName: string): void {
+	public renameRecentProjectCategory(categoryId: RecentProjectEntityId, newName: RecentProjectEntityName): void {
 		const root = this.getRecentProjects();
 		const [, foundCategory] = this.findRecentProjectCategory(root, categoryId);
 		if (foundCategory != null) {
@@ -172,7 +174,7 @@ class RecentProjectsWorker {
 	/**
 	 * move given category to root when parent category not given or not found
 	 */
-	public moveRecentProjectCategory(categoryId: string, newParentCategoryId?: string): void {
+	public moveRecentProjectCategory(categoryId: RecentProjectEntityId, newParentCategoryId?: RecentProjectEntityId): void {
 		const root = this.getRecentProjects();
 		const [parent, foundCategory] = this.findRecentProjectCategory(root, categoryId);
 		if (parent != null && foundCategory != null) {
@@ -194,7 +196,7 @@ class RecentProjectsWorker {
 		StoreWorker.set(StoreKey.RECENT_PROJECTS, root);
 	}
 
-	public removeRecentProjectCategory(categoryId: string): void {
+	public removeRecentProjectCategory(categoryId: RecentProjectEntityId): void {
 		const root = this.getRecentProjects();
 		const [parent, foundCategory] = this.findRecentProjectCategory(root, categoryId);
 		if (parent != null && foundCategory != null) {
@@ -282,31 +284,31 @@ const INSTANCE = (() => {
 	ipcMain.on(RecentProjectsEvent.GET_ALL, (event: Electron.IpcMainEvent): void => {
 		event.returnValue = worker.getRecentProjects();
 	});
-	ipcMain.on(RecentProjectsEvent.ADD_PROJECT, (_: Electron.IpcMainEvent, project: RecentProject, categoryId?: string): void => {
+	ipcMain.on(RecentProjectsEvent.ADD_PROJECT, (_: Electron.IpcMainEvent, project: RecentProject, categoryId?: RecentProjectEntityId): void => {
 		worker.addRecentProject(project, categoryId);
 	});
-	ipcMain.on(RecentProjectsEvent.RENAME_PROJECT, (_: Electron.IpcMainEvent, projectId: string, newName: string): void => {
+	ipcMain.on(RecentProjectsEvent.RENAME_PROJECT, (_: Electron.IpcMainEvent, projectId: RecentProjectEntityId, newName: RecentProjectEntityName): void => {
 		worker.renameRecentProject(projectId, newName);
 	});
-	ipcMain.on(RecentProjectsEvent.MOVE_PROJECT, (_: Electron.IpcMainEvent, projectId: string, newParentCategoryId?: string): void => {
+	ipcMain.on(RecentProjectsEvent.MOVE_PROJECT, (_: Electron.IpcMainEvent, projectId: RecentProjectEntityId, newParentCategoryId?: string): void => {
 		worker.moveRecentProject(projectId, newParentCategoryId);
 	});
-	ipcMain.on(RecentProjectsEvent.REMOVE_PROJECT, (_: Electron.IpcMainEvent, projectId: string): void => {
+	ipcMain.on(RecentProjectsEvent.REMOVE_PROJECT, (_: Electron.IpcMainEvent, projectId: RecentProjectEntityId): void => {
 		worker.removeRecentProject(projectId);
 	});
 	ipcMain.on(RecentProjectsEvent.CLEAR_ALL, (): void => {
 		worker.clearRecentProjects();
 	});
-	ipcMain.on(RecentProjectsEvent.ADD_CATEGORY, (_: Electron.IpcMainEvent, category: RecentProjectCategory, parentCategoryId?: string): void => {
+	ipcMain.on(RecentProjectsEvent.ADD_CATEGORY, (_: Electron.IpcMainEvent, category: RecentProjectCategory, parentCategoryId?: RecentProjectEntityId): void => {
 		worker.addRecentProjectCategory(category, parentCategoryId);
 	});
-	ipcMain.on(RecentProjectsEvent.RENAME_CATEGORY, (_: Electron.IpcMainEvent, categoryId: string, newName: string): void => {
+	ipcMain.on(RecentProjectsEvent.RENAME_CATEGORY, (_: Electron.IpcMainEvent, categoryId: RecentProjectEntityId, newName: RecentProjectEntityName): void => {
 		worker.renameRecentProjectCategory(categoryId, newName);
 	});
-	ipcMain.on(RecentProjectsEvent.MOVE_CATEGORY, (_: Electron.IpcMainEvent, categoryId: string, newParentCategoryId?: string): void => {
+	ipcMain.on(RecentProjectsEvent.MOVE_CATEGORY, (_: Electron.IpcMainEvent, categoryId: RecentProjectEntityId, newParentCategoryId?: RecentProjectEntityId): void => {
 		worker.moveRecentProjectCategory(categoryId, newParentCategoryId);
 	});
-	ipcMain.on(RecentProjectsEvent.REMOVE_CATEGORY, (_: Electron.IpcMainEvent, categoryId: string): void => {
+	ipcMain.on(RecentProjectsEvent.REMOVE_CATEGORY, (_: Electron.IpcMainEvent, categoryId: RecentProjectEntityId): void => {
 		worker.removeRecentProjectCategory(categoryId);
 	});
 	return worker;

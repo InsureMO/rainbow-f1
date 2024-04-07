@@ -1,14 +1,14 @@
 import {DOM_KEY_WIDGET} from '@rainbow-d9/n2';
 import styled from 'styled-components';
 
-export const CreateOrRecentContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or-recent-container'})`
+export const RecentContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or-recent-container'})`
     display: block;
     position: relative;
     width: 100vw;
     height: 100vh;
     overflow: hidden;
 `;
-export const CreateOrRecentContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or-recent-content'})`
+export const RecentContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or-recent-content'})`
     display: grid;
     position: relative;
     grid-template-columns: 1fr auto;

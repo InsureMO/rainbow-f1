@@ -2,22 +2,22 @@ import {Dialog, GlobalEventBusProvider, UnwrappedCaption, YesNoDialog} from '@ra
 import {Logo} from '../../common/icons';
 import {Bar} from './bar';
 import {RecentProjectsEventBusProvider} from './event-bus';
-import {RecentProjects} from './recent-projects';
-import {CreateOrRecentContainer, CreateOrRecentContent} from './widgets';
+import {RecentProjectsSection} from './recent-projects';
+import {RecentContainer, RecentContent} from './widgets';
 
 export const CreateOrRecentPage = () => {
 	return <GlobalEventBusProvider>
 		<RecentProjectsEventBusProvider>
 			<Dialog/>
 			<YesNoDialog/>
-			<CreateOrRecentContainer>
-				<CreateOrRecentContent>
+			<RecentContainer>
+				<RecentContent>
 					<UnwrappedCaption data-page-title>Recent projects...</UnwrappedCaption>
 					<Logo/>
-					<RecentProjects/>
+					<RecentProjectsSection/>
 					<Bar/>
-				</CreateOrRecentContent>
-			</CreateOrRecentContainer>
+				</RecentContent>
+			</RecentContainer>
 		</RecentProjectsEventBusProvider>
 	</GlobalEventBusProvider>;
 };
