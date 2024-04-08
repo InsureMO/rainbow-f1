@@ -1,3 +1,4 @@
+export const CLI_COMMAND_NAMES = ['node', 'npm', 'yarn'] as const;
 export const MIN_NODE_VERSION = '18.19';
 export const MIN_NPM_VERSION = '10.2';
 export const RECOMMENDED_YARN_VERSION = '1.22';

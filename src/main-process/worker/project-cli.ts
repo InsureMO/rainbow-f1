@@ -1,11 +1,27 @@
 import {spawnSync} from 'child_process';
 import {ipcMain} from 'electron';
 import log from 'electron-log/main';
-import {isNotBlank, ProjectCli, ProjectCliEvent, ProjectCliSet} from '../../shared';
+import {
+	CLI_COMMAND_NAMES,
+	isNotBlank,
+	ProjectCli,
+	ProjectCliCommand,
+	ProjectCliEvent,
+	ProjectCliSet,
+	ProjectCliVersion
+} from '../../shared';
 import {Envs} from '../envs';
 
+type CliCommandVersionArg = string;
+
+interface CliDetectOptions {
+	cli?: ProjectCli;
+	fallbackCommands: Array<ProjectCliCommand>;
+	versionArgs?: Array<CliCommandVersionArg>;
+}
+
 class ProjectCliWorker {
-	public async getVersion(command: string, ...args: Array<string>): Promise<string | undefined> {
+	public async detectCliVersion(command: ProjectCliCommand, ...args: Array<CliCommandVersionArg>): Promise<Undefinable<ProjectCliVersion>> {
 		if (Envs.win && command.includes(' ')) {
 			// for windows, command with space should be quoted
 			command = `"${command}"`;
@@ -24,23 +40,23 @@ class ProjectCliWorker {
 		}
 	}
 
-	public async nodeVersion(command: string): Promise<string | undefined> {
-		return await this.getVersion(command, '-v');
+	public async detectNodeVersion(command: ProjectCliCommand): Promise<Undefinable<ProjectCliVersion>> {
+		return await this.detectCliVersion(command, '-v');
 	}
 
-	public async npmVersion(command: string): Promise<string | undefined> {
-		return await this.getVersion(command, '-v');
+	public async detectNpmVersion(command: ProjectCliCommand): Promise<Undefinable<ProjectCliVersion>> {
+		return await this.detectCliVersion(command, '-v');
 	}
 
-	public async yarnVersion(command: string): Promise<string | undefined> {
-		return await this.getVersion(command, '-v');
+	public async detectYarnVersion(command: ProjectCliCommand): Promise<Undefinable<ProjectCliVersion>> {
+		return await this.detectCliVersion(command, '-v');
 	}
 
-	public async voltaVersion(command: string): Promise<string | undefined> {
-		return await this.getVersion(command, '-v');
+	public async detectVoltaVersion(command: ProjectCliCommand): Promise<Undefinable<ProjectCliVersion>> {
+		return await this.detectCliVersion(command, '-v');
 	}
 
-	protected async getCommand(command: string): Promise<string | undefined> {
+	protected async locateCliCommand(command: ProjectCliCommand): Promise<Undefinable<ProjectCliCommand>> {
 		if (Envs.win) {
 			if (command.includes('\\')) {
 				// absolute path
@@ -82,74 +98,75 @@ class ProjectCliWorker {
 		}
 	}
 
-	protected async getCommandLine(options: {
-		commandLine?: ProjectCli,
-		fallbackCommands: Array<string>, versionArgs?: Array<string>
-	}): Promise<ProjectCli | undefined> {
-		const defined = isNotBlank(options.commandLine?.command) || isNotBlank(options.commandLine?.version);
+	protected async detectCli(options: CliDetectOptions): Promise<Undefinable<ProjectCli>> {
+		const defined = isNotBlank(options.cli?.command) || isNotBlank(options.cli?.version);
 		// use defined first
-		const commands = [options.commandLine?.command, ...options.fallbackCommands].filter(isNotBlank);
+		const commands = [options.cli?.command, ...options.fallbackCommands].filter(isNotBlank);
 		let path = null;
 		for (let command of commands) {
-			path = await this.getCommand(command);
+			path = await this.locateCliCommand(command);
 			if (path != null) {
 				break;
 			}
 		}
 		if (path == null) {
 			// not found, either given or default
-			return defined ? {command: options.commandLine.command, exists: false} : (void 0);
+			return defined ? {command: options.cli.command, exists: false} : (void 0);
 		}
-		const version = await this.getVersion(path, ...(options.versionArgs ?? ['-v']));
+		const version = await this.detectCliVersion(path, ...(options.versionArgs ?? ['-v']));
 		if (version == null) {
 			// version not detected, either given or default
 			// also treated as command not found
-			return defined ? {command: options.commandLine.command, exists: false} : (void 0);
+			return defined ? {command: options.cli.command, exists: false} : (void 0);
 		}
 		return {command: path, version, exists: true};
 	}
 
-	public async volta(def?: ProjectCli): Promise<ProjectCli | undefined> {
-		return await this.getCommandLine({commandLine: def, fallbackCommands: ['volta'], versionArgs: ['-v']});
+	public async detectVolta(volta?: ProjectCli): Promise<Undefinable<ProjectCli>> {
+		return await this.detectCli({cli: volta, fallbackCommands: ['volta'], versionArgs: ['-v']});
 	}
 
-	protected replaceBaseVolta(to: string, volta?: string): string | undefined {
-		if (volta == null) {
+	protected replaceBaseOnVoltaCommand(to: ElementOfArray<typeof CLI_COMMAND_NAMES>, voltaCommand?: ProjectCliCommand): string | undefined {
+		if (voltaCommand == null) {
 			return null;
-		} else if (volta.endsWith('\\volta.exe')) {
+		} else if (voltaCommand.endsWith('\\volta.exe')) {
 			// windows
-			return volta.replace(/\\volta.exe$/, `\\${to}`);
+			return voltaCommand.replace(/\\volta.exe$/, `\\${to}`);
+		} else if (voltaCommand.endsWith('\\volta')) {
+			// windows
+			return voltaCommand.replace(/\\volta$/, `\\${to}`);
 		} else {
-			return volta.replace(/\/volta$/, `/${to}`);
+			return voltaCommand.replace(/\/volta$/, `/${to}`);
 		}
 	}
 
-	public async commands(commandLines?: ProjectCliSet): Promise<ProjectCliSet> {
-		commandLines = commandLines ?? {};
-		commandLines.volta = await this.volta(commandLines.volta);
-		const volta = commandLines.volta?.command;
-		await Promise.all(['node', 'npm', 'yarn'].map(async key => {
+	public async detectCliSet(cliSet?: ProjectCliSet): Promise<ProjectCliSet> {
+		cliSet = cliSet ?? {};
+		cliSet.volta = await this.detectVolta(cliSet.volta);
+		const volta = cliSet.volta?.command;
+		await Promise.all(CLI_COMMAND_NAMES.map(async key => {
 			const name = key as keyof ProjectCliSet;
-			const def = commandLines[name];
-			commandLines[name] = await this.getCommandLine({
-				commandLine: def,
-				fallbackCommands: [this.replaceBaseVolta(key, volta), key].filter(c => c != null),
+			const def = cliSet[name];
+			cliSet[name] = await this.detectCli({
+				cli: def,
+				// fallback to volta first, and key itself
+				fallbackCommands: [this.replaceBaseOnVoltaCommand(key, volta), key].filter(c => c != null),
 				versionArgs: ['-v']
 			});
 		}));
-		return commandLines;
+		return cliSet;
 	}
 }
 
 const INSTANCE = (() => {
 	const worker = new ProjectCliWorker();
-	ipcMain.handle(ProjectCliEvent.COMMANDS,
-		async (_, commandLines?: ProjectCliSet): Promise<ReturnType<ProjectCliWorker['commands']>> => {
-			return await worker.commands(commandLines);
+	ipcMain.handle(ProjectCliEvent.DETECT_CLI_SET,
+		async (_, cliSet?: ProjectCliSet): Promise<ReturnType<ProjectCliWorker['detectCliSet']>> => {
+			return await worker.detectCliSet(cliSet);
 		});
-	ipcMain.handle(ProjectCliEvent.VERSION,
-		async (_, _key: keyof ProjectCliSet, path: string): Promise<ReturnType<ProjectCliWorker['getVersion']>> => {
-			return await worker.getVersion(path, '-v');
+	ipcMain.handle(ProjectCliEvent.DETECT_CLI_VERSION,
+		async (_, _key: keyof ProjectCliSet, path: string): Promise<ReturnType<ProjectCliWorker['detectCliVersion']>> => {
+			return await worker.detectCliVersion(path, '-v');
 		});
 	return worker;
 })();

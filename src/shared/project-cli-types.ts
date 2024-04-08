@@ -1,6 +1,9 @@
+export type ProjectCliCommand = string;
+export type ProjectCliVersion = string;
+
 export interface ProjectCli {
-	command?: string;
-	version?: string;
+	command?: ProjectCliCommand;
+	version?: ProjectCliVersion;
 	exists?: boolean;
 }
 
@@ -12,6 +15,6 @@ export interface ProjectCliSet {
 }
 
 export enum ProjectCliEvent {
-	COMMANDS = 'cli-commands',
-	VERSION = 'cli-version'
+	DETECT_CLI_SET = 'cli-commands',
+	DETECT_CLI_VERSION = 'cli-version'
 }

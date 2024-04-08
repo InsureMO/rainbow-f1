@@ -26,45 +26,55 @@ import {ProjectCliWorker} from './project-cli';
 import {RecentProjectsWorker} from './recent-projects';
 
 class ProjectWorker {
-	protected async checkCliNode(node?: ProjectCli): Promise<string | undefined> {
-		if (isBlank(node?.command)) {
-			return 'Please select the node command.';
+	/**
+	 * returns given node or create one if not given
+	 */
+	protected async checkCliNode(node?: ProjectCli): Promise<MightBeError<ProjectCli>> {
+		node = node == null ? {} : node;
+		if (isBlank(node.command)) {
+			return [node, 'Please select the node command.'];
 		}
-		const version = await ProjectCliWorker.nodeVersion(node.command);
+		const version = await ProjectCliWorker.detectNodeVersion(node.command);
 		if (version == null) {
-			return 'Invalid executive file for node, no version information detected.';
+			return [node, 'Invalid executive file for node, no version information detected.'];
 		} else if (!isNodeVersionValid(version)) {
-			return `Invalid executive file for node, please use a version above ${MIN_NODE_VERSION}.`;
+			return [node, `Invalid executive file for node, please use a version above ${MIN_NODE_VERSION}.`];
 		}
 		node.version = version;
 		node.exists = true;
 
-		return (void 0);
+		return [node];
 	}
 
-	protected async checkCliNpm(npm?: ProjectCli): Promise<string | undefined> {
-		if (isBlank(npm?.command)) {
-			return 'Please select the node command.';
+	/**
+	 * returns given npm or create one if not given
+	 */
+	protected async checkCliNpm(npm?: ProjectCli): Promise<MightBeError<ProjectCli>> {
+		npm = npm == null ? {} : npm;
+		if (isBlank(npm.command)) {
+			return [npm, 'Please select the node command.'];
 		}
-		const version = await ProjectCliWorker.npmVersion(npm.command);
+		const version = await ProjectCliWorker.detectNpmVersion(npm.command);
 		if (version == null) {
-			return 'Invalid executive file for npm, no version information detected.';
+			return [npm, 'Invalid executive file for npm, no version information detected.'];
 		} else if (!isNpmVersionValid(version)) {
-			return `Invalid executive file for npm, please use a version above ${MIN_NPM_VERSION}.`;
+			return [npm, `Invalid executive file for npm, please use a version above ${MIN_NPM_VERSION}.`];
 		}
 		npm.version = version;
 		npm.exists = true;
 
-		return (void 0);
+		return [npm];
 	}
 
-	protected async checkCliYarn(yarn?: ProjectCli): Promise<string | undefined> {
-		if (isBlank(yarn?.command)) {
-			if (yarn != null) {
-				yarn.exists = false;
-			}
+	/**
+	 * returns given yarn or create one if not given
+	 */
+	protected async checkYarn(yarn?: ProjectCli): Promise<ProjectCli> {
+		yarn = yarn == null ? {} : yarn;
+		if (isBlank(yarn.command)) {
+			yarn.exists = false;
 		} else {
-			const version = await ProjectCliWorker.yarnVersion(yarn.command);
+			const version = await ProjectCliWorker.detectYarnVersion(yarn.command);
 			if (version == null) {
 				delete yarn.version;
 				yarn.exists = false;
@@ -72,17 +82,19 @@ class ProjectWorker {
 				yarn.version = version;
 				yarn.exists = true;
 			}
-			return (void 0);
 		}
+		return yarn;
 	}
 
-	protected async checkCliVolta(volta?: ProjectCli): Promise<string | undefined> {
-		if (isBlank(volta?.command)) {
-			if (volta != null) {
-				volta.exists = false;
-			}
+	/**
+	 * returns given volta or create one if not given
+	 */
+	protected async checkCliVolta(volta?: ProjectCli): Promise<ProjectCli> {
+		volta = volta == null ? {} : volta;
+		if (isBlank(volta.command)) {
+			volta.exists = false;
 		} else {
-			const version = await ProjectCliWorker.voltaVersion(volta.command);
+			const version = await ProjectCliWorker.detectVoltaVersion(volta.command);
 			if (version == null) {
 				delete volta.version;
 				volta.exists = false;
@@ -90,24 +102,30 @@ class ProjectWorker {
 				volta.version = version;
 				volta.exists = true;
 			}
-			return (void 0);
 		}
+		return volta;
 	}
 
-	protected async checkCli(envs?: F1ProjectEnvs): Promise<string | undefined> {
-		const {node, npm, yarn, volta} = envs?.cli ?? {};
-		const nodeMessage = await this.checkCliNode(node);
+	/**
+	 * returns given envs or create one if not given
+	 */
+	protected async checkCli(envs?: F1ProjectEnvs): Promise<MightBeError<F1ProjectEnvs>> {
+		envs = envs == null ? {} : envs;
+		envs.cli = envs.cli == null ? {} : envs.cli;
+		const [node, nodeMessage] = await this.checkCliNode(envs.cli.node);
 		if (nodeMessage != null) {
-			return nodeMessage;
+			return [envs, nodeMessage];
 		}
-		const npmMessage = await this.checkCliNpm(npm);
+		envs.cli.node = node;
+		const [npm, npmMessage] = await this.checkCliNpm(envs.cli.npm);
 		if (npmMessage != null) {
-			return npmMessage;
+			return [envs, npmMessage];
 		}
-		await this.checkCliYarn(yarn);
-		await this.checkCliVolta(volta);
+		envs.cli.npm = npm;
+		envs.cli.yarn = await this.checkYarn(envs.cli.yarn);
+		envs.cli.volta = await this.checkCliVolta(envs.cli.volta);
 
-		return (void 0);
+		return [envs];
 	}
 
 	protected checkModuleName(module: F1ModuleSettings): string | undefined {
@@ -175,7 +193,7 @@ class ProjectWorker {
 
 	public async create(settings: F1ProjectSettings): Promise<F1ProjectCreated> {
 		const project = this.copyF1ProjectSettings(settings);
-		const {name, directory, envs, modules = []} = project;
+		const {name, directory, modules = []} = project;
 		// check name, cannot be empty, and must be a valid name
 		if (isBlank(name)) {
 			return {success: false, project, message: 'Project name cannot be blank.'};
@@ -186,14 +204,16 @@ class ProjectWorker {
 		}
 		const directoryExists = FileSystemWorker.exists(directory).ret;
 		if (!directoryExists) {
+			// directory not exists, will create it later. pass the check.
 		} else if (!FileSystemWorker.empty(directory)) {
 			return {success: false, project, message: 'Project directory is not empty.'};
 		}
 		// check volta, node, npm, yarn versions
-		const cliMessage = await this.checkCli(envs);
+		const [envs, cliMessage] = await this.checkCli(project.envs);
 		if (cliMessage != null) {
 			return {success: false, project, message: cliMessage};
 		}
+		project.envs = envs;
 
 		// check module names
 		for (let module of modules) {
