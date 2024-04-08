@@ -69,7 +69,7 @@ class ProjectWorker {
 	/**
 	 * returns given yarn or create one if not given
 	 */
-	protected async checkYarn(yarn?: ProjectCli): Promise<ProjectCli> {
+	protected async checkCliYarn(yarn?: ProjectCli): Promise<ProjectCli> {
 		yarn = yarn == null ? {} : yarn;
 		if (isBlank(yarn.command)) {
 			yarn.exists = false;
@@ -122,7 +122,7 @@ class ProjectWorker {
 			return [envs, npmMessage];
 		}
 		envs.cli.npm = npm;
-		envs.cli.yarn = await this.checkYarn(envs.cli.yarn);
+		envs.cli.yarn = await this.checkCliYarn(envs.cli.yarn);
 		envs.cli.volta = await this.checkCliVolta(envs.cli.volta);
 
 		return [envs];
