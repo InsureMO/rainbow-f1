@@ -12,6 +12,12 @@ export interface RecentProject {
 	 * must check before touch anything physically with project
 	 */
 	exists?: boolean;
+	/**
+	 * given path exists or not, transient value only for display purpose.
+	 * must check before touch anything physically with project
+	 */
+	broken?: true;
+	brokenMessage?: string;
 }
 
 export interface RecentProjectHolder {

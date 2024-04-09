@@ -63,6 +63,8 @@ export interface F1ProjectExisted {
 	success: boolean;
 	project?: F1Project;
 	message?: string;
+	exists?: boolean;
+	broken?: true;
 }
 
 export interface F1ProjectLoaded {

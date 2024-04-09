@@ -1080,10 +1080,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@rainbow-d9/n1@1.1.8":
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/@rainbow-d9/n1/-/n1-1.1.8.tgz#da639e7b3448830fb9a2b792f382e59fac32b8a6"
-  integrity sha512-6tW0qRaA5Pys7+/eyS6So+8mB5LTHZ+PZX6jdQBIhZ0n6rVDt4KcFCw6s9MiUqs3WNM8928AQysJCMLr/pBPSg==
+"@rainbow-d9/n1@1.1.10":
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/@rainbow-d9/n1/-/n1-1.1.10.tgz#873f4b2ff860ec68aa2008413e6d0aeae00f79f9"
+  integrity sha512-H5ibL/ja2grB2C0/Mt6u2lWeTi5Adq+URi84ao3/DX5mahmBhKP+/NVnUYxjLmid97LmLP6hOWra8nfdJ8elBA==
   dependencies:
     buffer "^6.0.3"
     events "^3.3.0"
@@ -1091,12 +1091,12 @@
     react "^18.2.0"
     react-dom "^18.2.0"
 
-"@rainbow-d9/n2@1.1.8":
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/@rainbow-d9/n2/-/n2-1.1.8.tgz#3ce93e9e9eef958f27b6c2a1bf15f9ecfcf9c10d"
-  integrity sha512-n3HOyK3UowDDI29eJUi81YfDIMcy9Uz6uUxty6naa/NTxaFjxK68RsSGLF41YqKGykNZ90MUdHbvl7rSQPGSFQ==
+"@rainbow-d9/n2@1.1.10":
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/@rainbow-d9/n2/-/n2-1.1.10.tgz#abfac3ae7256fbaacb4c23377fb79ac997e84fe4"
+  integrity sha512-+Jzs5W7MZaGflEt0rRXNY77b9dBcacDDIM46mnrn9C5WFPWgvYw0PfSArbGeYNzdbp3aoahZ4icf7GcGhIeYOA==
   dependencies:
-    "@rainbow-d9/n1" "1.1.8"
+    "@rainbow-d9/n1" "1.1.10"
     color "^4.2.3"
     dayjs "^1.11.7"
     imask "^7.5.0"
@@ -1105,12 +1105,12 @@
     react-imask "^7.5.0"
     styled-components "5.3.11"
 
-"@rainbow-d9/n3@1.1.8":
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/@rainbow-d9/n3/-/n3-1.1.8.tgz#37b322a5e7345d39ec75d907b2f635092d165b78"
-  integrity sha512-nnH02TH/E9JsoiM/iNCNbG4loYAVvQoHVFhedTJG0E7DuiKlwcPHxkZXA9Y8UHqGqgT4ctKuOF1fnOpVO/ipjA==
+"@rainbow-d9/n3@1.1.10":
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/@rainbow-d9/n3/-/n3-1.1.10.tgz#755d3c67c9b316f274217f2275fa994d98f0ec6f"
+  integrity sha512-vtZhKY6BEo6PYSKHES9kgNkJb1HbUEtcIdMv41sx7UN4kZ6LGHNT9wQyE8igBPj18Fb+bNXAD6UPlUfUvIcw3g==
   dependencies:
-    "@rainbow-d9/n1" "1.1.8"
+    "@rainbow-d9/n1" "1.1.10"
     mdast "^3.0.0"
     mdast-util-from-markdown "^1.3.0"
     mdast-util-frontmatter "^1.0.1"
@@ -1125,16 +1125,15 @@
     micromark-extension-gfm-table "^1.0.5"
     micromark-extension-gfm-task-list-item "^1.0.3"
 
-"@rainbow-d9/n5@^1.1.8":
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/@rainbow-d9/n5/-/n5-1.1.8.tgz#3388be4a3851bd701f24e9a1c73a21f76cc03bae"
-  integrity sha512-wtkwNmRajOwD4Ot1AefN8xOzzBaWa9QoSnfVtKW9HW6LiAPXnOxlJgMgjJYM4QnPMOSEeq7QxY7RpExizKLKcw==
+"@rainbow-d9/n5@^1.1.10":
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/@rainbow-d9/n5/-/n5-1.1.10.tgz#958c171a23b19f2b215ac23bcab4383402e7a22d"
+  integrity sha512-7r7i4he8L26YdhcFpngrdEiOkUb4ZdATwt2VDmgi1ivT3rM3Q0wTpuq/BV71xScngWm8PtOKQ13mxnScBNWY4w==
   dependencies:
     "@codemirror/lang-json" "^6.0.1"
     "@codemirror/lang-markdown" "^6.2.4"
-    "@rainbow-d9/n1" "1.1.8"
-    "@rainbow-d9/n2" "1.1.8"
-    "@rainbow-d9/n3" "1.1.8"
+    "@rainbow-d9/n2" "1.1.10"
+    "@rainbow-d9/n3" "1.1.10"
     codemirror "^6.0.1"
     nanoid "^4.0.0"
     react "^18.2.0"

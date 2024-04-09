@@ -200,9 +200,10 @@ class ProjectWorker {
 	}> {
 		const cliArgs = [
 			'--fix-name', '--default-desc', '--package-manager=yarn', '--use-ds-defaults',
-			'--plugin-print', '--plugin-aws-s3',
-			'--install'
-		];
+			module.dependencies?.['@rainbow-o23/n91'] ? '--plugin-print' : '',
+			module.dependencies?.['@rainbow-o23/n92'] ? '--plugin-aws-s3' : '',
+			'--ignore-install'
+		].filter(isNotBlank);
 		if (project.envs?.cli?.yarn?.exists) {
 			const result = spawnSync(project.envs.cli.yarn.command, [
 				'create', 'rainbow-o23-app', module.name, ...cliArgs
@@ -223,7 +224,6 @@ class ProjectWorker {
 				'create-rainbow-o23-app', module.name, ...cliArgs
 			], {encoding: 'utf-8', cwd: directory});
 			if (result.error == null && result.stdout != null && result.stdout.trim().length !== 0) {
-				const stdout = result.stdout.trim();
 				return {success: true, ret: true};
 			} else {
 				const command = [npx, 'create-rainbow-o23-app', module.name, ...cliArgs].join(' ');
@@ -328,22 +328,22 @@ class ProjectWorker {
 	public async tryToOpen(directory: string): Promise<F1ProjectExisted> {
 		// check directory, must be empty
 		if (isBlank(directory)) {
-			return {success: false, message: 'Project directory cannot be blank.'};
+			return {success: false, message: 'Project directory cannot be blank.', exists: false, broken: true};
 		}
 
 		const directoryExists = FileSystemWorker.exists(directory).ret;
 		if (!directoryExists) {
-			return {success: false, message: 'Project directory does not exist.'};
+			return {success: false, message: 'Project directory does not exist.', exists: false, broken: true};
 		}
 
 		const f1JsonFile = PathWorker.resolve(directory, F1_PROJECT_FILE);
 		const f1JsonFileExists = FileSystemWorker.exists(f1JsonFile).ret;
 		if (!f1JsonFileExists) {
-			return {success: false, message: `Project file[${F1_PROJECT_FILE}] does not exist.`};
+			return {success: false, message: `Project file[${F1_PROJECT_FILE}] does not exist.`, exists: true, broken: true};
 		}
 		const project = FileSystemWorker.readJSON<F1Project>(f1JsonFile);
 		if (project == null) {
-			return {success: false, message: `Failed to read project file[${F1_PROJECT_FILE}].`};
+			return {success: false, message: `Failed to read project file[${F1_PROJECT_FILE}].`, exists: true, broken: true};
 		}
 		if (isBlank(project.name)) {
 			project.name = PathWorker.basename(directory);

@@ -127,6 +127,17 @@ export const RecentContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or-r
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
+
+            > span[data-broken-msg] {
+                color: var(--f1-danger-color);
+                opacity: 0.7;
+                font-size: 0.85em;
+                margin-left: 12px;
+                margin-top: 2px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
         }
     }
 

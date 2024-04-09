@@ -1,6 +1,15 @@
-import {PROPERTY_PATH_ME, PropValue, Undefinable} from '@rainbow-d9/n1';
-import {AlertLabel, GlobalEventTypes, TreeNodeDef, UnwrappedTree, useGlobalEventBus} from '@rainbow-d9/n2';
-import {MouseEvent} from 'react';
+import {PROPERTY_PATH_ME, PropValue, Undefinable, useForceUpdate} from '@rainbow-d9/n1';
+import {
+	AlertLabel,
+	GlobalEventPrefix,
+	GlobalEventTypes,
+	TreeNodeDef,
+	TreeNodeEventTypes,
+	UnwrappedTree,
+	useGlobalEventBus,
+	useTreeNodeEventBus
+} from '@rainbow-d9/n2';
+import {MouseEvent, useEffect} from 'react';
 import {
 	RecentProject,
 	RecentProjectCategory,
@@ -46,8 +55,15 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 		}, () => fire(GlobalEventTypes.HIDE_DIALOG));
 	};
 	const openProject = async (recentProject: RecentProject) => {
-		const {success, project, message} = await window.electron.project.tryToOpen(recentProject.path);
+		const {
+			success, project, message,
+			exists, broken
+		} = await window.electron.project.tryToOpen(recentProject.path);
 		if (!success) {
+			recentProject.exists = exists;
+			recentProject.broken = broken;
+			recentProject.brokenMessage = message;
+			fire(GlobalEventTypes.CUSTOM_EVENT, `${GlobalEventPrefix.REFRESH_TREE_NODE}:${recentProject.id}`, GlobalEventPrefix.REFRESH_TREE_NODE, recentProject.id);
 			fire(GlobalEventTypes.SHOW_ALERT, <AlertLabel>{message}</AlertLabel>);
 		} else {
 			window.electron.project.open(project);
@@ -133,15 +149,34 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 			return (a.value as unknown as RecentProjectCategory).name.localeCompare((b.value as unknown as RecentProjectCategory).name, (void 0), {sensitivity: 'base'});
 		});
 		const projectNodes = projects.map((project) => {
-			return {
-				marker: project.id,
-				label: <span data-recent-project="" onClick={onProjectClicked(project)}>
+			const NodeLabel = () => {
+				// the tree node renderer will not re-render this react node
+				// so monitor event by itself
+				const {on, off} = useTreeNodeEventBus();
+				const forceUpdate = useForceUpdate();
+				useEffect(() => {
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
+					const onRefreshNode = (_marker: string) => {
+						forceUpdate();
+					};
+					on && on(TreeNodeEventTypes.REFRESH_NODE, onRefreshNode);
+					return () => {
+						off && off(TreeNodeEventTypes.REFRESH_NODE, onRefreshNode);
+					};
+				}, [on, off, forceUpdate]);
+				return <span data-recent-project="" onClick={onProjectClicked(project)}>
 					<span data-short-name="">{computeShortName(project.name)}</span>
 					<span data-name="">{project.name}</span>
 					<span data-path="">{project.path}</span>
-					<span data-operator=""
-					      onClick={onProjectOperatorClicked(parent, project)}><EllipsisVertical/></span>
-				</span>,
+					<span data-broken-msg="">{project.brokenMessage ?? ''}</span>
+					<span data-operator="" onClick={onProjectOperatorClicked(parent, project)}>
+						<EllipsisVertical/>
+					</span>
+				</span>;
+			};
+			return {
+				marker: project.id,
+				label: <NodeLabel/>,
 				value: project as unknown as PropValue,
 				$ip2r: PROPERTY_PATH_ME, $ip2p: `project-${project.id}`, leaf: true
 			};
