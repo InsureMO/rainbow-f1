@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {F1Project} from '../../../shared';
+import {F1Project} from '../../../../shared';
 import {useWorkbenchEventBus, WorkbenchEventTypes} from './event-bus';
 
 export type AskProject = () => Promise<F1Project>;

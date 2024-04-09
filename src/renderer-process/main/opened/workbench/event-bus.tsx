@@ -1,6 +1,6 @@
 import {useCreateEventBus} from '@rainbow-d9/n1';
 import {createContext, ReactNode, useContext} from 'react';
-import {F1Project} from '../../../shared';
+import {F1Project} from '../../../../shared';
 
 export enum SideContentKey {
 	PROJECT = 'project',

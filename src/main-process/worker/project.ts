@@ -1,8 +1,11 @@
+import {spawnSync} from 'child_process';
 import {BrowserWindow, ipcMain} from 'electron';
+import log from 'electron-log/main';
 import {
 	F1_PROJECT_FILE,
 	F1_PROJECT_WORKSPACE_FILE,
 	F1ModuleSettings,
+	F1ModuleType,
 	F1Project,
 	F1ProjectCreated,
 	F1ProjectEnvs,
@@ -16,6 +19,7 @@ import {
 	isNpmVersionValid,
 	MIN_NODE_VERSION,
 	MIN_NPM_VERSION,
+	O23ModuleSettings,
 	ProjectCli,
 	ProjectCliSet
 } from '../../shared';
@@ -191,6 +195,52 @@ class ProjectWorker {
 		FileSystemWorker.createFile(f1JsonFile, this.createF1ProjectWorkspaceFileContent(project));
 	}
 
+	protected async createO23Module(project: F1Project, module: O23ModuleSettings, directory: string): Promise<{
+		success: boolean; ret: boolean; message?: ErrorMessage
+	}> {
+		const cliArgs = [
+			'--fix-name', '--default-desc', '--package-manager=yarn', '--use-ds-defaults',
+			'--plugin-print', '--plugin-aws-s3',
+			'--install'
+		];
+		if (project.envs?.cli?.yarn?.exists) {
+			const result = spawnSync(project.envs.cli.yarn.command, [
+				'create', 'rainbow-o23-app', module.name, ...cliArgs
+			], {encoding: 'utf-8', cwd: directory});
+			if (result.error == null && result.stdout != null && result.stdout.trim().length !== 0) {
+				return {success: true, ret: true};
+			} else {
+				const command = [project.envs.cli.yarn.command, 'create', 'rainbow-o23-app', module.name, ...cliArgs].join(' ');
+				log.error(`Failed to create module[${module.name}] by command [${command}].`, result.error, result.stderr);
+				return {
+					success: true, ret: false,
+					message: `Failed to create module[${module.name}] by command [${command}].`
+				};
+			}
+		} else if (project.envs?.cli?.npm?.exists) {
+			const npx = project.envs.cli.npm.command.replace(/\\npm(\.exe)?/, '\\npx');
+			const result = spawnSync(npx, [
+				'create-rainbow-o23-app', module.name, ...cliArgs
+			], {encoding: 'utf-8', cwd: directory});
+			if (result.error == null && result.stdout != null && result.stdout.trim().length !== 0) {
+				const stdout = result.stdout.trim();
+				return {success: true, ret: true};
+			} else {
+				const command = [npx, 'create-rainbow-o23-app', module.name, ...cliArgs].join(' ');
+				log.error(`Failed to create module[${module.name}] by command [${command}].`, result.error, result.stderr);
+				return {
+					success: true, ret: false,
+					message: `Failed to create module[${module.name}] by command [${command}].`
+				};
+			}
+		} else {
+			return {
+				success: false, ret: false,
+				message: 'No package manager available for module creation. Please ensure that at least npm is installed and accessible. Meanwhile, yarn is recommended as an alternative.'
+			};
+		}
+	}
+
 	public async create(settings: F1ProjectSettings): Promise<F1ProjectCreated> {
 		const project = this.copyF1ProjectSettings(settings);
 		const {name, directory, modules = []} = project;
@@ -242,18 +292,25 @@ class ProjectWorker {
 
 		// create module folders
 		for (let module of modules) {
-			const moduleDirectory = PathWorker.resolve(directory, module.name);
-			const {success, ret, message} = FileSystemWorker.mkdir(moduleDirectory);
-			if (!success || !ret) {
-				return {success, project, message};
+			if (module.type === F1ModuleType.O23) {
+				const {
+					success, ret, message
+				} = await this.createO23Module(project, module as O23ModuleSettings, directory);
+				if (!success || !ret) {
+					return {success: false, project, message};
+				}
+			} else {
+				const moduleDirectory = PathWorker.resolve(directory, module.name);
+				const {success, ret, message} = FileSystemWorker.mkdir(moduleDirectory);
+				if (!success || !ret) {
+					return {success: false, project, message};
+				}
 			}
 		}
 		// create f1 json
 		this.createF1ProjectFile(directory, project);
 		// create workspace json
 		this.createF1ProjectWorkspaceFile(directory, project);
-
-		// TODO CREATE MODULES BY CLI
 
 		return {success: true, project, message: (void 0)};
 	}
