@@ -2,7 +2,8 @@ import {ProjectCliSet} from './project-cli-types';
 
 export enum F1ModuleType {
 	D9 = 'd9',
-	O23 = 'o23'
+	O23 = 'o23',
+	UNKNOWN = 'unknown'
 }
 
 export interface F1ModuleDependencies {
@@ -33,6 +34,12 @@ export interface O23ModuleDependencies extends F1ModuleDependencies {
 }
 
 export interface O23ModuleSettings extends F1ModuleSettings<O23ModuleDependencies> {
+}
+
+export interface UnknownModuleDependencies extends F1ModuleDependencies {
+}
+
+export interface UnknownModuleSettings extends F1ModuleSettings<UnknownModuleDependencies> {
 }
 
 export interface F1ProjectEnvs {

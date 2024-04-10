@@ -388,6 +388,21 @@ class ProjectWorker {
 		window.close();
 	}
 
+	protected detectModuleType(packageJson: NodeJsPackageJson) {
+		return [
+			...Object.keys(packageJson.dependencies ?? {}),
+			...Object.keys(packageJson.devDependencies ?? {})
+		].reduce((detected, keys) => {
+			if (!detected[F1ModuleType.D9] && keys.startsWith('@rainbow-d9/')) {
+				detected[F1ModuleType.D9] = true;
+			}
+			if (!detected[F1ModuleType.O23] && keys.startsWith('@rainbow-o23/')) {
+				detected[F1ModuleType.O23] = true;
+			}
+			return detected;
+		}, {[F1ModuleType.D9]: false, [F1ModuleType.O23]: false});
+	}
+
 	/**
 	 * given main window is opened, now load the attached project
 	 */
@@ -408,14 +423,43 @@ class ProjectWorker {
 		if (!success) {
 			return {success, message};
 		}
-		const folderMap = folders.reduce((map, folder) => {
+		const folderMap: Record<string, boolean> = folders.reduce((map, folder) => {
 			map[folder] = true;
 			return map;
 		}, {} as Record<string, true>);
-		// compare folders with settings modules, fix it if needed
-		project.modules = (project.modules ?? []).filter(module => folderMap[module.name] === true);
+		// compare folders with settings modules, remove those not exists
+		project.modules = (project.modules ?? []).filter(module => {
+			if (folderMap[module.name] === true) {
+				folderMap[module.name] = false;
+				return true;
+			} else {
+				return false;
+			}
+		});
+		// compare folders with existing, add not exists and detect module type
+		Object.keys(folderMap)
+			.filter(folder => folderMap[folder] === true)
+			.forEach(folder => {
+				const module: F1ModuleSettings = {name: folder, type: F1ModuleType.UNKNOWN, dependencies: {}};
+				// assume it is nodejs module
+				const packageJsonFile = PathWorker.resolve(directory, folder, 'package.json');
+				const packageJson: NodeJsPackageJson = FileSystemWorker.readJSON(packageJsonFile);
+				if (packageJson != null) {
+					const detected = this.detectModuleType(packageJson);
+					if (detected[F1ModuleType.O23]) {
+						module.type = F1ModuleType.O23;
+					} else if (detected[F1ModuleType.D9]) {
+						module.type = F1ModuleType.D9;
+					}
+					// otherwise keep unknown, do nothing
+				}
+				project.modules.push(module);
+			});
 		// save it again
 		this.replaceF1ProjectFile(directory, project);
+
+		// read module structure
+
 		return {success: true, project};
 	}
 

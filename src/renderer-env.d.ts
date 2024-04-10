@@ -7,6 +7,14 @@ declare global {
 	type ErrorMessage = string;
 	type MightBeError<T> = [T, ErrorMessage] | [T];
 
+	type NodeJsPackageJson = {
+		name: string;
+		version: string;
+		description: string;
+		dependencies: Record<string, string>;
+		devDependencies: Record<string, string>;
+	}
+
 	interface Window {
 		electron: ElectronBridges.WindowElectronBridge;
 	}
