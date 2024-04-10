@@ -12,7 +12,6 @@ export const ProjectHolder = (props: ProjectHolderProps) => {
 
 	useEffect(() => {
 		const onAskProject = (callback: (project: F1Project) => void) => {
-			console.log(callback);
 			callback(project);
 		};
 		on(WorkbenchEventTypes.ASK_PROJECT, onAskProject);

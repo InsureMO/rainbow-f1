@@ -8,11 +8,12 @@ declare global {
 	type MightBeError<T> = [T, ErrorMessage] | [T];
 
 	type NodeJsPackageJson = {
-		name: string;
-		version: string;
-		description: string;
-		dependencies: Record<string, string>;
-		devDependencies: Record<string, string>;
+		name?: string;
+		version?: string;
+		description?: string;
+		dependencies?: Record<string, string>;
+		devDependencies?: Record<string, string>;
+		scripts?: Record<string, string>;
 	}
 
 	interface Window {

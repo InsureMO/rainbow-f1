@@ -2,6 +2,7 @@ import {ContextMenu} from './context-menu-types';
 import {OpenDialogOptions, OpenDialogResult} from './dialog-types';
 import {FileSystemBooleanResult} from './file-system-types';
 import {ProjectCliSet} from './project-cli-types';
+import {F1ProjectStructure} from './project-structure-types';
 import {F1Project, F1ProjectCreated, F1ProjectExisted, F1ProjectLoaded, F1ProjectSettings} from './project-types';
 import {
 	RecentProject,
@@ -77,16 +78,18 @@ export namespace ElectronBridges {
 
 		/** try to close current window, when failed to open project */
 		closeOnFailedOpen: () => void;
-
 		/**
 		 * ask project, only used in main window, and project was bound this window already
 		 */
 		loadAttached: () => Promise<F1ProjectLoaded>;
-
 		/**
 		 * notify main process that project opened
 		 */
 		opened: (project: F1Project) => void;
+		/**
+		 * ask project structure, only used in main window, and project was bound this window already
+		 */
+		loadAttachedStructure: () => Promise<F1ProjectStructure>;
 	}
 
 	export interface WindowElectronBridge {

@@ -1,8 +1,8 @@
-import {useState} from 'react';
-import {F1Project} from '../../../../../shared';
-import {SideContentKey, SideContentPosition} from '../../workbench/event-bus';
-import {useAskProject, useProject} from '../../workbench/use-project';
-import {SideFrame} from '../side-bar';
+import {ChangeEvent, useState} from 'react';
+import {F1Project} from '../../../shared';
+import {SideFrame} from '../opened/sides/side-bar';
+import {SideContentKey, SideContentPosition} from '../opened/workbench/event-bus';
+import {useAskProject, useProject} from '../opened/workbench/use-project';
 
 interface ProjectFrameState {
 	project?: F1Project;

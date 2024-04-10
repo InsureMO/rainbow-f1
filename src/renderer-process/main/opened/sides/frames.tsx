@@ -1,13 +1,13 @@
 import {SideContentKey, SideContentPosition} from '../workbench/event-bus';
-import {DatabaseFrame} from './database-frame';
-import {NotificationsFrame} from './notifications-frame';
-import {ProblemFrame} from './problem-frame';
-import {ProjectFrame} from './project-frame';
-import {RunFrame} from './run-frame';
-import {SearchFrame} from './search-frame';
-import {StructureFrame} from './structure-frame';
-import {TerminalFrame} from './terminal-frame';
-import {TodoFrame} from './todo-frame';
+import {DatabaseFrame} from '../../database-frame';
+import {NotificationsFrame} from '../../notifications-frame';
+import {ProblemFrame} from '../../problem-frame';
+import {ProjectFrame} from '../../project-frame';
+import {RunFrame} from '../../run-frame';
+import {SearchFrame} from '../../search-frame';
+import {StructureFrame} from '../../structure-frame';
+import {TerminalFrame} from '../../terminal-frame';
+import {TodoFrame} from '../../todo-frame';
 
 export const switchFrame = (key: SideContentKey, pos: SideContentPosition) => {
 	switch (key) {

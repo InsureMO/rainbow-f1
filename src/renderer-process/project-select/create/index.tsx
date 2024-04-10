@@ -1,5 +1,5 @@
 import {useForceUpdate} from '@rainbow-d9/n1';
-import {Alert, GlobalEventBusProvider, UnwrappedCaption} from '@rainbow-d9/n2';
+import {GlobalRoot, UnwrappedCaption} from '@rainbow-d9/n2';
 import {useEffect, useState} from 'react';
 import {Logo} from '../../common/icons';
 import {Bar} from './bar';
@@ -20,9 +20,8 @@ export const CreateProjectPage = () => {
 		})();
 	}, []);
 
-	return <GlobalEventBusProvider>
+	return <GlobalRoot avoidDefaultRemoteRequest={true} avoidDefaultDialog={true} avoidDefaultYesNoDialog={true}>
 		<CreateProjectEventBusProvider>
-			<Alert/>
 			<CreateProjectContainer>
 				<UnwrappedCaption data-page-title>Project settings</UnwrappedCaption>
 				<Logo/>
@@ -31,5 +30,5 @@ export const CreateProjectPage = () => {
 				<Bar settings={settings}/>
 			</CreateProjectContainer>
 		</CreateProjectEventBusProvider>
-	</GlobalEventBusProvider>;
+	</GlobalRoot>;
 };

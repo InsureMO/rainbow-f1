@@ -1,5 +1,5 @@
-import {SideContentKey, SideContentPosition} from '../../workbench/event-bus';
-import {SideFrame} from '../side-bar';
+import {SideContentKey, SideContentPosition} from '../opened/workbench/event-bus';
+import {SideFrame} from '../opened/sides/side-bar';
 
 export const StructureFrame = (props: { position: SideContentPosition }) => {
 	const {position} = props;

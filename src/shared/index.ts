@@ -13,6 +13,7 @@ export * from './theme-types';
 export * from './recent-projects-types';
 export * from './project-cli-types';
 export * from './project-types';
+export * from './project-structure-types';
 
 export * from './application-types';
 

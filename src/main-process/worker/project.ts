@@ -14,6 +14,7 @@ import {
 	F1ProjectExisted,
 	F1ProjectLoaded,
 	F1ProjectSettings,
+	F1ProjectStructure,
 	isBlank,
 	isNodeVersionValid,
 	isNotBlank,
@@ -466,6 +467,20 @@ class ProjectWorker {
 	public onProjectOpened(project: F1Project) {
 		RecentProjectsWorker.addLastProject(project);
 	}
+
+	public async loadAttachedStructure(window: BrowserWindow): Promise<F1ProjectStructure> {
+		// TODO for each module, read its structure
+		// 1. read package.json
+		// 2. read commands, find build, test, start. o23 has more commands, find build and start standalone commands as well.
+		// 3. for o23,
+		// 3.1 find env files from commands, parse it
+		// 3.2 find server path from envs, load recursively, parse each yaml
+		// 3.3 find scripts path from envs, load recursively, parse each yaml
+		// 3.4 find db scripts path from envs, load recursively
+		// 3.5 load src folder, recursively
+		// 3.6 find all configuration file in root folder
+		return {modules: []};
+	}
 }
 
 const INSTANCE = (() => {
@@ -487,6 +502,9 @@ const INSTANCE = (() => {
 	});
 	ipcMain.on(F1ProjectEvent.ON_OPENED, (_: Electron.IpcMainEvent, project: F1Project): void => {
 		worker.onProjectOpened(project);
+	});
+	ipcMain.handle(F1ProjectEvent.LOAD_ATTACHED_STRUCTURE, async (event: Electron.IpcMainEvent): Promise<ReturnType<ProjectWorker['loadAttachedStructure']>> => {
+		return await worker.loadAttachedStructure(BrowserWindow.fromWebContents(event.sender));
 	});
 	return worker;
 })();

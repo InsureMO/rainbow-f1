@@ -86,5 +86,6 @@ export enum F1ProjectEvent {
 	TRY_TO_OPEN = 'f1-project-try-to-open',
 	CLOSE_ON_FAILED_OPEN = 'f1-project-close-on-failed-open',
 	LOAD_ATTACHED = 'f1-project-load-attached',
-	ON_OPENED = 'f1-project-on-opened'
+	ON_OPENED = 'f1-project-on-opened',
+	LOAD_ATTACHED_STRUCTURE = 'f1-project-load-attached-structure'
 }
