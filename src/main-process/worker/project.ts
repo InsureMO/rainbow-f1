@@ -21,6 +21,7 @@ import {
 	MIN_NPM_VERSION,
 	O23ModuleSettings,
 	ProjectCli,
+	ProjectCliCommand,
 	ProjectCliSet
 } from '../../shared';
 import {createMainWindow, WindowManager, WindowType} from '../window';
@@ -195,44 +196,46 @@ class ProjectWorker {
 		FileSystemWorker.createFile(f1JsonFile, this.createF1ProjectWorkspaceFileContent(project));
 	}
 
+	protected executeModuleCreateCli(command: ProjectCliCommand, args: Array<string>, directory: string, moduleName: string): {
+		success: boolean; ret: boolean; message?: ErrorMessage
+	} {
+		const cli = [command, ...args].join(' ');
+		log.info(`Create module[${directory}/${moduleName}] by command [${cli}].`);
+		const result = spawnSync(command, args, {encoding: 'utf-8', cwd: directory});
+		if (result.error == null && result.stdout != null && result.stdout.trim().length !== 0) {
+			return {success: true, ret: true};
+		} else {
+			log.error(`Failed to create module[${moduleName}] by command [${cli}].`, result.error, result.stderr);
+			return {
+				success: true, ret: false,
+				message: `Failed to create module[${moduleName}] by command [${cli}].`
+			};
+		}
+	}
+
+	protected computeO23PluginArgs(module: O23ModuleSettings): Array<string> {
+		const print = module.dependencies?.['@rainbow-o23/n91'] ? '--plugin-print' : '';
+		const s3 = module.dependencies?.['@rainbow-o23/n92'] ? '--plugin-aws-s3' : '';
+		const args = [print, s3].filter(isNotBlank);
+		if (args.length === 0) {
+			args.push('--plugin-free');
+		}
+		return args;
+	}
+
 	protected async createO23Module(project: F1Project, module: O23ModuleSettings, directory: string): Promise<{
 		success: boolean; ret: boolean; message?: ErrorMessage
 	}> {
 		const cliArgs = [
 			'--fix-name', '--default-desc', '--package-manager=yarn', '--use-ds-defaults',
-			module.dependencies?.['@rainbow-o23/n91'] ? '--plugin-print' : '',
-			module.dependencies?.['@rainbow-o23/n92'] ? '--plugin-aws-s3' : '',
+			...this.computeO23PluginArgs(module),
 			'--ignore-install'
 		].filter(isNotBlank);
 		if (project.envs?.cli?.yarn?.exists) {
-			const result = spawnSync(project.envs.cli.yarn.command, [
-				'create', 'rainbow-o23-app', module.name, ...cliArgs
-			], {encoding: 'utf-8', cwd: directory});
-			if (result.error == null && result.stdout != null && result.stdout.trim().length !== 0) {
-				return {success: true, ret: true};
-			} else {
-				const command = [project.envs.cli.yarn.command, 'create', 'rainbow-o23-app', module.name, ...cliArgs].join(' ');
-				log.error(`Failed to create module[${module.name}] by command [${command}].`, result.error, result.stderr);
-				return {
-					success: true, ret: false,
-					message: `Failed to create module[${module.name}] by command [${command}].`
-				};
-			}
+			return this.executeModuleCreateCli(project.envs.cli.yarn.command, ['create', 'rainbow-o23-app', module.name, ...cliArgs], directory, module.name);
 		} else if (project.envs?.cli?.npm?.exists) {
 			const npx = project.envs.cli.npm.command.replace(/\\npm(\.exe)?/, '\\npx');
-			const result = spawnSync(npx, [
-				'create-rainbow-o23-app', module.name, ...cliArgs
-			], {encoding: 'utf-8', cwd: directory});
-			if (result.error == null && result.stdout != null && result.stdout.trim().length !== 0) {
-				return {success: true, ret: true};
-			} else {
-				const command = [npx, 'create-rainbow-o23-app', module.name, ...cliArgs].join(' ');
-				log.error(`Failed to create module[${module.name}] by command [${command}].`, result.error, result.stderr);
-				return {
-					success: true, ret: false,
-					message: `Failed to create module[${module.name}] by command [${command}].`
-				};
-			}
+			return this.executeModuleCreateCli(npx, ['create-rainbow-o23-app', module.name, ...cliArgs], directory, module.name);
 		} else {
 			return {
 				success: false, ret: false,
@@ -339,11 +342,21 @@ class ProjectWorker {
 		const f1JsonFile = PathWorker.resolve(directory, F1_PROJECT_FILE);
 		const f1JsonFileExists = FileSystemWorker.exists(f1JsonFile).ret;
 		if (!f1JsonFileExists) {
-			return {success: false, message: `Project file[${F1_PROJECT_FILE}] does not exist.`, exists: true, broken: true};
+			return {
+				success: false,
+				message: `Project file[${F1_PROJECT_FILE}] does not exist.`,
+				exists: true,
+				broken: true
+			};
 		}
 		const project = FileSystemWorker.readJSON<F1Project>(f1JsonFile);
 		if (project == null) {
-			return {success: false, message: `Failed to read project file[${F1_PROJECT_FILE}].`, exists: true, broken: true};
+			return {
+				success: false,
+				message: `Failed to read project file[${F1_PROJECT_FILE}].`,
+				exists: true,
+				broken: true
+			};
 		}
 		if (isBlank(project.name)) {
 			project.name = PathWorker.basename(directory);
