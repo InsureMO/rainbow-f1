@@ -7,7 +7,7 @@ export const FirstScene = () => {
 	const {on, off, fire} = useMainEventBus();
 	useEffect(() => {
 		(async () => {
-			const {success, project, message} = await window.electron.project.ask();
+			const {success, project, message} = await window.electron.project.loadAttached();
 			if (success) {
 				fire(MainEventTypes.SET_PROJECT, project);
 			} else {

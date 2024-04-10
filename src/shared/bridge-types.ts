@@ -81,7 +81,7 @@ export namespace ElectronBridges {
 		/**
 		 * ask project, only used in main window, and project was bound this window already
 		 */
-		ask: () => Promise<F1ProjectLoaded>;
+		loadAttached: () => Promise<F1ProjectLoaded>;
 
 		/**
 		 * notify main process that project opened

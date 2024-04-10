@@ -22,8 +22,8 @@ export const ProjectBridge: ElectronBridges.WindowElectronProject = {
 	closeOnFailedOpen: (): void => {
 		ipcRenderer.send(F1ProjectEvent.CLOSE_ON_FAILED_OPEN);
 	},
-	ask: async (): Promise<F1ProjectLoaded> => {
-		return await ipcRenderer.invoke(F1ProjectEvent.ASK);
+	loadAttached: async (): Promise<F1ProjectLoaded> => {
+		return await ipcRenderer.invoke(F1ProjectEvent.LOAD_ATTACHED);
 	},
 	opened: (project: F1Project): void => {
 		ipcRenderer.send(F1ProjectEvent.ON_OPENED, project);

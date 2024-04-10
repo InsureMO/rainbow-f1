@@ -2,6 +2,7 @@ import {spawnSync} from 'child_process';
 import {BrowserWindow, ipcMain} from 'electron';
 import log from 'electron-log/main';
 import {
+	D9ModuleSettings,
 	F1_PROJECT_FILE,
 	F1_PROJECT_WORKSPACE_FILE,
 	F1ModuleSettings,
@@ -29,6 +30,12 @@ import {FileSystemWorker} from './file-system';
 import {PathWorker} from './path';
 import {ProjectCliWorker} from './project-cli';
 import {RecentProjectsWorker} from './recent-projects';
+
+interface ModuleCreated {
+	success: boolean;
+	ret: boolean;
+	message?: ErrorMessage;
+}
 
 class ProjectWorker {
 	/**
@@ -196,9 +203,7 @@ class ProjectWorker {
 		FileSystemWorker.createFile(f1JsonFile, this.createF1ProjectWorkspaceFileContent(project));
 	}
 
-	protected executeModuleCreateCli(command: ProjectCliCommand, args: Array<string>, directory: string, moduleName: string): {
-		success: boolean; ret: boolean; message?: ErrorMessage
-	} {
+	protected executeModuleCreateCli(command: ProjectCliCommand, args: Array<string>, directory: string, moduleName: string): ModuleCreated {
 		const cli = [command, ...args].join(' ');
 		log.info(`Create module[${directory}/${moduleName}] by command [${cli}].`);
 		const result = spawnSync(command, args, {encoding: 'utf-8', cwd: directory});
@@ -213,6 +218,11 @@ class ProjectWorker {
 		}
 	}
 
+	protected async createD9Module(_project: F1Project, module: D9ModuleSettings, directory: string): Promise<ModuleCreated> {
+		// TODO temp, currently no d9 creator available
+		return this.createUnknownModule(module, directory);
+	}
+
 	protected computeO23PluginArgs(module: O23ModuleSettings): Array<string> {
 		const print = module.dependencies?.['@rainbow-o23/n91'] ? '--plugin-print' : '';
 		const s3 = module.dependencies?.['@rainbow-o23/n92'] ? '--plugin-aws-s3' : '';
@@ -223,9 +233,7 @@ class ProjectWorker {
 		return args;
 	}
 
-	protected async createO23Module(project: F1Project, module: O23ModuleSettings, directory: string): Promise<{
-		success: boolean; ret: boolean; message?: ErrorMessage
-	}> {
+	protected async createO23Module(project: F1Project, module: O23ModuleSettings, directory: string): Promise<ModuleCreated> {
 		const cliArgs = [
 			'--fix-name', '--default-desc', '--package-manager=yarn', '--use-ds-defaults',
 			...this.computeO23PluginArgs(module),
@@ -241,6 +249,16 @@ class ProjectWorker {
 				success: false, ret: false,
 				message: 'No package manager available for module creation. Please ensure that at least npm is installed and accessible. Meanwhile, yarn is recommended as an alternative.'
 			};
+		}
+	}
+
+	protected async createUnknownModule(module: F1ModuleSettings, directory: string): Promise<ModuleCreated> {
+		const moduleDirectory = PathWorker.resolve(directory, module.name);
+		const {success, ret, message} = FileSystemWorker.mkdir(moduleDirectory);
+		if (!success || !ret) {
+			return {success: true, ret: false, message};
+		} else {
+			return {success: true, ret: true};
 		}
 	}
 
@@ -293,21 +311,22 @@ class ProjectWorker {
 			}
 		}
 
-		// create module folders
+		// create modules
 		for (let module of modules) {
-			if (module.type === F1ModuleType.O23) {
-				const {
-					success, ret, message
-				} = await this.createO23Module(project, module as O23ModuleSettings, directory);
-				if (!success || !ret) {
-					return {success: false, project, message};
-				}
-			} else {
-				const moduleDirectory = PathWorker.resolve(directory, module.name);
-				const {success, ret, message} = FileSystemWorker.mkdir(moduleDirectory);
-				if (!success || !ret) {
-					return {success: false, project, message};
-				}
+			let created;
+			switch (module.type) {
+				case F1ModuleType.D9:
+					created = await this.createD9Module(project, module as D9ModuleSettings, directory);
+					break;
+				case F1ModuleType.O23:
+					created = await this.createO23Module(project, module as O23ModuleSettings, directory);
+					break;
+				default:
+					created = await this.createUnknownModule(module, directory);
+					break;
+			}
+			if (!created.success || !created.ret) {
+				return {success: false, project, message: created.message};
 			}
 		}
 		// create f1 json
@@ -369,10 +388,13 @@ class ProjectWorker {
 		window.close();
 	}
 
-	public async loadProject(window: BrowserWindow): Promise<F1ProjectLoaded> {
+	/**
+	 * given main window is opened, now load the attached project
+	 */
+	public async loadAttached(window: BrowserWindow): Promise<F1ProjectLoaded> {
 		const project = WindowManager.project(window);
 		if (project == null) {
-			return {success: false, message: 'Project settings not found.'};
+			return {success: false, message: 'Project attached in this window not found.'};
 		}
 
 		const directory = project.directory;
@@ -392,9 +414,6 @@ class ProjectWorker {
 		}, {} as Record<string, true>);
 		// compare folders with settings modules, fix it if needed
 		project.modules = (project.modules ?? []).filter(module => folderMap[module.name] === true);
-		if (project.modules.length === 0) {
-			delete project.modules;
-		}
 		// save it again
 		this.replaceF1ProjectFile(directory, project);
 		return {success: true, project};
@@ -419,8 +438,8 @@ const INSTANCE = (() => {
 	ipcMain.on(F1ProjectEvent.CLOSE_ON_FAILED_OPEN, (event: Electron.IpcMainEvent): void => {
 		worker.closeOnFailedOpen(BrowserWindow.fromWebContents(event.sender));
 	});
-	ipcMain.handle(F1ProjectEvent.ASK, async (event: Electron.IpcMainEvent): Promise<ReturnType<ProjectWorker['loadProject']>> => {
-		return await worker.loadProject(BrowserWindow.fromWebContents(event.sender));
+	ipcMain.handle(F1ProjectEvent.LOAD_ATTACHED, async (event: Electron.IpcMainEvent): Promise<ReturnType<ProjectWorker['loadAttached']>> => {
+		return await worker.loadAttached(BrowserWindow.fromWebContents(event.sender));
 	});
 	ipcMain.on(F1ProjectEvent.ON_OPENED, (_: Electron.IpcMainEvent, project: F1Project): void => {
 		worker.onProjectOpened(project);
