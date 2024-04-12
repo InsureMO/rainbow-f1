@@ -1,6 +1,4 @@
-import {spawnSync} from 'child_process';
 import {BrowserWindow, ipcMain} from 'electron';
-import log from 'electron-log/main';
 import {
 	D9ModuleSettings,
 	F1_PROJECT_FILE,
@@ -15,6 +13,7 @@ import {
 	F1ProjectLoaded,
 	F1ProjectSettings,
 	F1ProjectStructure,
+	F1ProjectStructureLoaded,
 	isBlank,
 	isNodeVersionValid,
 	isNotBlank,
@@ -23,20 +22,15 @@ import {
 	MIN_NPM_VERSION,
 	O23ModuleSettings,
 	ProjectCli,
-	ProjectCliCommand,
-	ProjectCliSet
+	ProjectCliSet,
+	UnknownModuleSettings
 } from '../../shared';
 import {createMainWindow, WindowManager, WindowType} from '../window';
 import {FileSystemWorker} from './file-system';
+import {D9ModuleProcessor, O23ModuleProcessor, UnknownModuleProcessor} from './module';
 import {PathWorker} from './path';
 import {ProjectCliWorker} from './project-cli';
 import {RecentProjectsWorker} from './recent-projects';
-
-interface ModuleCreated {
-	success: boolean;
-	ret: boolean;
-	message?: ErrorMessage;
-}
 
 class ProjectWorker {
 	/**
@@ -204,65 +198,6 @@ class ProjectWorker {
 		FileSystemWorker.createFile(f1JsonFile, this.createF1ProjectWorkspaceFileContent(project));
 	}
 
-	protected executeModuleCreateCli(command: ProjectCliCommand, args: Array<string>, directory: string, moduleName: string): ModuleCreated {
-		const cli = [command, ...args].join(' ');
-		log.info(`Create module[${directory}/${moduleName}] by command [${cli}].`);
-		const result = spawnSync(command, args, {encoding: 'utf-8', cwd: directory});
-		if (result.error == null && result.stdout != null && result.stdout.trim().length !== 0) {
-			return {success: true, ret: true};
-		} else {
-			log.error(`Failed to create module[${moduleName}] by command [${cli}].`, result.error, result.stderr);
-			return {
-				success: true, ret: false,
-				message: `Failed to create module[${moduleName}] by command [${cli}].`
-			};
-		}
-	}
-
-	protected async createD9Module(_project: F1Project, module: D9ModuleSettings, directory: string): Promise<ModuleCreated> {
-		// TODO temp, currently no d9 creator available
-		return this.createUnknownModule(module, directory);
-	}
-
-	protected computeO23PluginArgs(module: O23ModuleSettings): Array<string> {
-		const print = module.dependencies?.['@rainbow-o23/n91'] ? '--plugin-print' : '';
-		const s3 = module.dependencies?.['@rainbow-o23/n92'] ? '--plugin-aws-s3' : '';
-		const args = [print, s3].filter(isNotBlank);
-		if (args.length === 0) {
-			args.push('--plugin-free');
-		}
-		return args;
-	}
-
-	protected async createO23Module(project: F1Project, module: O23ModuleSettings, directory: string): Promise<ModuleCreated> {
-		const cliArgs = [
-			'--fix-name', '--default-desc', '--package-manager=yarn', '--use-ds-defaults',
-			...this.computeO23PluginArgs(module),
-			'--ignore-install'
-		].filter(isNotBlank);
-		if (project.envs?.cli?.yarn?.exists) {
-			return this.executeModuleCreateCli(project.envs.cli.yarn.command, ['create', 'rainbow-o23-app', module.name, ...cliArgs], directory, module.name);
-		} else if (project.envs?.cli?.npm?.exists) {
-			const npx = project.envs.cli.npm.command.replace(/\\npm(\.exe)?/, '\\npx');
-			return this.executeModuleCreateCli(npx, ['create-rainbow-o23-app', module.name, ...cliArgs], directory, module.name);
-		} else {
-			return {
-				success: false, ret: false,
-				message: 'No package manager available for module creation. Please ensure that at least npm is installed and accessible. Meanwhile, yarn is recommended as an alternative.'
-			};
-		}
-	}
-
-	protected async createUnknownModule(module: F1ModuleSettings, directory: string): Promise<ModuleCreated> {
-		const moduleDirectory = PathWorker.resolve(directory, module.name);
-		const {success, ret, message} = FileSystemWorker.mkdir(moduleDirectory);
-		if (!success || !ret) {
-			return {success: true, ret: false, message};
-		} else {
-			return {success: true, ret: true};
-		}
-	}
-
 	public async create(settings: F1ProjectSettings): Promise<F1ProjectCreated> {
 		const project = this.copyF1ProjectSettings(settings);
 		const {name, directory, modules = []} = project;
@@ -317,13 +252,13 @@ class ProjectWorker {
 			let created;
 			switch (module.type) {
 				case F1ModuleType.D9:
-					created = await this.createD9Module(project, module as D9ModuleSettings, directory);
+					created = await D9ModuleProcessor.create(project, module as D9ModuleSettings, directory);
 					break;
 				case F1ModuleType.O23:
-					created = await this.createO23Module(project, module as O23ModuleSettings, directory);
+					created = await O23ModuleProcessor.create(project, module as O23ModuleSettings, directory);
 					break;
 				default:
-					created = await this.createUnknownModule(module, directory);
+					created = await UnknownModuleProcessor.create(module, directory);
 					break;
 			}
 			if (!created.success || !created.ret) {
@@ -468,18 +403,27 @@ class ProjectWorker {
 		RecentProjectsWorker.addLastProject(project);
 	}
 
-	public async loadAttachedStructure(window: BrowserWindow): Promise<F1ProjectStructure> {
-		// TODO for each module, read its structure
-		// 1. read package.json
-		// 2. read commands, find build, test, start. o23 has more commands, find build and start standalone commands as well.
-		// 3. for o23,
-		// 3.1 find env files from commands, parse it
-		// 3.2 find server path from envs, load recursively, parse each yaml
-		// 3.3 find scripts path from envs, load recursively, parse each yaml
-		// 3.4 find db scripts path from envs, load recursively
-		// 3.5 load src folder, recursively
-		// 3.6 find all configuration file in root folder
-		return {modules: []};
+	public async loadAttachedStructure(window: BrowserWindow): Promise<F1ProjectStructureLoaded> {
+		const {success, project, message} = await this.loadAttached(window);
+		if (!success) {
+			return {success: false, message};
+		}
+
+		const structure: F1ProjectStructure = {
+			// for each module, read its structure
+			modules: await Promise.all((project.modules ?? []).map(module => {
+				switch (module.type) {
+					case F1ModuleType.D9:
+						return D9ModuleProcessor.read(project, module as D9ModuleSettings);
+					case F1ModuleType.O23:
+						return O23ModuleProcessor.read(project, module as O23ModuleSettings);
+					case F1ModuleType.UNKNOWN:
+					default:
+						return UnknownModuleProcessor.read(project, module as UnknownModuleSettings);
+				}
+			}))
+		};
+		return {success: true, project: structure};
 	}
 }
 

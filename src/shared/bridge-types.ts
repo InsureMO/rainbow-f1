@@ -2,8 +2,14 @@ import {ContextMenu} from './context-menu-types';
 import {OpenDialogOptions, OpenDialogResult} from './dialog-types';
 import {FileSystemBooleanResult} from './file-system-types';
 import {ProjectCliSet} from './project-cli-types';
-import {F1ProjectStructure} from './project-structure-types';
-import {F1Project, F1ProjectCreated, F1ProjectExisted, F1ProjectLoaded, F1ProjectSettings} from './project-types';
+import {
+	F1Project,
+	F1ProjectCreated,
+	F1ProjectExisted,
+	F1ProjectLoaded,
+	F1ProjectSettings,
+	F1ProjectStructureLoaded
+} from './project-types';
 import {
 	RecentProject,
 	RecentProjectCategory,
@@ -89,7 +95,7 @@ export namespace ElectronBridges {
 		/**
 		 * ask project structure, only used in main window, and project was bound this window already
 		 */
-		loadAttachedStructure: () => Promise<F1ProjectStructure>;
+		loadAttachedStructure: () => Promise<F1ProjectStructureLoaded>;
 	}
 
 	export interface WindowElectronBridge {

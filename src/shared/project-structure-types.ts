@@ -25,7 +25,19 @@ export interface F1ModuleStructure<Commands extends ModuleCommands = ModuleComma
 	folders: Array<ModuleFolder>;
 	/** files in root folder */
 	files: Array<ModuleFile>;
+	/** concerned module commands */
 	commands?: Commands;
+	/** module structure is read successfully or not */
+	success: boolean;
+	/** error message when failed to read module structure */
+	message?: ErrorMessage;
+}
+
+export interface F1NodeModuleStructure<Commands extends ModuleCommands = ModuleCommands> extends F1ModuleStructure<Commands> {
+	/** folders in root folder, for files which used by Node.js. Typically, not exists. */
+	nodeFolders?: Array<ModuleFolder>;
+	/** files in root folder, which used by Node.js */
+	nodeFiles?: Array<ModuleFile>;
 }
 
 export enum ModuleFileType {
@@ -53,11 +65,14 @@ export enum ModuleFileType {
 export interface D9ModuleCommands extends ModuleCommands {
 }
 
-export interface D9ModuleStructure extends F1ModuleStructure<D9ModuleCommands> {
+export interface D9ModuleStructure extends F1NodeModuleStructure<D9ModuleCommands> {
 }
 
 export interface O23Configurations extends Omit<ModuleFolder, 'directory'> {
 	directory?: string;
+}
+
+export interface O23DBScriptsConfigurations extends O23Configurations {
 }
 
 export interface O23ScriptsConfigurations extends O23Configurations {
@@ -96,7 +111,7 @@ export interface O23ServerSettings {
 }
 
 export interface O23ScriptsSettings {
-	datasources: O23DatasourceSettings;
+	datasource: O23DatasourceSettings;
 }
 
 export interface O23EnvConfigurations {
@@ -105,12 +120,13 @@ export interface O23EnvConfigurations {
 }
 
 export interface O23ModuleCommands extends ModuleCommands {
+	scripts?: string;
 	buildStandalone?: string;
-	starStandalone?: string;
+	startStandalone?: string;
 }
 
-export interface O23ModuleStructure extends F1ModuleStructure<O23ModuleCommands> {
-	dbScripts?: ModuleFolder;
+export interface O23ModuleStructure extends F1NodeModuleStructure<O23ModuleCommands> {
+	dbScripts?: O23DBScriptsConfigurations;
 	server: O23ServerConfigurations;
 	scripts: O23ScriptsConfigurations;
 	envs: O23EnvConfigurations;

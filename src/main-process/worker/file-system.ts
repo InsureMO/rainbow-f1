@@ -77,7 +77,7 @@ class FileSystemWorker {
 	}
 
 	public dir(directory: string, options?: {
-		dir?: false, file?: false, recursive?: true
+		dir?: boolean, file?: boolean, recursive?: boolean
 	}): FileSystemFoldersResult {
 		return this.invalidOr(directory, () => {
 			if (!fs.existsSync(directory) || fs.lstatSync(directory).isFile()) {

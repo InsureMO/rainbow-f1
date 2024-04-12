@@ -7,7 +7,7 @@ import {
 	F1ProjectExisted,
 	F1ProjectLoaded,
 	F1ProjectSettings,
-	F1ProjectStructure
+	F1ProjectStructure, F1ProjectStructureLoaded
 } from '../shared';
 
 export const ProjectBridge: ElectronBridges.WindowElectronProject = {
@@ -29,7 +29,7 @@ export const ProjectBridge: ElectronBridges.WindowElectronProject = {
 	opened: (project: F1Project): void => {
 		ipcRenderer.send(F1ProjectEvent.ON_OPENED, project);
 	},
-	loadAttachedStructure: async (): Promise<F1ProjectStructure> => {
+	loadAttachedStructure: async (): Promise<F1ProjectStructureLoaded> => {
 		return await ipcRenderer.invoke(F1ProjectEvent.LOAD_ATTACHED_STRUCTURE);
 	}
 };

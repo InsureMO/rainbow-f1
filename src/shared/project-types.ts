@@ -1,4 +1,5 @@
 import {ProjectCliSet} from './project-cli-types';
+import {F1ProjectStructure} from './project-structure-types';
 
 export enum F1ModuleType {
 	D9 = 'd9',
@@ -63,13 +64,13 @@ export interface F1Project {
 export interface F1ProjectCreated {
 	success: boolean;
 	project: F1Project;
-	message?: string;
+	message?: ErrorMessage;
 }
 
 export interface F1ProjectExisted {
 	success: boolean;
 	project?: F1Project;
-	message?: string;
+	message?: ErrorMessage;
 	exists?: boolean;
 	broken?: true;
 }
@@ -77,7 +78,13 @@ export interface F1ProjectExisted {
 export interface F1ProjectLoaded {
 	success: boolean;
 	project?: F1Project;
-	message?: string;
+	message?: ErrorMessage;
+}
+
+export interface F1ProjectStructureLoaded {
+	success: boolean;
+	project?: F1ProjectStructure;
+	message?: ErrorMessage;
 }
 
 export enum F1ProjectEvent {
