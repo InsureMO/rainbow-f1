@@ -11,8 +11,7 @@ class D9ModuleProcessor extends AbstractModuleProcessor {
 	public async read(_project: F1Project, module: D9ModuleSettings): Promise<D9ModuleStructure> {
 		const structure: Omit<D9ModuleStructure, 'success' | 'message'> = {
 			name: module.name, type: F1ModuleType.D9,
-			folders: [], files: [],
-			nodeFolders: [], nodeFiles: [],
+			files: [], nodeFiles: [],
 			commands: {}
 		};
 		return {success: true, ...structure};

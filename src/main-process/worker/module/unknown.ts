@@ -23,7 +23,7 @@ class UnknownModuleProcessor extends AbstractModuleProcessor {
 	public async read(_project: F1Project, module: UnknownModuleSettings): Promise<UnknownModuleStructure> {
 		const structure: Omit<UnknownModuleStructure, 'success' | 'message'> = {
 			name: module.name, type: F1ModuleType.UNKNOWN,
-			folders: [], files: [],
+			files: [],
 			commands: {}
 		};
 		return {success: true, ...structure};

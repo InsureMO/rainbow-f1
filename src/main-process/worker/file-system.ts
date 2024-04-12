@@ -87,6 +87,7 @@ class FileSystemWorker {
 				// ask nothing, return directly
 				return {success: true, ret: []};
 			}
+			// TODO recursive need to ignore node_modules since it is too deep
 			try {
 				let files = fs.readdirSync(directory, {recursive: options?.recursive ?? false}) as Array<string>;
 				if ((options?.dir ?? true) || (options?.file ?? true)) {

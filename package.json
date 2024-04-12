@@ -45,6 +45,7 @@
 	"dependencies": {
 		"@rainbow-d9/n5": "^1.1.10",
 		"color": "^4.2.3",
+		"dotenv": "^16.4.5",
 		"electron-log": "^5.1.1",
 		"electron-squirrel-startup": "^1.0.0",
 		"electron-store": "^8.1.0",

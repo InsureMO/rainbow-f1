@@ -1,4 +1,12 @@
-import {F1ModuleType, F1Project, isNotBlank, O23ModuleSettings, O23ModuleStructure} from '../../../shared';
+import dotenv from 'dotenv';
+import {
+	F1ModuleType,
+	F1Project,
+	isNotBlank,
+	O23ModuleSettings,
+	O23ModuleStructure,
+	O23SettingItem
+} from '../../../shared';
 import {FileSystemWorker} from '../file-system';
 import {PathWorker} from '../path';
 import {AbstractModuleProcessor, ModuleCreated} from './abstract';
@@ -60,23 +68,26 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 	public async read(project: F1Project, module: O23ModuleSettings): Promise<O23ModuleStructure> {
 		const structure: Omit<O23ModuleStructure, 'success' | 'message'> = {
 			name: module.name, type: F1ModuleType.O23,
-			folders: [], files: [],
-			nodeFolders: [], nodeFiles: [],
+			files: [], nodeFiles: [],
 			commands: {},
-			server: {folders: [], files: []}, scripts: {folders: [], files: []}, dbScripts: {folders: [], files: []},
+			server: {files: []}, scripts: {files: []}, dbScripts: {files: []},
 			envs: {
-				server: {app: [], log: {}, datasources: []},
-				scripts: {datasource: {}}
+				server: {
+					app: [],
+					log: {error: [], combined: [], console: []},
+					pipeline: [], datasources: [], endpoints: []
+				},
+				scripts: {app: [], datasources: []}
 			}
 		};
-		const {
-			success, ret: files, message
-		} = FileSystemWorker.dir(PathWorker.resolve(project.directory, module.name), {file: true, recursive: true});
-		if (!success) {
-			return {success: false, message, ...structure};
+		const filesScanned = FileSystemWorker.dir(PathWorker.resolve(project.directory, module.name), {
+			file: true, recursive: true
+		});
+		if (!filesScanned.success) {
+			return {success: false, message: filesScanned.message, ...structure};
 		}
 		// 1. read package.json
-		const packageJsonFile = files.find(file => file === 'package.json');
+		const packageJsonFile = filesScanned.ret.find(file => file === 'package.json');
 		if (packageJsonFile == null) {
 			return {success: false, message: 'Project file[package.json] not found.', ...structure};
 		}
@@ -89,14 +100,80 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		this.readO23Commands(structure, packageJson);
 		// 3. find server path from envs, load recursively, parse each yaml
 		// find env files from commands, parse it
-		const serverEnvFiles = this.findO23EnvFiles(structure, ['start', 'startStandalone']);
+		this.findO23EnvFiles(structure, ['start', 'startStandalone']).map(file => {
+			this.readEnvsForServer(project, module, file, structure);
+		});
 		// 4. find scripts path from envs, load recursively, parse each yaml
 		// find env files from commands, parse it
-		const scriptsEnvFiles = this.findO23EnvFiles(structure, ['scripts']);
+		this.findO23EnvFiles(structure, ['scripts']).map(file => {
+			this.readEnvsForScripts(project, module, file, structure);
+		});
 		// 5. find db scripts path from envs, load recursively
+		// default value from const of O23, APP_SCRIPTS_DEFAULT_DIR = 'db-scripts'
+		const dbScriptsPath = structure.envs.scripts.app
+			.find(item => item.name === 'CFG_APP_DB_SCRIPTS_DIR')?.value?.value ?? 'db-scripts';
+		const dbScriptsScanned = FileSystemWorker.dir(PathWorker.resolve(project.directory, module.name, dbScriptsPath), {
+			dir: false, file: true, recursive: true
+		});
+		// ignore errors if there is any error occurred during db scripts files scanning
+		if (dbScriptsScanned.success) {
+			structure.dbScripts.files = (dbScriptsScanned.ret ?? []).map(file => {
+				return {name: file, type: this.guessFileType(file)};
+			});
+		}
 		// 6. load src folder, recursively
 		// 7. find all configuration file in root folder
 		return {success: true, ...structure};
+	}
+
+	protected readEnvsForServer(project: F1Project, module: O23ModuleSettings, file: string, structure: Omit<O23ModuleStructure, 'success' | 'message'>) {
+		const envs: Record<string, string> = {};
+		dotenv.config({processEnv: envs, path: PathWorker.resolve(project.directory, module.name, file)});
+		Object.keys(envs).forEach(key => {
+			const item: O23SettingItem = {name: key, value: {value: envs[key], path: file}};
+			switch (true) {
+				case key.startsWith('CFG_LOGGER_ERROR_'):
+					structure.envs.server.log.error.push(item);
+					break;
+				case key.startsWith('CFG_LOGGER_COMBINED_'):
+					structure.envs.server.log.combined.push(item);
+					break;
+				case key.startsWith('CFG_LOGGER_CONSOLE_'):
+					structure.envs.server.log.console.push(item);
+					break;
+				case key.startsWith('CFG_PIPELINE_'):
+					structure.envs.server.pipeline.push(item);
+					break;
+				case key.startsWith('CFG_ENDPOINTS_'):
+					structure.envs.server.endpoints.push(item);
+					break;
+				case key.startsWith('CFG_APP_DATASOURCE_'):
+				case key.startsWith('CFG_TYPEORM_'):
+					structure.envs.server.datasources.push(item);
+					break;
+				case key.startsWith('CFG_APP_'):
+				default:
+					structure.envs.server.app.push(item);
+					break;
+			}
+		});
+	}
+
+	protected readEnvsForScripts(project: F1Project, module: O23ModuleSettings, file: string, structure: Omit<O23ModuleStructure, 'success' | 'message'>) {
+		const envs: Record<string, string> = {};
+		dotenv.config({processEnv: envs, path: PathWorker.resolve(project.directory, module.name, file)});
+		Object.keys(envs).forEach(key => {
+			const item: O23SettingItem = {name: key, value: {value: envs[key], path: file}};
+			switch (true) {
+				case key.startsWith('CFG_TYPEORM_'):
+					structure.envs.scripts.datasources.push(item);
+					break;
+				case key.startsWith('CFG_APP_'):
+				default:
+					structure.envs.scripts.app.push(item);
+					break;
+			}
+		});
 	}
 }
 

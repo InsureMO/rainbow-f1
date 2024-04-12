@@ -14,15 +14,12 @@ export interface ModuleFile {
 export interface ModuleFolder {
 	/** relative to parent */
 	directory: string;
-	folders: Array<ModuleFolder>;
 	files: Array<ModuleFile>;
 }
 
 export interface F1ModuleStructure<Commands extends ModuleCommands = ModuleCommands> {
 	name: string;
 	type: F1ModuleType;
-	/** folders in root folder */
-	folders: Array<ModuleFolder>;
 	/** files in root folder */
 	files: Array<ModuleFile>;
 	/** concerned module commands */
@@ -34,8 +31,6 @@ export interface F1ModuleStructure<Commands extends ModuleCommands = ModuleComma
 }
 
 export interface F1NodeModuleStructure<Commands extends ModuleCommands = ModuleCommands> extends F1ModuleStructure<Commands> {
-	/** folders in root folder, for files which used by Node.js. Typically, not exists. */
-	nodeFolders?: Array<ModuleFolder>;
 	/** files in root folder, which used by Node.js */
 	nodeFiles?: Array<ModuleFile>;
 }
@@ -52,6 +47,7 @@ export enum ModuleFileType {
 	README = 'readme',
 	WEBPACK_CONFIG = 'webpack.config',
 	VITE_CONFIG = 'vite.config',
+	NEST_CONFIG = 'nest.config',
 	BABEL_CONFIG = 'babel.config',
 	TS_CONFIG = 'tsconfig',
 	ESLINT_CONFIG = 'eslint.config',
@@ -60,6 +56,8 @@ export enum ModuleFileType {
 	PACKAGE_JSON = 'package.json',
 
 	O23_PIPELINE = 'o23-pipeline',
+
+	UNKNOWN = 'unknown',
 }
 
 export interface D9ModuleCommands extends ModuleCommands {
@@ -92,26 +90,26 @@ export interface O23SettingItem {
 	value?: O23SettingValue;
 }
 
-export type O23EnvAppSettings = Array<O23SettingItem>;
-
 export interface O23EnvLogSettings {
 	error?: Array<O23SettingItem>;
-	combine?: Array<O23SettingItem>;
+	combined?: Array<O23SettingItem>;
 	console?: Array<O23SettingItem>;
 }
 
-export interface O23DatasourceSettings {
-	[key: string]: Array<O23SettingItem>;
-}
-
 export interface O23ServerSettings {
-	app: O23EnvAppSettings;
+	app: Array<O23SettingItem>;
 	log: O23EnvLogSettings;
-	datasources: Array<O23DatasourceSettings>;
+	pipeline: Array<O23SettingItem>;
+	datasources: Array<O23SettingItem>;
+	endpoints: Array<O23SettingItem>;
 }
 
 export interface O23ScriptsSettings {
-	datasource: O23DatasourceSettings;
+	app: Array<O23SettingItem>;
+	/**
+	 * only one datasource is allowed for scripts, but there might be multiple datasources from envs because of some mistakes.
+	 */
+	datasources: Array<O23SettingItem>;
 }
 
 export interface O23EnvConfigurations {

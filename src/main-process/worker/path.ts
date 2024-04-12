@@ -22,6 +22,14 @@ class PathWorker {
 		}
 	}
 
+	public extname(path: string): string | undefined {
+		if (!this.isValid(path)) {
+			return (void 0);
+		} else {
+			return p.extname(path) || (void 0);
+		}
+	}
+
 	public resolve(...path: Array<string>): string {
 		return p.resolve(...path);
 	}
