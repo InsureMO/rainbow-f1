@@ -1,6 +1,6 @@
 import {F1ModuleStructure} from '../../../shared';
-import {FolderClosed, FolderOpen} from '../../common/icons';
-import {TreeNodeInnerLabel} from '../opened/sides/side-bar';
+import {ModuleRoot} from '../../common/icons';
+import {NodeLabel} from './widgets';
 
 export interface ModuleNodeLabelProps {
 	module: F1ModuleStructure;
@@ -9,9 +9,8 @@ export interface ModuleNodeLabelProps {
 export const ModuleRootNodeLabel = (props: ModuleNodeLabelProps) => {
 	const {module} = props;
 
-	return <TreeNodeInnerLabel>
-		<FolderClosed/>
-		<FolderOpen/>
+	return <NodeLabel>
+		<ModuleRoot/>
 		<span data-name="">{module.name}</span>
-	</TreeNodeInnerLabel>;
+	</NodeLabel>;
 };

@@ -1,6 +1,6 @@
 import {F1Project} from '../../../shared';
-import {FolderClosed, FolderOpen} from '../../common/icons';
-import {TreeNodeInnerLabel} from '../opened/sides/side-bar';
+import {ProjectRoot} from '../../common/icons';
+import {NodeLabel} from './widgets';
 
 export interface ProjectNodeLabelProps {
 	project: F1Project;
@@ -9,10 +9,9 @@ export interface ProjectNodeLabelProps {
 export const ProjectRootNodeLabel = (props: ProjectNodeLabelProps) => {
 	const {project} = props;
 
-	return <TreeNodeInnerLabel>
-		<FolderClosed/>
-		<FolderOpen/>
+	return <NodeLabel>
+		<ProjectRoot/>
 		<span data-name="">{project.name}</span>
 		<span data-path="">{project.directory}</span>
-	</TreeNodeInnerLabel>;
+	</NodeLabel>;
 };
