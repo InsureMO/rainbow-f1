@@ -10,6 +10,12 @@ import {
 import {Envs} from '../envs';
 import {PathWorker} from './path';
 
+interface ScannedFile {
+	file: string;
+	prefix?: string;
+	dir: boolean;
+}
+
 class FileSystemWorker {
 	/**
 	 * check given path is valid or not
@@ -76,6 +82,32 @@ class FileSystemWorker {
 		});
 	}
 
+	protected scanDir(options: { directory: string; prefix?: string; recursive: boolean }): Array<ScannedFile> {
+		const {directory, prefix, recursive} = options;
+
+		let files: Array<ScannedFile> = (fs.readdirSync(directory, {recursive: false}) as Array<string>)
+			.map(file => ({file, prefix, dir: fs.lstatSync(PathWorker.resolve(directory, file)).isDirectory()}))
+			.filter(({file, dir}) => !dir || file !== 'node_modules');
+		if (recursive) {
+			files = files.map(file => {
+				if (file.dir) {
+					return [file, ...this.scanDir({
+						directory: file.file,
+						prefix: file.prefix == null ? file.file : PathWorker.resolve(file.prefix, file.file),
+						recursive
+					})];
+				} else {
+					return [file];
+				}
+			}).flat();
+		}
+		return files;
+	}
+
+	/**
+	 * default including all files and directories, not recursive.
+	 * please note if recursive is true, the result will include all descendant files not matter directory is included or not.
+	 */
 	public dir(directory: string, options?: {
 		dir?: boolean, file?: boolean, recursive?: boolean
 	}): FileSystemFoldersResult {
@@ -87,16 +119,25 @@ class FileSystemWorker {
 				// ask nothing, return directly
 				return {success: true, ret: []};
 			}
-			// TODO recursive need to ignore node_modules since it is too deep
+			const includeDirectory = options?.dir ?? true;
+			const includeFile = options?.file ?? true;
+			const recursive = options?.recursive ?? false;
 			try {
-				let files = fs.readdirSync(directory, {recursive: options?.recursive ?? false}) as Array<string>;
-				if ((options?.dir ?? true) || (options?.file ?? true)) {
-					// require all, do nothing
-				} else if (!(options?.dir ?? true)) {
-					files = files.filter(file => fs.lstatSync(PathWorker.resolve(directory, file)).isDirectory());
-				} else if (!(options?.file ?? true)) {
-					files = files.filter(file => fs.lstatSync(PathWorker.resolve(directory, file)).isFile());
-				}
+				const files = this.scanDir({directory, recursive}).filter(({dir}) => {
+					if (includeDirectory && includeFile) {
+						return true;
+					} else if (includeDirectory) {
+						return dir;
+					} else {
+						return !dir;
+					}
+				}).map(({file, prefix}) => {
+					if (prefix == null) {
+						return file;
+					} else {
+						return PathWorker.resolve(prefix, file);
+					}
+				});
 				return {success: true, ret: files};
 			} catch (e) {
 				return {success: false, ret: [], message: e.message};

@@ -14,6 +14,10 @@ class PathWorker {
 		return or();
 	}
 
+	public separator(): string {
+		return p.sep;
+	}
+
 	public basename(path: string, suffix?: string): string | undefined {
 		if (!this.isValid(path)) {
 			return (void 0);

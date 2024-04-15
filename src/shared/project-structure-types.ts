@@ -11,12 +11,6 @@ export interface ModuleFile {
 	type: ModuleFileType;
 }
 
-export interface ModuleFolder {
-	/** relative to parent */
-	directory: string;
-	files: Array<ModuleFile>;
-}
-
 export interface F1ModuleStructure<Commands extends ModuleCommands = ModuleCommands> {
 	name: string;
 	type: F1ModuleType;
@@ -33,6 +27,7 @@ export interface F1ModuleStructure<Commands extends ModuleCommands = ModuleComma
 export interface F1NodeModuleStructure<Commands extends ModuleCommands = ModuleCommands> extends F1ModuleStructure<Commands> {
 	/** files in root folder, which used by Node.js */
 	nodeFiles?: Array<ModuleFile>;
+	sourceFiles?: Array<ModuleFile>;
 }
 
 export enum ModuleFileType {
@@ -66,8 +61,9 @@ export interface D9ModuleCommands extends ModuleCommands {
 export interface D9ModuleStructure extends F1NodeModuleStructure<D9ModuleCommands> {
 }
 
-export interface O23Configurations extends Omit<ModuleFolder, 'directory'> {
+export interface O23Configurations {
 	directory?: string;
+	files: Array<ModuleFile>;
 }
 
 export interface O23DBScriptsConfigurations extends O23Configurations {

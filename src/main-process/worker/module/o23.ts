@@ -122,7 +122,10 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 			});
 		}
 		// 6. load src folder, recursively
-		// 7. find all configuration file in root folder
+		const srcFiles = filesScanned.ret.filter(file => file.startsWith(`src${PathWorker.separator()}`));
+		structure.sourceFiles = srcFiles.map(file => ({name: file, type: this.guessFileType(file)}));
+		// 7. all files
+		structure.files = filesScanned.ret.map(file => ({name: file, type: this.guessFileType(file)}));
 		return {success: true, ...structure};
 	}
 
