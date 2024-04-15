@@ -8,10 +8,18 @@ export const FirstScene = () => {
 	useEffect(() => {
 		(async () => {
 			const {success, project, message} = await window.electron.project.loadAttached();
-			if (success) {
-				fire(MainEventTypes.SET_PROJECT, project);
-			} else {
+			if (!success) {
+				// failed to load attached project
 				fire(MainEventTypes.SET_FAILED_TO_ASK_PROJECT, message);
+			} else {
+				const {success, project: structure, message} = await window.electron.project.loadAttachedStructure();
+				if (success) {
+					// successfully loaded attached project and structure
+					fire(MainEventTypes.SET_PROJECT, project, structure);
+				} else {
+					// failed to load attached project structure
+					fire(MainEventTypes.SET_FAILED_TO_ASK_PROJECT, message);
+				}
 			}
 		})();
 	}, [fire]);

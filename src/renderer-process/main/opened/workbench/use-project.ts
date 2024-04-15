@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {F1Project} from '../../../../shared';
+import {F1Project, F1ProjectStructure} from '../../../../shared';
 import {useWorkbenchEventBus, WorkbenchEventTypes} from './event-bus';
 
 export type AskProject = () => Promise<F1Project>;
@@ -33,11 +33,36 @@ export const useAskProject = (ask: AskProject, asked: ProjectAsked) => {
 		})();
 	}, []);
 };
-export const useAskProjectStructure = (ask: AskProject, asked: ProjectAsked) => {
+
+export type AskProjectStructure = () => Promise<[F1Project, F1ProjectStructure]>;
+
+export interface UseProjectStructure {
+	ask: AskProjectStructure;
+}
+
+export const useProjectStructure = (): UseProjectStructure => {
+	const {fire} = useWorkbenchEventBus();
+	const [funcs] = useState<UseProjectStructure>(() => {
+		return {
+			ask: async (): Promise<[F1Project, F1ProjectStructure]> => {
+				return new Promise<[F1Project, F1ProjectStructure]>(resolve => {
+					fire(WorkbenchEventTypes.ASK_PROJECT_STRUCTURE, (project, structure) => {
+						resolve([project, structure]);
+					});
+				});
+			}
+		};
+	});
+
+	return funcs;
+};
+
+export type ProjectStructureAsked = (project: F1Project, structure: F1ProjectStructure) => void;
+export const useAskProjectStructure = (ask: AskProjectStructure, asked: ProjectStructureAsked) => {
 	useEffect(() => {
 		(async () => {
-			const project = await ask();
-			asked(project);
+			const [project, structure] = await ask();
+			asked(project, structure);
 		})();
 	}, []);
 };

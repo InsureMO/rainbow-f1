@@ -6,30 +6,6 @@ export interface ModuleCommands {
 	start?: string;
 }
 
-export interface ModuleFile {
-	name: string;
-	type: ModuleFileType;
-}
-
-export interface F1ModuleStructure<Commands extends ModuleCommands = ModuleCommands> {
-	name: string;
-	type: F1ModuleType;
-	/** files in root folder */
-	files: Array<ModuleFile>;
-	/** concerned module commands */
-	commands?: Commands;
-	/** module structure is read successfully or not */
-	success: boolean;
-	/** error message when failed to read module structure */
-	message?: ErrorMessage;
-}
-
-export interface F1NodeModuleStructure<Commands extends ModuleCommands = ModuleCommands> extends F1ModuleStructure<Commands> {
-	/** files in root folder, which used by Node.js */
-	nodeFiles?: Array<ModuleFile>;
-	sourceFiles?: Array<ModuleFile>;
-}
-
 export enum ModuleFileType {
 	TS = 'ts',
 	JS = 'js',
@@ -53,6 +29,33 @@ export enum ModuleFileType {
 	O23_PIPELINE = 'o23-pipeline',
 
 	UNKNOWN = 'unknown',
+}
+
+/**
+ * module file also might be directory, type should be {@code ModuleFileType#UNKNOWN}
+ */
+export interface ModuleFile {
+	name: string;
+	type: ModuleFileType;
+}
+
+export interface F1ModuleStructure<Commands extends ModuleCommands = ModuleCommands> {
+	name: string;
+	type: F1ModuleType;
+	/** files in root folder */
+	files: Array<ModuleFile>;
+	/** concerned module commands */
+	commands?: Commands;
+	/** module structure is read successfully or not */
+	success: boolean;
+	/** error message when failed to read module structure */
+	message?: ErrorMessage;
+}
+
+export interface F1NodeModuleStructure<Commands extends ModuleCommands = ModuleCommands> extends F1ModuleStructure<Commands> {
+	/** files in root folder, which used by Node.js */
+	nodeFiles?: Array<ModuleFile>;
+	sourceFiles?: Array<ModuleFile>;
 }
 
 export interface D9ModuleCommands extends ModuleCommands {

@@ -1,4 +1,4 @@
-import {F1Project} from '../../../../shared';
+import {F1Project, F1ProjectStructure} from '../../../../shared';
 import {LocationBar} from '../location-bar';
 import {BottomSide} from '../sides/bottom-side';
 import {LeftSide, LeftSideBar} from '../sides/left-side';
@@ -9,12 +9,12 @@ import {WorkbenchEventBusProvider} from './event-bus';
 import {ProjectHolder} from './project-holder';
 import {ProjectWorkbenchContainer} from './widgets';
 
-export const ProjectWorkbench = (props: { project: F1Project }) => {
-	const {project} = props;
+export const ProjectWorkbench = (props: { project: F1Project; structure: F1ProjectStructure }) => {
+	const {project, structure} = props;
 
 	return <WorkbenchEventBusProvider>
 		<ProjectWorkbenchContainer>
-			<ProjectHolder project={project}/>
+			<ProjectHolder project={project} structure={structure}/>
 			<LocationBar/>
 			<LeftSideBar/>
 			<LeftSide/>

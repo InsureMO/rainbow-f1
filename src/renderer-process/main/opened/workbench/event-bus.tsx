@@ -1,6 +1,6 @@
 import {useCreateEventBus} from '@rainbow-d9/n1';
 import {createContext, ReactNode, useContext} from 'react';
-import {F1Project} from '../../../../shared';
+import {F1Project, F1ProjectStructure} from '../../../../shared';
 
 export enum SideContentKey {
 	PROJECT = 'project',
@@ -23,7 +23,7 @@ export enum SideContentPosition {
 export enum WorkbenchEventTypes {
 	OPEN_SIDE_FRAME = 'open-side-frame', SIDE_FRAME_OPENED = 'side-frame-opened',
 	CLOSE_SIDE_FRAME = 'close-side-frame', SIDE_FRAME_CLOSED = 'side-frame-closed',
-	ASK_PROJECT = 'ask-project'
+	ASK_PROJECT = 'ask-project', ASK_PROJECT_STRUCTURE = 'ask-project-structure'
 }
 
 export interface WorkbenchEventBus {
@@ -56,6 +56,12 @@ export interface WorkbenchEventBus {
 	on(type: WorkbenchEventTypes.ASK_PROJECT, listener: (callback: (project: F1Project) => void) => void): this;
 
 	off(type: WorkbenchEventTypes.ASK_PROJECT, listener: (callback: (project: F1Project) => void) => void): this;
+
+	fire(type: WorkbenchEventTypes.ASK_PROJECT_STRUCTURE, callback: (project: F1Project, structure: F1ProjectStructure) => void): this;
+
+	on(type: WorkbenchEventTypes.ASK_PROJECT_STRUCTURE, listener: (callback: (project: F1Project, structure: F1ProjectStructure) => void) => void): this;
+
+	off(type: WorkbenchEventTypes.ASK_PROJECT_STRUCTURE, listener: (callback: (project: F1Project, structure: F1ProjectStructure) => void) => void): this;
 }
 
 const Context = createContext<WorkbenchEventBus>({} as WorkbenchEventBus);

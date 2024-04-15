@@ -1,6 +1,6 @@
 import {useCreateEventBus} from '@rainbow-d9/n1';
 import {createContext, ReactNode, useContext} from 'react';
-import {F1Project} from '../../shared';
+import {F1Project, F1ProjectStructure} from '../../shared';
 
 export enum MainEventTypes {
 	SET_PROJECT = 'set-project',
@@ -8,15 +8,15 @@ export enum MainEventTypes {
 	ASK_PROJECT = 'ask-project',
 	SET_FAILED_TO_ASK_PROJECT = 'set-failed-to-ask-project',
 	FAILURE_SETTLED = 'failure-settled',
-	ASK_PROJECT_FAILURE = 'ask-project-failure'
+	ASK_PROJECT_FAILURE = 'ask-project-failure',
 }
 
 export interface MainEventBus {
-	fire(type: MainEventTypes.SET_PROJECT, project: F1Project): this;
+	fire(type: MainEventTypes.SET_PROJECT, project: F1Project, structure: F1ProjectStructure): this;
 
-	on(type: MainEventTypes.SET_PROJECT, listener: (project: F1Project) => void): this;
+	on(type: MainEventTypes.SET_PROJECT, listener: (project: F1Project, structure: F1ProjectStructure) => void): this;
 
-	off(type: MainEventTypes.SET_PROJECT, listener: (project: F1Project) => void): this;
+	off(type: MainEventTypes.SET_PROJECT, listener: (project: F1Project, structure: F1ProjectStructure) => void): this;
 
 	fire(type: MainEventTypes.PROJECT_SETTLED, project: F1Project): this;
 
@@ -24,11 +24,11 @@ export interface MainEventBus {
 
 	off(type: MainEventTypes.PROJECT_SETTLED, listener: (project: F1Project) => void): this;
 
-	fire(type: MainEventTypes.ASK_PROJECT, callback: (project: F1Project) => void): this;
+	fire(type: MainEventTypes.ASK_PROJECT, callback: (project: F1Project, structure: F1ProjectStructure) => void): this;
 
-	on(type: MainEventTypes.ASK_PROJECT, listener: (callback: (project: F1Project) => void) => void): this;
+	on(type: MainEventTypes.ASK_PROJECT, listener: (callback: (project: F1Project, structure: F1ProjectStructure) => void) => void): this;
 
-	off(type: MainEventTypes.ASK_PROJECT, listener: (callback: (project: F1Project) => void) => void): this;
+	off(type: MainEventTypes.ASK_PROJECT, listener: (callback: (project: F1Project, structure: F1ProjectStructure) => void) => void): this;
 
 	fire(type: MainEventTypes.SET_FAILED_TO_ASK_PROJECT, message: string): this;
 

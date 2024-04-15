@@ -1,9 +1,10 @@
 import {Fragment, useEffect, useState} from 'react';
-import {F1Project, isNotBlank} from '../../../shared';
+import {F1Project, F1ProjectStructure, isNotBlank} from '../../../shared';
 import {MainEventTypes, useMainEventBus} from '../event-bus';
 
 interface ProjectHolderState {
 	project?: F1Project;
+	structure?: F1ProjectStructure;
 	message?: string;
 }
 
@@ -12,8 +13,8 @@ export const ProjectHolder = () => {
 	const [state, setState] = useState<ProjectHolderState>({});
 
 	useEffect(() => {
-		const onSetProject = (project: F1Project) => {
-			setState(state => ({...state, project}));
+		const onSetProject = (project: F1Project, structure: F1ProjectStructure) => {
+			setState(state => ({...state, project, structure}));
 		};
 		const onAskProjectFailed = (message: string) => {
 			setState(state => ({...state, message}));
@@ -33,7 +34,7 @@ export const ProjectHolder = () => {
 		}
 
 		const onAskProjectFailure = (callback: (message: string) => void) => callback(state.message);
-		const onAskProject = (callback: (project: F1Project) => void) => callback(state.project);
+		const onAskProject = (callback: (project: F1Project, structure: F1ProjectStructure) => void) => callback(state.project, state.structure);
 		on(MainEventTypes.ASK_PROJECT_FAILURE, onAskProjectFailure);
 		on(MainEventTypes.ASK_PROJECT, onAskProject);
 		return () => {
