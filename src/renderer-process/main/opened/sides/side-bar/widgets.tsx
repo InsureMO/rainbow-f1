@@ -110,6 +110,7 @@ export const SideContentContainer = styled.div.attrs<{
     width: var(--width);
     min-height: var(--min-height);
     height: var(--height);
+    overflow: hidden;
 
     &[data-upper], &[data-lower] {
         > div[data-w=f1-wb-side-slider] {
@@ -118,7 +119,8 @@ export const SideContentContainer = styled.div.attrs<{
     }
 
     &[data-upper][data-lower] {
-        > div[data-w=f1-wb-side-content-part]:last-child {
+        > div[data-w=f1-wb-side-content-part]:nth-last-child(2) {
+            /** last one is slider */
             border-top: var(--f1-border);
             border-top-color: var(--f1-wb-border-color);
         }
@@ -219,12 +221,16 @@ export const SideSlider = styled.div.attrs<SideSliderProps & { resizeOn: SideCon
     }
 `;
 export const SideContentPartContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-content-part'})`
-    display: block;
+    display: grid;
     position: relative;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
 `;
 export const SideFrameContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-frame-container'})`
     display: flex;
     position: relative;
+    flex-direction: column;
+    overflow: hidden;
 `;
 export const SideFrameHeader = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-frame-header'})`
     display: flex;
@@ -290,4 +296,67 @@ export const SideFrameBody = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-fra
     display: block;
     position: relative;
     flex-grow: 1;
+    overflow: hidden;
+
+    span[data-w=d9-tree-node-toggle] {
+        /** standard folder icons */
+
+        &[data-expanded=true] + span[data-w=d9-tree-node-label] > span[data-w=f1-wb-side-frame-tree-node-inner-label] > svg[data-icon=folder-closed] {
+            display: none;
+        }
+
+        &[data-expanded=false] + span[data-w=d9-tree-node-label] > span[data-w=f1-wb-side-frame-tree-node-inner-label] > svg[data-icon=folder-open] {
+            display: none;
+        }
+    }
+`;
+export const TreeNodeInnerLabel = styled.span.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-frame-tree-node-inner-label'})`
+    display: flex;
+    position: relative;
+    flex-grow: 1;
+    align-self: stretch;
+    align-items: center;
+    padding-right: 16px;
+
+    > svg {
+        /** standard folder icons */
+        width: 14px;
+        height: 14px;
+        margin-right: 8px;
+        fill: var(--f1-label-color);
+
+        &[data-icon=folder-closed-empty] + svg[data-icon=folder-open] {
+            display: none;
+        }
+    }
+
+    > span[data-name] {
+        /** standard node name */
+        flex-grow: 1;
+    }
+
+    > span[data-path] {
+        /** standard node path, or anything path likes */
+        flex-grow: 1;
+        opacity: 0.7;
+        font-size: 0.85em;
+        margin-left: 12px;
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    > span[data-link] {
+        text-decoration: underline;
+
+        &[data-weak-link] {
+            opacity: 0.7;
+            transition: opacity 300ms ease-in-out;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
 `;

@@ -7,8 +7,8 @@ import {RecentProjectsSection} from './recent-projects';
 import {RecentContainer, RecentContent} from './widgets';
 
 export const CreateOrRecentPage = () => {
-	return <GlobalRoot avoidDefaultRemoteRequest={true}>
-		<RecentProjectsEventBusProvider>
+	return <RecentProjectsEventBusProvider>
+		<GlobalRoot avoidDefaultRemoteRequest={true}>
 			<RecentContainer>
 				<RecentContent>
 					<UnwrappedCaption data-page-title>Recent projects...</UnwrappedCaption>
@@ -17,6 +17,6 @@ export const CreateOrRecentPage = () => {
 					<Bar/>
 				</RecentContent>
 			</RecentContainer>
-		</RecentProjectsEventBusProvider>
-	</GlobalRoot>;
+		</GlobalRoot>
+	</RecentProjectsEventBusProvider>;
 };
