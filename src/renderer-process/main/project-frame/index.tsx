@@ -7,18 +7,20 @@ import {useAskProjectStructure, useProjectStructure} from '../opened/workbench/u
 import {AddModuleNodeLabel} from './add-module-node-label';
 import {ModuleRootNodeLabel} from './module-root-node-label';
 import {ProjectRootNodeLabel} from './project-root-node-label';
-import {ProjectTreeNodeDef, ProjectTreeNodeType} from './types';
+import {
+	ADD_MODULE,
+	ADD_MODULE_NODE_MARKER,
+	MODULE_NODE_MARKER,
+	ProjectTreeNodeDef,
+	ProjectTreeNodeType,
+	ROOT_NODE_MARKER
+} from './types';
 import {ProjectFrameContainer} from './widgets';
 
 interface ProjectFrameState {
 	project?: F1Project;
 	structure?: F1ProjectStructure;
 }
-
-const ROOT_NODE_MARKER = '$$root$$';
-const ADD_MODULE = Symbol();
-const ADD_MODULE_NODE_MARKER = (project: F1Project) => `$$add-module$$-${project.directory}`;
-const MODULE_NODE_MARKER = (module: F1ModuleStructure) => `$$module$$-${module.name}`;
 
 export const ProjectFrame = (props: { position: SideContentPosition }) => {
 	const {position} = props;
