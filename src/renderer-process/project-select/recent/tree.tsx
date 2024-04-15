@@ -9,7 +9,8 @@ import {
 	useGlobalEventBus,
 	useTreeNodeEventBus
 } from '@rainbow-d9/n2';
-import {MouseEvent, useEffect} from 'react';
+import React, {MouseEvent, useEffect} from 'react';
+import {EllipsisVerticalIcon, FolderClosedEmptyIcon, FolderClosedIcon, FolderOpenIcon} from '../../../assets/icons';
 import {
 	RecentProject,
 	RecentProjectCategory,
@@ -18,7 +19,6 @@ import {
 	RecentProjectRoot
 } from '../../../shared';
 import {ContextMenuItem, showContextMenu} from '../../common/context-menu';
-import {EllipsisVertical, FolderClosed, FolderClosedEmpty, FolderOpen} from '../../common/icons';
 import {useCategory} from './category';
 import {RecentProjectsEventTypes, useRecentProjectsEventBus} from './event-bus';
 import {useProject} from './project';
@@ -136,11 +136,11 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 			return {
 				marker: category.id,
 				label: <span data-recent-category="">
-					{hasChild ? <FolderClosed/> : <FolderClosedEmpty/>}
-					<FolderOpen/>
+					{hasChild ? <FolderClosedIcon/> : <FolderClosedEmptyIcon/>}
+					<FolderOpenIcon/>
 					<span data-name="">{category.name}</span>
 					<span data-operator=""
-					      onClick={onCategoryOperatorClicked(parent, category)}><EllipsisVertical/></span>
+					      onClick={onCategoryOperatorClicked(parent, category)}><EllipsisVerticalIcon/></span>
 				</span>,
 				value: category as unknown as PropValue,
 				$ip2r: PROPERTY_PATH_ME, $ip2p: `category-${category.id}`, leaf: false
@@ -170,7 +170,7 @@ export const Tree = (props: { root: RecentProjectRoot }) => {
 					<span data-path="">{project.path}</span>
 					<span data-broken-msg="">{project.brokenMessage ?? ''}</span>
 					<span data-operator="" onClick={onProjectOperatorClicked(parent, project)}>
-						<EllipsisVertical/>
+						<EllipsisVerticalIcon/>
 					</span>
 				</span>;
 			};

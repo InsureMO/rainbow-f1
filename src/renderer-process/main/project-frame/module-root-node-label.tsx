@@ -1,5 +1,5 @@
+import {ModuleRootIcon} from '../../../assets/icons';
 import {F1ModuleStructure} from '../../../shared';
-import {ModuleRoot} from '../../common/icons';
 import {NodeLabel} from './widgets';
 
 export interface ModuleNodeLabelProps {
@@ -10,7 +10,7 @@ export const ModuleRootNodeLabel = (props: ModuleNodeLabelProps) => {
 	const {module} = props;
 
 	return <NodeLabel>
-		<ModuleRoot/>
+		<ModuleRootIcon/>
 		<span data-name="">{module.name}</span>
 	</NodeLabel>;
 };

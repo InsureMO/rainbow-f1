@@ -1,7 +1,7 @@
 import React, {SVGProps} from 'react';
 
-export const ModuleRoot = (props: Omit<SVGProps<SVGSVGElement>, 'xmlns' | 'viewBox'>) => {
-	return <svg {...props} data-icon="module-root" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+export const ModuleRootIcon = (props: Omit<SVGProps<SVGSVGElement>, 'xmlns' | 'viewBox'>) => {
+	return <svg {...props} data-icon="f1-module-root" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
 		<path
 			d="M12.92 2.25984L19.43 5.76984C20.19 6.17984 20.19 7.34984 19.43 7.75984L12.92 11.2698C12.34 11.5798 11.66 11.5798 11.08 11.2698L4.57 7.75984C3.81 7.34984 3.81 6.17984 4.57 5.76984L11.08 2.25984C11.66 1.94984 12.34 1.94984 12.92 2.25984Z"
 			stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

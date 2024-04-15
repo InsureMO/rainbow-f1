@@ -19,7 +19,7 @@ export const StatusBarSegment = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-status-b
     position: relative;
     align-items: center;
 
-    > svg[data-icon=logo] {
+    > svg[data-icon=f1-logo] {
         height: calc(var(--f1-wb-status-bar-height) * 0.7);
         width: calc(var(--f1-wb-status-bar-height) * 0.7);
         color: var(--f1-danger-color);

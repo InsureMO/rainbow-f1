@@ -15,13 +15,13 @@ export const ProjectFrameContainer = styled(SideFrame)`
     }
 `;
 export const NodeLabel = styled(TreeNodeInnerLabel)`
-    > svg[data-icon=project-root],
-    > svg[data-icon=module-root] {
+    > svg[data-icon=f1-project-root],
+    > svg[data-icon=f1-module-root] {
         height: 20px;
         width: 20px;
     }
 
-    > svg[data-icon=module-root] {
+    > svg[data-icon=f1-module-root] {
         path:first-child {
             opacity: 0.6;
         }

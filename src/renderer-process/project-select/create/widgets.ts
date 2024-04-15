@@ -16,7 +16,7 @@ export const CreateProjectContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-cr
         height: 64px;
     }
 
-    > svg[data-icon=logo] {
+    > svg[data-icon=f1-logo] {
         height: 48px;
         width: 48px;
         color: var(--f1-danger-color);

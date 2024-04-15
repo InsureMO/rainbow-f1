@@ -1,7 +1,7 @@
 import React, {SVGProps} from 'react';
 
-export const Logo = (props: Omit<SVGProps<SVGSVGElement>, 'xmlns' | 'viewBox'>) => {
-	return <svg {...props} data-icon="logo" xmlns="http://www.w3.org/2000/svg"
+export const LogoIcon = (props: Omit<SVGProps<SVGSVGElement>, 'xmlns' | 'viewBox'>) => {
+	return <svg {...props} data-icon="f1-logo" xmlns="http://www.w3.org/2000/svg"
 	            width="1292.000000pt" height="1286.000000pt" viewBox="0 0 1292.000000 1286.000000"
 	            preserveAspectRatio="xMidYMid meet">
 		<g transform="translate(0.000000,1286.000000) scale(0.100000,-0.100000)" fill="currentColor" stroke="none">

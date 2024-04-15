@@ -301,11 +301,11 @@ export const SideFrameBody = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-fra
     span[data-w=d9-tree-node-toggle] {
         /** standard folder icons */
 
-        &[data-expanded=true] + span[data-w=d9-tree-node-label] > span[data-w=f1-wb-side-frame-tree-node-inner-label] > svg[data-icon=folder-closed] {
+        &[data-expanded=true] + span[data-w=d9-tree-node-label] > span[data-w=f1-wb-side-frame-tree-node-inner-label] > svg[data-icon=f1-folder-closed] {
             display: none;
         }
 
-        &[data-expanded=false] + span[data-w=d9-tree-node-label] > span[data-w=f1-wb-side-frame-tree-node-inner-label] > svg[data-icon=folder-open] {
+        &[data-expanded=false] + span[data-w=d9-tree-node-label] > span[data-w=f1-wb-side-frame-tree-node-inner-label] > svg[data-icon=f1-folder-open] {
             display: none;
         }
     }
@@ -325,7 +325,7 @@ export const TreeNodeInnerLabel = styled.span.attrs({[DOM_KEY_WIDGET]: 'f1-wb-si
         margin-right: 8px;
         fill: var(--f1-label-color);
 
-        &[data-icon=folder-closed-empty] + svg[data-icon=folder-open] {
+        &[data-icon=f1-folder-closed-empty] + svg[data-icon=f1-folder-open] {
             display: none;
         }
     }

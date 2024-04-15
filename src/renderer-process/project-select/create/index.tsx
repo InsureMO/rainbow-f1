@@ -1,7 +1,7 @@
 import {useForceUpdate} from '@rainbow-d9/n1';
 import {GlobalRoot, UnwrappedCaption} from '@rainbow-d9/n2';
 import {useEffect, useState} from 'react';
-import {Logo} from '../../common/icons';
+import {LogoIcon} from '../../../assets/icons';
 import {Bar} from './bar';
 import {Content} from './content';
 import {CreateProjectEventBusProvider} from './event-bus';
@@ -24,7 +24,7 @@ export const CreateProjectPage = () => {
 		<CreateProjectEventBusProvider>
 			<CreateProjectContainer>
 				<UnwrappedCaption data-page-title>Project settings</UnwrappedCaption>
-				<Logo/>
+				<LogoIcon/>
 				<SideBar settings={settings}/>
 				<Content settings={settings}/>
 				<Bar settings={settings}/>

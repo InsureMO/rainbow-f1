@@ -1,7 +1,7 @@
 import {DOM_KEY_WIDGET} from '@rainbow-d9/n2';
 import styled from 'styled-components';
+import {LogoIcon} from '../../assets/icons';
 import {GlobalStyles} from '../common/global-styles';
-import {Logo} from '../common/icons';
 
 const AboutContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-about'})`
     display: grid;
@@ -43,7 +43,7 @@ export const App = () => {
 	return <>
 		<GlobalStyles/>
 		<AboutContainer>
-			<div><Logo/></div>
+			<div><LogoIcon/></div>
 			<div/>
 			<div>f1</div>
 			<div>{window.electron.versions.app()}</div>

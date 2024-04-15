@@ -21,7 +21,7 @@ export const RecentContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or-r
         height: 64px;
     }
 
-    > svg[data-icon=logo] {
+    > svg[data-icon=f1-logo] {
         height: 48px;
         width: 48px;
         color: var(--f1-danger-color);
@@ -76,7 +76,7 @@ export const RecentContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or-r
                     fill: var(--f1-primary-color);
                 }
 
-                > svg[data-icon=ellipsis-vertical] {
+                > svg[data-icon=f1-ellipsis-vertical] {
                     height: 14px;
                     transition: fill 0.3s ease-in-out;
                 }
@@ -94,7 +94,7 @@ export const RecentContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or-r
                 margin-right: 8px;
                 fill: var(--f1-label-color);
 
-                &[data-icon=folder-closed-empty] + svg[data-icon=folder-open] {
+                &[data-icon=f1-folder-closed-empty] + svg[data-icon=f1-folder-open] {
                     display: none;
                 }
             }
@@ -142,11 +142,11 @@ export const RecentContent = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-create-or-r
     }
 
     span[data-w=d9-tree-node-toggle] {
-        &[data-expanded=true] + span[data-w=d9-tree-node-label] > span[data-recent-category] > svg[data-icon=folder-closed] {
+        &[data-expanded=true] + span[data-w=d9-tree-node-label] > span[data-recent-category] > svg[data-icon=f1-folder-closed] {
             display: none;
         }
 
-        &[data-expanded=false] + span[data-w=d9-tree-node-label] > span[data-recent-category] > svg[data-icon=folder-open] {
+        &[data-expanded=false] + span[data-w=d9-tree-node-label] > span[data-recent-category] > svg[data-icon=f1-folder-open] {
             display: none;
         }
     }

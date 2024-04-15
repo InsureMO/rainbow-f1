@@ -1,5 +1,5 @@
+import {ProjectRootIcon} from '../../../assets/icons';
 import {F1Project} from '../../../shared';
-import {ProjectRoot} from '../../common/icons';
 import {NodeLabel} from './widgets';
 
 export interface ProjectNodeLabelProps {
@@ -10,7 +10,7 @@ export const ProjectRootNodeLabel = (props: ProjectNodeLabelProps) => {
 	const {project} = props;
 
 	return <NodeLabel>
-		<ProjectRoot/>
+		<ProjectRootIcon/>
 		<span data-name="">{project.name}</span>
 		<span data-path="">{project.directory}</span>
 	</NodeLabel>;
