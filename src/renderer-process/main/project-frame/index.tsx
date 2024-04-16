@@ -71,6 +71,7 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 		if (modules.length === 0) {
 			return [createAddModuleNode()];
 		} else {
+
 			return modules.map(createModuleNode);
 		}
 	};
@@ -78,8 +79,10 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 		if (parentNode == null) {
 			return [];
 		} else if (parentNode.value as any === rootData) {
+			// virtual root, given by tree itself. create physical root node, aka project node
 			return [createRootNode()];
-		} else if (parentNode.value as any === rootData.structure) {
+		} else if ((parentNode as unknown as ProjectTreeNodeDef).$type === ProjectTreeNodeType.ROOT) {
+			// project node, create module nodes
 			return createModuleNodes();
 		} else {
 			return [];

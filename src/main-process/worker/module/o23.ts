@@ -41,7 +41,7 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		}
 	}
 
-	protected readO23Commands(structure: Omit<O23ModuleStructure, 'success' | 'message'>, packageJson: NodeJsPackageJson) {
+	protected readCommands(structure: Omit<O23ModuleStructure, 'success' | 'message'>, packageJson: NodeJsPackageJson) {
 		structure.commands.build = packageJson.scripts?.build;
 		structure.commands.buildStandalone = packageJson.scripts?.['build:standalone'];
 		structure.commands.start = packageJson.scripts?.start ?? packageJson.scripts?.['dev:start'];
@@ -50,7 +50,7 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		structure.commands.test = packageJson.scripts?.test;
 	}
 
-	protected findO23EnvFiles(structure: Pick<O23ModuleStructure, 'commands'>, commandNames: Array<'start' | 'startStandalone' | 'scripts'>) {
+	protected findEnvFiles(structure: Pick<O23ModuleStructure, 'commands'>, commandNames: Array<'start' | 'startStandalone' | 'scripts'>) {
 		return commandNames.map(name => structure.commands[name]).filter(isNotBlank)
 			.map(command => {
 				const setEnv = command.split(' ')
@@ -86,7 +86,7 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		if (!filesScanned.success) {
 			return {success: false, message: filesScanned.message, ...structure};
 		}
-		// 1. read package.json
+		// read package.json
 		const packageJsonFile = filesScanned.ret.find(file => file === 'package.json');
 		if (packageJsonFile == null) {
 			return {success: false, message: 'Project file[package.json] not found.', ...structure};
@@ -95,24 +95,28 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		if (packageJson == null) {
 			return {success: false, message: 'Failed to read content of package.json.', ...structure};
 		}
-		// 2. read commands, find build, test, start. o23 has more commands, find build and start standalone commands as well.
+		// read commands, find build, test, start. o23 has more commands, find build and start standalone commands as well.
 		// typically, all following commands are defined for development.
-		this.readO23Commands(structure, packageJson);
-		// 3. find server path from envs, load recursively, parse each yaml
+		this.readCommands(structure, packageJson);
+		// find server path from envs, load recursively, parse each yaml
 		// find env files from commands, parse it
-		this.findO23EnvFiles(structure, ['start', 'startStandalone']).map(file => {
+		this.findEnvFiles(structure, ['start', 'startStandalone']).map(file => {
 			this.readEnvsForServer(project, module, file, structure);
 		});
-		// 4. find scripts path from envs, load recursively, parse each yaml
+		// find server pipeline files according to env
+		this.readServerPipelineFiles(project, module, structure);
+		// find scripts path from envs, load recursively, parse each yaml
 		// find env files from commands, parse it
-		this.findO23EnvFiles(structure, ['scripts']).map(file => {
+		this.findEnvFiles(structure, ['scripts']).map(file => {
 			this.readEnvsForScripts(project, module, file, structure);
 		});
-		// 5. find db scripts path from envs, load recursively
+		// find scripts pipeline files according to env
+		this.readScriptsPipelineFiles(project, module, structure);
+		// find db scripts path from envs, load recursively
 		// default value from const of O23, APP_SCRIPTS_DEFAULT_DIR = 'db-scripts'
-		const dbScriptsPath = structure.envs.scripts.app
+		const dbScriptsDirectory = structure.envs.scripts.app
 			.find(item => item.name === 'CFG_APP_DB_SCRIPTS_DIR')?.value?.value ?? 'db-scripts';
-		const dbScriptsScanned = FileSystemWorker.dir(PathWorker.resolve(project.directory, module.name, dbScriptsPath), {
+		const dbScriptsScanned = FileSystemWorker.dir(PathWorker.resolve(project.directory, module.name, dbScriptsDirectory), {
 			dir: false, file: true, recursive: true
 		});
 		// ignore errors if there is any error occurred during db scripts files scanning
@@ -121,10 +125,10 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 				return {name: file, type: this.guessFileType(file)};
 			});
 		}
-		// 6. load src folder, recursively
+		// load src folder, recursively
 		const srcFiles = filesScanned.ret.filter(file => file.startsWith(`src${PathWorker.separator()}`));
 		structure.sourceFiles = srcFiles.map(file => ({name: file, type: this.guessFileType(file)}));
-		// 7. all files
+		// all files
 		structure.files = filesScanned.ret.map(file => ({name: file, type: this.guessFileType(file)}));
 		return {success: true, ...structure};
 	}
@@ -162,6 +166,22 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		});
 	}
 
+	protected readServerPipelineFiles(project: F1Project, module: O23ModuleSettings, structure: Omit<O23ModuleStructure, 'success' | 'message'>) {
+		const serverPipelineDirectory = (structure.envs.server.app.find(item => {
+			return item.name === 'CFG_APP_INIT_PIPELINES_DIR';
+		})?.value as string) ?? 'server';
+		structure.server.directory = serverPipelineDirectory;
+		const serverPipelineScanned = FileSystemWorker.dir(PathWorker.resolve(project.directory, module.name, serverPipelineDirectory), {
+			dir: false, file: true, recursive: true
+		});
+		// ignore errors if there is any error occurred during server pipelines files scanning
+		if (serverPipelineScanned.success) {
+			structure.server.files = (serverPipelineScanned.ret ?? []).map(file => {
+				return {name: file, type: this.guessFileType(file)};
+			});
+		}
+	}
+
 	protected readEnvsForScripts(project: F1Project, module: O23ModuleSettings, file: string, structure: Omit<O23ModuleStructure, 'success' | 'message'>) {
 		const envs: Record<string, string> = {};
 		dotenv.config({processEnv: envs, path: PathWorker.resolve(project.directory, module.name, file)});
@@ -177,6 +197,22 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 					break;
 			}
 		});
+	}
+
+	protected readScriptsPipelineFiles(project: F1Project, module: O23ModuleSettings, structure: Omit<O23ModuleStructure, 'success' | 'message'>) {
+		const scriptsPipelineDirectory = (structure.envs.scripts.app.find(item => {
+			return item.name === 'CFG_APP_INIT_PIPELINES_DIR';
+		})?.value as string) ?? 'server';
+		structure.scripts.directory = scriptsPipelineDirectory;
+		const scriptsPipelineScanned = FileSystemWorker.dir(PathWorker.resolve(project.directory, module.name, scriptsPipelineDirectory), {
+			dir: false, file: true, recursive: true
+		});
+		// ignore errors if there is any error occurred during scripts pipelines files scanning
+		if (scriptsPipelineScanned.success) {
+			structure.scripts.files = (scriptsPipelineScanned.ret ?? []).map(file => {
+				return {name: file, type: this.guessFileType(file)};
+			});
+		}
 	}
 }
 
