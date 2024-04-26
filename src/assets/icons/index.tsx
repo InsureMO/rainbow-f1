@@ -9,7 +9,14 @@ import {FolderRootIcon} from './folder-root';
 import {FunctionIcon} from './function';
 import {LogoIcon} from './logo';
 import {MinusIcon} from './minus';
+import {ModuleCliIcon} from './module-cli';
+import {ModuleDBScriptsIcon} from './module-db-scripts';
+import {ModuleEnvsIcon} from './module-envs';
+import {ModuleNodeFilesIcon} from './module-node-files';
 import {ModuleRootIcon} from './module-root';
+import {ModuleScriptsIcon} from './module-scripts';
+import {ModuleServerIcon} from './module-server';
+import {ModuleSourceFilesIcon} from './module-source-files';
 import {NotificationIcon} from './notification';
 import {ProblemIcon} from './problem';
 import {ProjectIcon} from './project';
@@ -40,7 +47,14 @@ Icons.Registrar.register({
 	f1FolderClosedEmpty: () => <FolderClosedEmptyIcon/>,
 	f1EllipsisVertical: () => <EllipsisVerticalIcon/>,
 	f1ProjectRoot: () => <ProjectRootIcon/>,
-	f1ModuleRoot: () => <ModuleRootIcon/>
+	f1ModuleRoot: () => <ModuleRootIcon/>,
+	f1ModuleEnvs: () => <ModuleEnvsIcon/>,
+	f1ModuleServer: () => <ModuleServerIcon/>,
+	f1ModuleScripts: () => <ModuleScriptsIcon/>,
+	f1ModuleDBScripts: () => <ModuleDBScriptsIcon/>,
+	f1ModuleCli: () => <ModuleCliIcon/>,
+	f1ModuleNodeFiles: () => <ModuleNodeFilesIcon/>,
+	f1ModuleSourceFiles: () => <ModuleSourceFilesIcon/>
 });
 
 export {
@@ -58,6 +72,8 @@ export {
 	EllipsisVerticalIcon,
 
 	ProjectRootIcon, ModuleRootIcon,
+	ModuleEnvsIcon, ModuleServerIcon, ModuleScriptsIcon, ModuleDBScriptsIcon, ModuleCliIcon,
+	ModuleNodeFilesIcon, ModuleSourceFilesIcon,
 
 	LogoIcon
 };

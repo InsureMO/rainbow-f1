@@ -1,9 +1,8 @@
 import {ProjectRootIcon} from '../../../assets/icons';
-import {F1Project} from '../../../shared';
+import {ProjectRoot} from './types';
 import {NodeLabel} from './widgets';
 
-export interface ProjectNodeLabelProps {
-	project: F1Project;
+export interface ProjectNodeLabelProps extends ProjectRoot {
 }
 
 export const ProjectRootNodeLabel = (props: ProjectNodeLabelProps) => {

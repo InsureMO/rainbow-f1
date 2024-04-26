@@ -15,10 +15,30 @@ export const ProjectFrameContainer = styled(SideFrame)`
     }
 `;
 export const NodeLabel = styled(TreeNodeInnerLabel)`
+    > svg[data-icon] {
+        align-self: center;
+        justify-self: center;
+    }
+
     > svg[data-icon=f1-project-root],
-    > svg[data-icon=f1-module-root] {
+    > svg[data-icon=f1-module-server],
+    > svg[data-icon=f1-module-scripts],
+    > svg[data-icon=f1-module-source-files] {
         height: 20px;
         width: 20px;
+    }
+
+    > svg[data-icon=f1-module-root],
+    > svg[data-icon=f1-module-envs] {
+        height: 18px;
+        width: 20px;
+        padding-left: 1px;
+    }
+
+    > svg[data-icon=f1-module-node-files] {
+        height: 16px;
+        width: 18px;
+        padding-left: 2px;
     }
 
     > svg[data-icon=f1-module-root] {
