@@ -12,7 +12,6 @@ import {PathWorker} from './path';
 
 interface ScannedFile {
 	file: string;
-	prefix?: string;
 	dir: boolean;
 }
 
@@ -82,20 +81,19 @@ class FileSystemWorker {
 		});
 	}
 
-	protected scanDir(options: { directory: string; prefix?: string; recursive: boolean }): Array<ScannedFile> {
-		const {directory, prefix, recursive} = options;
+	protected scanDir(options: { directory: string; recursive: boolean }): Array<ScannedFile> {
+		const {directory, recursive} = options;
 
 		let files: Array<ScannedFile> = (fs.readdirSync(directory, {recursive: false}) as Array<string>)
-			.map(file => ({file, prefix, dir: fs.lstatSync(PathWorker.resolve(directory, file)).isDirectory()}))
-			.filter(({file, dir}) => !dir || file !== 'node_modules');
+			.map(file => {
+				const path = PathWorker.resolve(directory, file);
+				return {file: path, dir: fs.lstatSync(path).isDirectory()};
+			})
+			.filter(({file, dir}) => !dir || PathWorker.basename(file) !== 'node_modules');
 		if (recursive) {
 			files = files.map(file => {
 				if (file.dir) {
-					return [file, ...this.scanDir({
-						directory: file.file,
-						prefix: file.prefix == null ? file.file : PathWorker.resolve(file.prefix, file.file),
-						recursive
-					})];
+					return [file, ...this.scanDir({directory: file.file, recursive})];
 				} else {
 					return [file];
 				}
@@ -131,13 +129,7 @@ class FileSystemWorker {
 					} else {
 						return !dir;
 					}
-				}).map(({file, prefix}) => {
-					if (prefix == null) {
-						return file;
-					} else {
-						return PathWorker.resolve(prefix, file);
-					}
-				});
+				}).map(({file}) => file.substring(directory.length + 1));
 				return {success: true, ret: files};
 			} catch (e) {
 				return {success: false, ret: [], message: e.message};

@@ -6,17 +6,23 @@ import {SideContentKey, SideContentPosition} from '../opened/workbench/event-bus
 import {useAskProjectStructure, useProjectStructure} from '../opened/workbench/use-project';
 import {castTo, isD9Module, isO23Module} from '../utils';
 import {AddModuleNodeLabel} from './add-module-node-label';
+import {ModuleCommandNodeLabel} from './module-command-node-label';
+import {ModuleCommandsNodeLabel} from './module-commands-node-label';
 import {ModuleEnvsNodeLabel} from './module-envs-node-label';
 import {ModuleNodeFilesNodeLabel} from './module-node-files-node-label';
+import {ModuleO23PipelinesNodeLabel} from './module-o23-pipelines-node-label';
 import {ModuleRootNodeLabel} from './module-root-node-label';
 import {ModuleSourceFilesNodeLabel} from './module-source-files-node-label';
 import {ProjectRootNodeLabel} from './project-root-node-label';
 import {
 	ADD_MODULE,
 	ADD_MODULE_NODE_MARKER,
+	MODULE_COMMAND_NODE_MARKER,
+	MODULE_COMMANDS_NODE_MARKER,
 	MODULE_ENVS_NODE_MARKER,
 	MODULE_NODE_FILES_NODE_MARKER,
 	MODULE_NODE_MARKER,
+	MODULE_O23_PIPELINES_NODE_MARKER,
 	MODULE_SOURCE_FILES_NODE_MARKER,
 	ModuleNodeDef,
 	ProjectRoot,
@@ -83,8 +89,16 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 			return modules.map(createModuleNode);
 		}
 	};
-	const createO23ModuleNodes = (module: O23ModuleStructure): Array<ProjectTreeNodeDef> => {
+	const createO23ModuleChildNodes = (module: O23ModuleStructure): Array<ProjectTreeNodeDef> => {
 		return [
+			// commands
+			{
+				value: castTo({...rootData, module}),
+				$ip2r: `${rootData.project.directory}/${module.name}/$$commands$$`, $ip2p: '$$commands$$',
+				marker: MODULE_COMMANDS_NODE_MARKER(module),
+				label: <ModuleCommandsNodeLabel {...rootData} module={module}/>,
+				$type: ProjectTreeNodeType.MODULE_COMMANDS
+			},
 			// environments
 			{
 				value: castTo({...rootData, module}),
@@ -93,6 +107,57 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 				label: <ModuleEnvsNodeLabel {...rootData} module={module}/>,
 				$type: ProjectTreeNodeType.MODULE_ENVS
 			},
+			// pipelines
+			{
+				value: castTo({...rootData, module}),
+				$ip2r: `${rootData.project.directory}/${module.name}/$$o23-pipelines$$`, $ip2p: '$$o23-pipelines$$',
+				marker: MODULE_O23_PIPELINES_NODE_MARKER(module),
+				label: <ModuleO23PipelinesNodeLabel {...rootData} module={module}/>,
+				$type: ProjectTreeNodeType.MODULE_O23_PIPELINES
+			},
+			// source files
+			{
+				value: castTo({...rootData, module}),
+				$ip2r: `${rootData.project.directory}/${module.name}/$$source-files$$`, $ip2p: '$$source-files$$',
+				marker: MODULE_SOURCE_FILES_NODE_MARKER(module),
+				label: <ModuleSourceFilesNodeLabel {...rootData} module={module}/>,
+				$type: ProjectTreeNodeType.MODULE_SOURCE_FILES
+			},
+			// node files
+			{
+				value: castTo({...rootData, module}),
+				$ip2r: `${rootData.project.directory}/${module.name}/$$node-files$$`, $ip2p: '$$node-files$$',
+				marker: MODULE_NODE_FILES_NODE_MARKER(module),
+				label: <ModuleNodeFilesNodeLabel {...rootData} module={module}/>,
+				$type: ProjectTreeNodeType.MODULE_NODE_FILES
+			}
+			// root files
+		];
+	};
+	const createModuleChildNodes = (module: F1ModuleStructure) => {
+		if (isD9Module(module)) {
+			return [];
+		} else if (isO23Module(module)) {
+			return createO23ModuleChildNodes(module);
+		} else {
+			return [];
+		}
+	};
+	const createModuleCommandsChildNodes = (module: F1ModuleStructure): Array<ProjectTreeNodeDef> => {
+		return Object.values(module.commands ?? {}).sort((c1, c2) => {
+			return c1.name.localeCompare(c2.name, (void 0), {sensitivity: 'base'});
+		}).map(cmd => {
+			return {
+				value: castTo({...rootData, module, cmd}),
+				$ip2r: `${rootData.project.directory}/${module.name}/$$${cmd.name}$$`, $ip2p: cmd.name,
+				marker: MODULE_COMMAND_NODE_MARKER(module, cmd),
+				label: <ModuleCommandNodeLabel {...rootData} module={module} command={cmd}/>,
+				$type: ProjectTreeNodeType.MODULE_COMMAND
+			};
+		});
+	};
+	const createO23ModuleEnvChildNodes = (module: O23ModuleStructure): Array<ProjectTreeNodeDef> => {
+		return [
 			// server
 			// {
 			// 	value: castTo({...rootData, module}),
@@ -117,25 +182,33 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 			// 	label: <ModuleDBScriptsNodeLabel {...rootData} module={module}/>,
 			// 	$type: ProjectTreeNodeType.MODULE_DB_SCRIPTS
 			// }
-			// source files
-			{
-				value: castTo({...rootData, module}),
-				$ip2r: `${rootData.project.directory}/${module.name}/$$source-files$$`, $ip2p: '$$source-files$$',
-				marker: MODULE_SOURCE_FILES_NODE_MARKER(module),
-				label: <ModuleSourceFilesNodeLabel {...rootData} module={module}/>,
-				$type: ProjectTreeNodeType.MODULE_NODE_FILES
-			},
-			// node files
-			{
-				value: castTo({...rootData, module}),
-				$ip2r: `${rootData.project.directory}/${module.name}/$$node-files$$`, $ip2p: '$$node-files$$',
-				marker: MODULE_NODE_FILES_NODE_MARKER(module),
-				label: <ModuleNodeFilesNodeLabel {...rootData} module={module}/>,
-				$type: ProjectTreeNodeType.MODULE_NODE_FILES
-			}
-			// root files
 		];
 	};
+	const createModuleEnvsChildNodes = (module: F1ModuleStructure) => {
+		if (isD9Module(module)) {
+			return [];
+		} else if (isO23Module(module)) {
+			return createO23ModuleEnvChildNodes(module);
+		} else {
+			return [];
+		}
+	};
+	const createO23ModuleSourceFileNodes = (module: O23ModuleStructure): Array<ProjectTreeNodeDef> => {
+		const files = ([...(module.sourceFiles ?? [])]).sort((f1, f2) => {
+			return f1.path.localeCompare(f1.path, (void 0), {sensitivity: 'base'});
+		});
+		return [];
+	};
+	const createModuleSourceFileNodes = (module: F1ModuleStructure) => {
+		if (isD9Module(module)) {
+			return [];
+		} else if (isO23Module(module)) {
+			return createO23ModuleSourceFileNodes(module);
+		} else {
+			return [];
+		}
+	};
+
 	const detective = (parentNode: Undefinable<TreeNodeDef>, _options: GlobalEventHandlers): Array<TreeNodeDef> => {
 		if (parentNode == null) {
 			return [];
@@ -144,13 +217,16 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 			return createModuleNodes();
 		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE) {
 			const {value: {module}} = castTo<ModuleNodeDef>(parentNode);
-			if (isD9Module(module)) {
-				return [];
-			} else if (isO23Module(module)) {
-				return createO23ModuleNodes(module);
-			} else {
-				return [];
-			}
+			return createModuleChildNodes(module);
+		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_COMMANDS) {
+			const {value: {module}} = castTo<ModuleNodeDef>(parentNode);
+			return createModuleCommandsChildNodes(module);
+		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_ENVS) {
+			const {value: {module}} = castTo<ModuleNodeDef>(parentNode);
+			return createModuleEnvsChildNodes(module);
+		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_SOURCE_FILES) {
+			const {value: {module}} = castTo<ModuleNodeDef>(parentNode);
+			return createModuleSourceFileNodes(module);
 		} else if (castTo(parentNode.value) === rootData) {
 			// virtual root, given by tree itself. create physical root node, aka project node
 			// put on last since the project root node's value are root data too.

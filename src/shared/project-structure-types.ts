@@ -1,9 +1,14 @@
 import {F1ModuleType} from './project-types';
 
+export interface ModuleCommand {
+	name: string;
+	cli: string;
+	args: Record<string, string | undefined>;
+	envFiles: Array<string>;
+}
+
 export interface ModuleCommands {
-	build?: string;
-	test?: string;
-	start?: string;
+	[key: string]: ModuleCommand;
 }
 
 export enum ModuleFileType {
@@ -35,37 +40,35 @@ export enum ModuleFileType {
  * module file also might be directory, type should be {@code ModuleFileType#UNKNOWN}
  */
 export interface ModuleFile {
-	name: string;
+	basename: string;
+	/** name is relative path to module root */
+	path: string;
 	type: ModuleFileType;
 }
 
-export interface F1ModuleStructure<Commands extends ModuleCommands = ModuleCommands> {
+export interface F1ModuleStructure {
 	name: string;
 	type: F1ModuleType;
 	/** files in root folder */
 	files: Array<ModuleFile>;
-	/** concerned module commands */
-	commands?: Commands;
+	/** module commands, "scripts" in package.json */
+	commands: ModuleCommands;
 	/** module structure is read successfully or not */
 	success: boolean;
 	/** error message when failed to read module structure */
 	message?: ErrorMessage;
 }
 
-export interface F1NodeModuleStructure<Commands extends ModuleCommands = ModuleCommands> extends F1ModuleStructure<Commands> {
+export interface F1NodeModuleStructure extends F1ModuleStructure {
 	/** files in root folder, which used by Node.js */
 	nodeFiles?: Array<ModuleFile>;
 	sourceFiles?: Array<ModuleFile>;
 }
 
-export interface D9ModuleCommands extends ModuleCommands {
-}
-
-export interface D9ModuleStructure extends F1NodeModuleStructure<D9ModuleCommands> {
+export interface D9ModuleStructure extends F1NodeModuleStructure {
 }
 
 export interface O23Configurations {
-	directory?: string;
 	files: Array<ModuleFile>;
 }
 
@@ -78,54 +81,24 @@ export interface O23ScriptsConfigurations extends O23Configurations {
 export interface O23ServerConfigurations extends O23Configurations {
 }
 
-export interface O23SettingValue {
-	value?: string;
-	/** file path to root */
-	path?: string;
-}
-
 export interface O23SettingItem {
 	name: string;
-	value?: O23SettingValue;
+	value?: string;
 }
 
-export interface O23EnvLogSettings {
-	error?: Array<O23SettingItem>;
-	combined?: Array<O23SettingItem>;
-	console?: Array<O23SettingItem>;
-}
-
-export interface O23ServerSettings {
-	app: Array<O23SettingItem>;
-	log: O23EnvLogSettings;
-	pipeline: Array<O23SettingItem>;
-	datasources: Array<O23SettingItem>;
-	endpoints: Array<O23SettingItem>;
-}
-
-export interface O23ScriptsSettings {
-	app: Array<O23SettingItem>;
-	/**
-	 * only one datasource is allowed for scripts, but there might be multiple datasources from envs because of some mistakes.
-	 */
-	datasources: Array<O23SettingItem>;
+export interface O23EnvConfigurationFile extends ModuleFile {
+	items: Array<O23SettingItem>;
 }
 
 export interface O23EnvConfigurations {
-	server: O23ServerSettings;
-	scripts: O23ScriptsSettings;
+	[key: string]: O23EnvConfigurationFile;
 }
 
-export interface O23ModuleCommands extends ModuleCommands {
-	scripts?: string;
-	buildStandalone?: string;
-	startStandalone?: string;
-}
-
-export interface O23ModuleStructure extends F1NodeModuleStructure<O23ModuleCommands> {
+export interface O23ModuleStructure extends F1NodeModuleStructure {
 	dbScripts?: O23DBScriptsConfigurations;
 	server: O23ServerConfigurations;
 	scripts: O23ScriptsConfigurations;
+	/** environment files */
 	envs: O23EnvConfigurations;
 }
 

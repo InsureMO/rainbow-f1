@@ -20,15 +20,13 @@ export const NodeLabel = styled(TreeNodeInnerLabel)`
         justify-self: center;
     }
 
-    > svg[data-icon=f1-project-root],
-    > svg[data-icon=f1-module-server],
-    > svg[data-icon=f1-module-scripts],
-    > svg[data-icon=f1-module-source-files] {
+    > svg[data-icon] {
         height: 20px;
         width: 20px;
     }
 
     > svg[data-icon=f1-module-root],
+    > svg[data-icon=f1-module-commands],
     > svg[data-icon=f1-module-envs] {
         height: 18px;
         width: 20px;

@@ -14,6 +14,7 @@ export const ProjectHolder = () => {
 
 	useEffect(() => {
 		const onSetProject = (project: F1Project, structure: F1ProjectStructure) => {
+			console.log(structure);
 			setState(state => ({...state, project, structure}));
 		};
 		const onAskProjectFailed = (message: string) => {
