@@ -62,21 +62,25 @@ export abstract class AbstractModuleProcessor {
 		}
 		const ext = (PathWorker.extname(file) ?? '').toLowerCase();
 		switch (ext) {
-			case 'ts':
-				return ModuleFileType.TS;
-			case 'js':
-				return ModuleFileType.JS;
-			case 'json':
+			case '.ts':
+				return ModuleFileType.TYPESCRIPT;
+			case '.js':
+				return ModuleFileType.JAVASCRIPT;
+			case '.cjs':
+				return ModuleFileType.COMMON_JAVASCRIPT;
+			case '.mjs':
+				return ModuleFileType.ECMA_MODULE_JAVASCRIPT;
+			case '.json':
 				return ModuleFileType.JSON;
-			case 'htm':
-			case 'html':
+			case '.htm':
+			case '.html':
 				return ModuleFileType.HTML;
-			case 'css':
+			case '.css':
 				return ModuleFileType.CSS;
-			case 'yml':
-			case 'yaml':
+			case '.yml':
+			case '.yaml':
 				return ModuleFileType.YAML;
-			case 'sql':
+			case '.sql':
 				return ModuleFileType.SQL;
 		}
 

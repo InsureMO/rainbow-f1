@@ -5,15 +5,11 @@ import {
 	FileSystemEvent,
 	FileSystemFoldersResult,
 	FileSystemOperationResult,
-	MAC_INDEX_FILE
+	MAC_INDEX_FILE,
+	ScannedFile
 } from '../../shared';
 import {Envs} from '../envs';
 import {PathWorker} from './path';
-
-interface ScannedFile {
-	file: string;
-	dir: boolean;
-}
 
 class FileSystemWorker {
 	/**
@@ -87,13 +83,19 @@ class FileSystemWorker {
 		let files: Array<ScannedFile> = (fs.readdirSync(directory, {recursive: false}) as Array<string>)
 			.map(file => {
 				const path = PathWorker.resolve(directory, file);
-				return {file: path, dir: fs.lstatSync(path).isDirectory()};
+				return {path, dir: fs.lstatSync(path).isDirectory()};
 			})
-			.filter(({file, dir}) => !dir || PathWorker.basename(file) !== 'node_modules');
+			.filter(({path, dir}) => {
+				if (dir) {
+					return PathWorker.basename(path) !== 'node_modules';
+				} else {
+					return PathWorker.basename(path) !== '.DS_Store';
+				}
+			});
 		if (recursive) {
 			files = files.map(file => {
 				if (file.dir) {
-					return [file, ...this.scanDir({directory: file.file, recursive})];
+					return [file, ...this.scanDir({directory: file.path, recursive})];
 				} else {
 					return [file];
 				}
@@ -129,7 +131,7 @@ class FileSystemWorker {
 					} else {
 						return !dir;
 					}
-				}).map(({file}) => file.substring(directory.length + 1));
+				}).map(({path, dir}) => ({path: path.substring(directory.length + 1), dir}));
 				return {success: true, ret: files};
 			} catch (e) {
 				return {success: false, ret: [], message: e.message};

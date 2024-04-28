@@ -16,6 +16,6 @@ export const ModuleCommandsIcon = (props: Omit<SVGProps<SVGSVGElement>, 'xmlns' 
 		<path opacity="0.4"
 		      d="M8.74023 12.0001V10.3302C8.74023 8.25016 10.2103 7.40014 12.0103 8.44014L13.4602 9.28017L14.9102 10.1201C16.7102 11.1601 16.7102 12.8602 14.9102 13.9002L13.4602 14.7401L12.0103 15.5802C10.2103 16.6202 8.74023 15.7701 8.74023 13.6901V12.0001Z"
 		      stroke="currentColor" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round"
-		      strokeLinejoin="round"/>
+		      strokeLinejoin="round" fill="none"/>
 	</svg>;
 };

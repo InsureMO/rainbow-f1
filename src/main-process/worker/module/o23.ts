@@ -46,9 +46,7 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 	}
 
 	protected readCommands(structure: O23ModuleStructure, packageJson: NodeJsPackageJson) {
-		console.log(packageJson.scripts);
 		Object.entries(packageJson.scripts ?? {}).forEach(([key, value]) => {
-			console.log(key, value);
 			if (isBlank(value)) {
 				structure.commands[key] = {name: key, cli: value, args: {}, envFiles: []};
 			} else {
@@ -81,9 +79,7 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 			const envs: Record<string, string> = {};
 			dotenv.config({processEnv: envs, path: PathWorker.resolve(project.directory, module.name, file)});
 			return {
-				basename: PathWorker.basename(file),
-				path: file,
-				type: ModuleFileType.ENV,
+				basename: PathWorker.basename(file), path: file, dir: false, type: ModuleFileType.ENV,
 				items: Object.entries(envs)
 					.map(([key, value]) => ({name: key, value}))
 			};
@@ -102,14 +98,13 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 			envs: {},
 			success: false
 		};
-		const filesScanned = FileSystemWorker.dir(PathWorker.resolve(project.directory, module.name), {
-			file: true, recursive: true
-		});
+		const filesScanned = FileSystemWorker.dir(
+			PathWorker.resolve(project.directory, module.name), {recursive: true});
 		if (!filesScanned.success) {
 			return {success: false, message: filesScanned.message, ...structure};
 		}
 		// read package.json
-		const packageJsonFile = filesScanned.ret.find(file => file === 'package.json');
+		const packageJsonFile = filesScanned.ret.find(({path}) => path === 'package.json');
 		if (packageJsonFile == null) {
 			return {success: false, message: 'Project file[package.json] not found.', ...structure};
 		}
@@ -125,16 +120,22 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		this.readServerPipelineFiles(project, module, structure);
 		// find scripts pipeline and db scripts files according to env
 		this.readScriptsPipelineFiles(project, module, structure);
-		// find db scripts path from envs, load recursively
-		// default value from const of O23, APP_SCRIPTS_DEFAULT_DIR = 'db-scripts'
 		// load src folder, recursively
-		const srcFiles = filesScanned.ret.filter(file => file.startsWith(`src${PathWorker.separator()}`));
-		structure.sourceFiles = srcFiles.map(file => {
-			return {basename: PathWorker.basename(file), path: file, type: this.guessFileType(file)};
+		const srcFiles = filesScanned.ret.filter(({path}) => path.startsWith(`src${PathWorker.separator()}`));
+		structure.sourceFiles = srcFiles.map(({path, dir}) => {
+			return {
+				basename: PathWorker.basename(path),
+				path,
+				dir,
+				type: dir ? ModuleFileType.DIRECTORY : this.guessFileType(path)
+			};
 		});
 		// all files
-		structure.files = filesScanned.ret.map(file => {
-			return {basename: PathWorker.basename(file), path: file, type: this.guessFileType(file)};
+		structure.files = filesScanned.ret.map(({path, dir}) => {
+			return {
+				basename: PathWorker.basename(path), path, dir,
+				type: dir ? ModuleFileType.DIRECTORY : this.guessFileType(path)
+			};
 		});
 
 		structure.success = true;
@@ -143,12 +144,14 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 
 	protected scanFiles(project: F1Project, module: O23ModuleSettings, directories: Array<string>): Array<ModuleFile> {
 		return Array.from(new Set(directories)).map(directory => {
-			const scanned = FileSystemWorker.dir(PathWorker.resolve(project.directory, module.name, directory), {
-				dir: false, file: true, recursive: true
-			});
+			const scanned = FileSystemWorker.dir(
+				PathWorker.resolve(project.directory, module.name, directory), {dir: false, recursive: true});
 			if (scanned.success) {
-				return (scanned.ret ?? []).map(file => {
-					return {basename: PathWorker.basename(file), path: file, type: this.guessFileType(file)};
+				return (scanned.ret ?? []).map(({path, dir}) => {
+					return {
+						basename: PathWorker.basename(path), path, dir,
+						type: dir ? ModuleFileType.DIRECTORY : this.guessFileType(path)
+					};
 				});
 			} else {
 				// ignore errors if there is any error occurred during server pipelines files scanning

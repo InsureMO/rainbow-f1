@@ -1,12 +1,5 @@
 import {TreeNodeDef} from '@rainbow-d9/n2';
-import {
-	D9ModuleStructure,
-	F1ModuleStructure,
-	F1Project,
-	F1ProjectStructure,
-	ModuleCommand,
-	O23ModuleStructure
-} from '../../../shared';
+import {F1ModuleStructure, F1Project, F1ProjectStructure, ModuleCommand, ModuleFile} from '../../../shared';
 
 export interface ProjectRoot {
 	project: F1Project;
@@ -26,6 +19,8 @@ export enum ProjectTreeNodeType {
 	MODULE_DB = 'module-db',
 	MODULE_NODE_FILES = 'module-node-files',
 	MODULE_SOURCE_FILES = 'module-source-files',
+	MODULE_SOURCE_DIR = 'module-source-dir',
+	MODULE_SOURCE_FILE = 'module-source-file',
 	MODULE_O23_PIPELINES = 'module-o23-pipelines'
 }
 
@@ -41,12 +36,8 @@ export interface ModuleNodeDef extends Omit<ProjectTreeNodeDef, 'value'> {
 	value: ProjectRoot & { module: F1ModuleStructure };
 }
 
-export interface O23ModuleNodeDef extends Omit<ProjectTreeNodeDef, 'value'> {
-	value: ProjectRoot & { module: O23ModuleStructure };
-}
-
-export interface D9ModuleNodeDef extends Omit<ProjectTreeNodeDef, 'value'> {
-	value: ProjectRoot & { module: D9ModuleStructure };
+export interface ModuleSourceFileNodeDef extends Omit<ProjectTreeNodeDef, 'value'> {
+	value: ProjectRoot & { module: F1ModuleStructure; file: ModuleFile };
 }
 
 export const ROOT_NODE_MARKER = '$$root$$';
@@ -61,4 +52,6 @@ export const MODULE_SCRIPTS_NODE_MARKER = (module: F1ModuleStructure) => `$$modu
 export const MODULE_DB_SCRIPTS_NODE_MARKER = (module: F1ModuleStructure) => `$$module-db-scripts$$-${module.name}`;
 export const MODULE_NODE_FILES_NODE_MARKER = (module: F1ModuleStructure) => `$$module-node-files$$-${module.name}`;
 export const MODULE_SOURCE_FILES_NODE_MARKER = (module: F1ModuleStructure) => `$$module-source-files$$-${module.name}`;
+export const MODULE_SOURCE_DIR_NODE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `$$module-source-files$$-${module.name}-${file.path}`;
+export const MODULE_SOURCE_FILE_NODE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `$$module-source-files$$-${module.name}-${file.path}`;
 export const MODULE_O23_PIPELINES_NODE_MARKER = (module: F1ModuleStructure) => `$$module-o23-pipelines$$-${module.name}`;

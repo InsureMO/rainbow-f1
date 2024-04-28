@@ -1,18 +1,18 @@
 import {ipcMain} from 'electron';
 import p from 'path';
-import {FileSystemOperationResult, PathEvent} from '../../shared';
+import {PathEvent} from '../../shared';
 
 class PathWorker {
 	protected isValid(path: string): boolean {
 		return path != null && path.trim().length > 0;
 	}
 
-	protected invalidOr<X, R extends FileSystemOperationResult<X>>(path: string, or: () => R): R {
-		if (!this.isValid(path)) {
-			return {success: true, message: 'Given path is not valid.'} as R;
-		}
-		return or();
-	}
+	// protected invalidOr<X, R extends FileSystemOperationResult<X>>(path: string, or: () => R): R {
+	// 	if (!this.isValid(path)) {
+	// 		return {success: true, message: 'Given path is not valid.'} as R;
+	// 	}
+	// 	return or();
+	// }
 
 	public separator(): string {
 		return p.sep;

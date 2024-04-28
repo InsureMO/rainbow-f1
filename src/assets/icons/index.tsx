@@ -2,6 +2,7 @@ import {Icons} from '@rainbow-d9/n2';
 import React from 'react';
 import {DatabaseIcon} from './database';
 import {EllipsisVerticalIcon} from './ellipsis-vertical';
+import {FolderIcon} from './folder';
 import {FolderClosedIcon} from './folder-closed';
 import {FolderClosedEmptyIcon} from './folder-closed-empty';
 import {FolderOpenIcon} from './folder-open';
@@ -27,9 +28,11 @@ import {ProjectRootIcon} from './project-root';
 import {RunIcon} from './run';
 import {SearchIcon} from './search';
 import {SettingsIcon} from './settings';
+import {SourceFileIcon} from './source-file';
 import {StructureIcon} from './structure';
 import {TerminalIcon} from './terminal';
 import {TodoIcon} from './todo';
+import {TypescriptIcon} from './typescript';
 
 Icons.Registrar.register({
 	f1Database: () => <DatabaseIcon/>,
@@ -48,6 +51,8 @@ Icons.Registrar.register({
 	f1FolderOpen: () => <FolderOpenIcon/>,
 	f1FolderClosed: () => <FolderClosedIcon/>,
 	f1FolderClosedEmpty: () => <FolderClosedEmptyIcon/>,
+	f1Folder: () => <FolderIcon/>,
+	f1SourceFile: () => <SourceFileIcon/>,
 	f1EllipsisVertical: () => <EllipsisVerticalIcon/>,
 	f1ProjectRoot: () => <ProjectRootIcon/>,
 	f1ModuleRoot: () => <ModuleRootIcon/>,
@@ -60,7 +65,9 @@ Icons.Registrar.register({
 	f1ModuleNodeFiles: () => <ModuleNodeFilesIcon/>,
 	f1ModuleSourceFiles: () => <ModuleSourceFilesIcon/>,
 	f1ModulePipelines: () => <ModulePipelinesIcon/>,
-	f1ModulePipeline: () => <ModulePipelineIcon/>
+	f1ModulePipeline: () => <ModulePipelineIcon/>,
+
+	f1Typescript: () => <TypescriptIcon/>
 });
 
 export {
@@ -73,7 +80,7 @@ export {
 	SearchIcon, SettingsIcon, StructureIcon,
 	TerminalIcon, TodoIcon,
 
-	FolderOpenIcon, FolderClosedIcon, FolderClosedEmptyIcon,
+	FolderOpenIcon, FolderClosedIcon, FolderClosedEmptyIcon, FolderIcon, SourceFileIcon,
 
 	EllipsisVerticalIcon,
 
@@ -81,5 +88,7 @@ export {
 	ModuleEnvsIcon, ModuleServerIcon, ModuleScriptsIcon, ModuleDBScriptsIcon, ModuleCommandsIcon, ModuleCommandIcon,
 	ModuleNodeFilesIcon, ModuleSourceFilesIcon, ModulePipelinesIcon, ModulePipelineIcon,
 
-	LogoIcon
+	LogoIcon,
+
+	TypescriptIcon
 };

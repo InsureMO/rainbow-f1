@@ -9,7 +9,12 @@ export interface FileSystemOperationResult<R> {
 export interface FileSystemBooleanResult extends FileSystemOperationResult<boolean> {
 }
 
-export interface FileSystemFoldersResult extends FileSystemOperationResult<Array<string>> {
+export interface ScannedFile {
+	path: string;
+	dir: boolean;
+}
+
+export interface FileSystemFoldersResult extends FileSystemOperationResult<Array<ScannedFile>> {
 }
 
 export enum FileSystemEvent {

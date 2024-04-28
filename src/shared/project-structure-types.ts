@@ -12,8 +12,11 @@ export interface ModuleCommands {
 }
 
 export enum ModuleFileType {
-	TS = 'ts',
-	JS = 'js',
+	DIRECTORY = 'dir',
+	TYPESCRIPT = 'ts',
+	JAVASCRIPT = 'js',
+	COMMON_JAVASCRIPT = 'cjs',
+	ECMA_MODULE_JAVASCRIPT = 'mjs',
 	JSON = 'json',
 	HTML = 'html',
 	CSS = 'css',
@@ -43,6 +46,7 @@ export interface ModuleFile {
 	basename: string;
 	/** name is relative path to module root */
 	path: string;
+	dir: boolean;
 	type: ModuleFileType;
 }
 

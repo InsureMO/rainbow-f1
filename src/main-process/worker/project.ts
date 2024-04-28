@@ -354,12 +354,12 @@ class ProjectWorker {
 		} else if (!FileSystemWorker.exists(directory).ret) {
 			return {success: false, message: `Project folder [${directory}] not exists.`};
 		}
-		// scan direct sub folders
+		// scan direct sub folders only
 		const {success, ret: folders, message} = FileSystemWorker.dir(directory, {file: false});
 		if (!success) {
 			return {success, message};
 		}
-		const folderMap: Record<string, boolean> = folders.reduce((map, folder) => {
+		const folderMap: Record<string, boolean> = folders.reduce((map, {path: folder}) => {
 			map[folder] = true;
 			return map;
 		}, {} as Record<string, true>);
