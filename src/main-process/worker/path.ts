@@ -37,6 +37,10 @@ class PathWorker {
 	public resolve(...path: Array<string>): string {
 		return p.resolve(...path);
 	}
+
+	public concat(...path: Array<string>): string {
+		return p.join(...path);
+	}
 }
 
 const INSTANCE = (() => {

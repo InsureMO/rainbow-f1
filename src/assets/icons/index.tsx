@@ -26,6 +26,7 @@ import {ModuleServerIcon} from './module-server';
 import {ModuleSourceFilesIcon} from './module-source-files';
 import {NestJsIcon} from './nestjs';
 import {NotificationIcon} from './notification';
+import {O23PipelineIcon} from './o23-pipeline';
 import {PackageJsonIcon} from './package-json';
 import {PrettierIcon} from './prettier';
 import {ProblemIcon} from './problem';
@@ -76,6 +77,7 @@ Icons.Registrar.register({
 	f1ModuleSourceFiles: () => <ModuleSourceFilesIcon/>,
 	f1ModulePipelines: () => <ModulePipelinesIcon/>,
 	f1ModulePipeline: () => <ModulePipelineIcon/>,
+	f1ModuleO23Pipeline: () => <O23PipelineIcon/>,
 
 	f1Typescript: () => <TypescriptIcon/>,
 	f1Javascript: () => <JavascriptIcon/>,
@@ -108,7 +110,7 @@ export {
 	ModuleEnvsIcon, ModuleServerIcon, ModuleScriptsIcon, ModuleDBScriptsIcon, ModuleCommandsIcon, ModuleCommandIcon,
 	ModuleNodeFilesIcon, ModuleSourceFilesIcon, ModulePipelinesIcon, ModulePipelineIcon,
 
-	LogoIcon,
+	LogoIcon, O23PipelineIcon,
 
 	TypescriptIcon, JavascriptIcon,
 	NestJsIcon, PrettierIcon, WebpackIcon, ViteIcon, EslintIcon, BabelIcon, TypescriptConfigIcon,

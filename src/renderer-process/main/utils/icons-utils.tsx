@@ -1,6 +1,7 @@
 import {
 	BabelIcon,
 	EslintIcon,
+	ModulePipelineIcon,
 	NestJsIcon,
 	PackageJsonIcon,
 	PrettierIcon,
@@ -22,6 +23,8 @@ export const icon = (file: ModuleFile) => {
 		case ModuleFileType.COMMON_JAVASCRIPT:
 		case ModuleFileType.ECMA_MODULE_JAVASCRIPT:
 			return <TypescriptIcon/>;
+		case ModuleFileType.O23_PIPELINE:
+			return <ModulePipelineIcon/>;
 		case ModuleFileType.PACKAGE_JSON:
 			return <PackageJsonIcon/>;
 		case ModuleFileType.README:

@@ -7,7 +7,7 @@ export interface ModuleServerNodeLabelProps extends ProjectRoot {
 	module: F1ModuleStructure;
 }
 
-export const ModuleServerNodeLabel = (_props: ModuleServerNodeLabelProps) => {
+export const ModuleO23ServerPipelinesNodeLabel = (_props: ModuleServerNodeLabelProps) => {
 	return <NodeLabel>
 		<ModuleServerIcon/>
 		<span data-name="">Server</span>

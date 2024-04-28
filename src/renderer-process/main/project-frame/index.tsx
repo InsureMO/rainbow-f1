@@ -12,7 +12,12 @@ import {ModuleEnvsNodeLabel} from './module-envs-node-label';
 import {ModuleNodeDirNodeLabel} from './module-node-dir-node-label';
 import {ModuleNodeFileNodeLabel} from './module-node-file-node-label';
 import {ModuleNodeFilesNodeLabel} from './module-node-files-node-label';
-import {ModuleO23PipelinesNodeLabel} from './module-o23-pipelines-node-label';
+import {ModuleO23ScriptsPipelineDirNodeLabel} from './module-o23-scripts-pipeline-dir-node-label';
+import {ModuleO23ScriptsPipelineFileNodeLabel} from './module-o23-scripts-pipeline-file-node-label';
+import {ModuleO23ScriptsPipelinesNodeLabel} from './module-o23-scripts-pipelines-node-label';
+import {ModuleO23ServerPipelineDirNodeLabel} from './module-o23-server-pipeline-dir-node-label';
+import {ModuleO23ServerPipelineFileNodeLabel} from './module-o23-server-pipeline-file-node-label';
+import {ModuleO23ServerPipelinesNodeLabel} from './module-o23-server-pipelines-node-label';
 import {ModuleRootNodeLabel} from './module-root-node-label';
 import {ModuleSourceDirNodeLabel} from './module-source-dir-node-label';
 import {ModuleSourceFileNodeLabel} from './module-source-file-node-label';
@@ -28,7 +33,12 @@ import {
 	MODULE_NODE_FILE_NODE_MARKER,
 	MODULE_NODE_FILES_NODE_MARKER,
 	MODULE_NODE_MARKER,
-	MODULE_O23_PIPELINES_NODE_MARKER,
+	MODULE_O23_SCRIPTS_PIPELINE_DIR_NODE_MARKER,
+	MODULE_O23_SCRIPTS_PIPELINE_FILE_NODE_MARKER,
+	MODULE_O23_SCRIPTS_PIPELINES_NODE_MARKER,
+	MODULE_O23_SERVER_PIPELINE_DIR_NODE_MARKER,
+	MODULE_O23_SERVER_PIPELINE_FILE_NODE_MARKER,
+	MODULE_O23_SERVER_PIPELINES_NODE_MARKER,
 	MODULE_SOURCE_DIR_NODE_MARKER,
 	MODULE_SOURCE_FILE_NODE_MARKER,
 	MODULE_SOURCE_FILES_NODE_MARKER,
@@ -123,13 +133,22 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 				label: <ModuleEnvsNodeLabel {...rootData} module={module}/>,
 				$type: ProjectTreeNodeType.MODULE_ENVS
 			},
-			// pipelines
+			// server pipelines
 			{
 				value: castTo({...rootData, module}),
-				$ip2r: `${rootData.project.directory}/${module.name}/$$o23-pipelines$$`, $ip2p: '$$o23-pipelines$$',
-				marker: MODULE_O23_PIPELINES_NODE_MARKER(module),
-				label: <ModuleO23PipelinesNodeLabel {...rootData} module={module}/>,
-				$type: ProjectTreeNodeType.MODULE_O23_PIPELINES
+				$ip2r: `${rootData.project.directory}/${module.name}/$$o23-pipelines$$/$$server$$`, $ip2p: '$$server$$',
+				marker: MODULE_O23_SERVER_PIPELINES_NODE_MARKER(module),
+				label: <ModuleO23ServerPipelinesNodeLabel {...rootData} module={module}/>,
+				$type: ProjectTreeNodeType.MODULE_O23_SERVER_PIPELINES
+			},
+			// scripts pipelines
+			{
+				value: castTo({...rootData, module}),
+				$ip2r: `${rootData.project.directory}/${module.name}/$$o23-pipelines$$/$$scripts$$`,
+				$ip2p: '$$scripts$$',
+				marker: MODULE_O23_SCRIPTS_PIPELINES_NODE_MARKER(module),
+				label: <ModuleO23ScriptsPipelinesNodeLabel {...rootData} module={module}/>,
+				$type: ProjectTreeNodeType.MODULE_O23_SCRIPTS_PIPELINES
 			},
 			// source files
 			{
@@ -227,15 +246,19 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 			map[file.path] = node;
 			let lastSepIndex = file.path.lastIndexOf('/');
 			lastSepIndex = lastSepIndex === -1 ? file.path.lastIndexOf('\\') : lastSepIndex;
-			const parentPath = file.path.substring(0, lastSepIndex);
-			const parent = map[parentPath];
-			if (parent != null) {
-				if (parent.$children == null) {
-					parent.$children = [];
-				}
-				parent.$children.push(node);
-			} else {
+			if (lastSepIndex === -1) {
 				top.push(node);
+			} else {
+				const parentPath = file.path.substring(0, lastSepIndex);
+				const parent = map[parentPath];
+				if (parent != null) {
+					if (parent.$children == null) {
+						parent.$children = [];
+					}
+					parent.$children.push(node);
+				} else {
+					top.push(node);
+				}
 			}
 		});
 		const sort = ({value: {file: f1}}: ModuleFileNodeDef, {value: {file: f2}}: ModuleFileNodeDef) => {
@@ -255,6 +278,57 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 			.forEach(node => sortChildren(castTo(node)));
 
 		return top;
+	};
+	const createModuleO23ServerPipelineChildNodes = (module: O23ModuleStructure): Array<ProjectTreeNodeDef> => {
+		console.log(module.server.files);
+		return createModuleFileNodes({
+			module, files: module.server.files,
+			asDirNode: (file: ModuleFile) => {
+				return {
+					value: castTo({...rootData, module, file}),
+					$ip2r: `${rootData.project.directory}/${module.name}/$$o23-pipelines$$/$$server$$/$$${file.path}$$`,
+					$ip2p: file.path,
+					marker: MODULE_O23_SERVER_PIPELINE_DIR_NODE_MARKER(module, file),
+					label: <ModuleO23ServerPipelineDirNodeLabel {...rootData} module={module} file={file}/>,
+					$type: ProjectTreeNodeType.MODULE_O23_SERVER_PIPELINE_DIR
+				};
+			},
+			asFileNode: (file: ModuleFile) => {
+				return {
+					value: castTo({...rootData, module, file}),
+					$ip2r: `${rootData.project.directory}/${module.name}/$$o23-pipelines$$/$$server$$/$$${file.path}$$`,
+					$ip2p: file.path,
+					marker: MODULE_O23_SERVER_PIPELINE_FILE_NODE_MARKER(module, file),
+					label: <ModuleO23ServerPipelineFileNodeLabel {...rootData} module={module} file={file}/>,
+					$type: ProjectTreeNodeType.MODULE_O23_SERVER_PIPELINE_FILE
+				};
+			}
+		});
+	};
+	const createModuleO23ScriptsPipelineChildNodes = (module: O23ModuleStructure): Array<ProjectTreeNodeDef> => {
+		return createModuleFileNodes({
+			module, files: module.scripts.files,
+			asDirNode: (file: ModuleFile) => {
+				return {
+					value: castTo({...rootData, module, file}),
+					$ip2r: `${rootData.project.directory}/${module.name}/$$o23-pipelines$$/$$server$$/$$${file.path}$$`,
+					$ip2p: file.path,
+					marker: MODULE_O23_SCRIPTS_PIPELINE_DIR_NODE_MARKER(module, file),
+					label: <ModuleO23ScriptsPipelineDirNodeLabel {...rootData} module={module} file={file}/>,
+					$type: ProjectTreeNodeType.MODULE_O23_SCRIPTS_PIPELINE_DIR
+				};
+			},
+			asFileNode: (file: ModuleFile) => {
+				return {
+					value: castTo({...rootData, module, file}),
+					$ip2r: `${rootData.project.directory}/${module.name}/$$o23-pipelines$$/$$server$$/$$${file.path}$$`,
+					$ip2p: file.path,
+					marker: MODULE_O23_SCRIPTS_PIPELINE_FILE_NODE_MARKER(module, file),
+					label: <ModuleO23ScriptsPipelineFileNodeLabel {...rootData} module={module} file={file}/>,
+					$type: ProjectTreeNodeType.MODULE_O23_SCRIPTS_PIPELINE_FILE
+				};
+			}
+		});
 	};
 	const createO23ModuleSourceFileNodes = (module: O23ModuleStructure): Array<ProjectTreeNodeDef> => {
 		return createModuleFileNodes({
@@ -340,20 +414,30 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_ENVS) {
 			const {value: {module}} = castTo<ModuleNodeDef>(parentNode);
 			return createModuleEnvsChildNodes(module);
+		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_O23_SERVER_PIPELINES) {
+			const {value: {module}} = castTo<ModuleNodeDef>(parentNode);
+			return createModuleO23ServerPipelineChildNodes(module as O23ModuleStructure);
+		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_O23_SERVER_PIPELINE_DIR) {
+			return parentNode.$children ?? [];
+		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_O23_SCRIPTS_PIPELINES) {
+			const {value: {module}} = castTo<ModuleNodeDef>(parentNode);
+			return createModuleO23ScriptsPipelineChildNodes(module as O23ModuleStructure);
+		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_O23_SCRIPTS_PIPELINE_DIR) {
+			return parentNode.$children ?? [];
+		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_SOURCE_DIR) {
+			return parentNode.$children ?? [];
 		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_SOURCE_FILES) {
 			const {value: {module}} = castTo<ModuleNodeDef>(parentNode);
 			return createModuleSourceFileNodes(module);
 		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_SOURCE_DIR) {
 			return parentNode.$children ?? [];
-		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_SOURCE_FILE) {
-			return [];
 		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_NODE_FILES) {
 			const {value: {module}} = castTo<ModuleNodeDef>(parentNode);
 			return createModuleNodeFileNodes(module);
 		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_NODE_DIR) {
 			return parentNode.$children ?? [];
-		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_NODE_FILE) {
-			return [];
+		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_NODE_DIR) {
+			return parentNode.$children ?? [];
 		} else if (castTo(parentNode.value) === rootData) {
 			// virtual root, given by tree itself. create physical root node, aka project node
 			// put on last since the project root node's value are root data too.

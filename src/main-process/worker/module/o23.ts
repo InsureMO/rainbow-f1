@@ -150,13 +150,13 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 	}
 
 	protected scanFiles(project: F1Project, module: O23ModuleSettings, directories: Array<string>): Array<ModuleFile> {
-		return Array.from(new Set(directories)).map(directory => {
+		return directories.map(directory => {
 			const scanned = FileSystemWorker.dir(
-				PathWorker.resolve(project.directory, module.name, directory), {dir: false, recursive: true});
+				PathWorker.resolve(project.directory, module.name, directory), {recursive: true});
 			if (scanned.success) {
 				return (scanned.ret ?? []).map(({path, dir}) => {
 					return {
-						basename: PathWorker.basename(path), path, dir,
+						basename: PathWorker.basename(path), path: PathWorker.concat(directory, path), dir,
 						type: dir ? ModuleFileType.DIRECTORY : this.guessFileType(path)
 					};
 				});
@@ -173,12 +173,23 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 			.filter(({name}) => name === 'start' || name.endsWith(':start') || name.endsWith('-start'))
 			.map(({envFiles}) => envFiles)
 			.flat();
-		const directories = Array.from(new Set(envFiles)).map(envFile => {
+		const directories = Array.from(new Set(Array.from(new Set(envFiles)).map(envFile => {
 			const {items} = structure.envs[envFile] ?? {};
 			const found = items?.find(({name}) => name === 'CFG_APP_INIT_PIPELINES_DIR');
 			return (found?.value ?? 'server').trim();
-		});
-		structure.server.files = this.scanFiles(project, module, directories);
+		})));
+		structure.server.files = [
+			...directories.map(directory => {
+				return {
+					basename: PathWorker.basename(directory), path: directory, dir: true, type: ModuleFileType.DIRECTORY
+				};
+			}),
+			...this.scanFiles(project, module, directories).map(file => {
+				if (file.type === ModuleFileType.YAML) {
+					file.type = ModuleFileType.O23_PIPELINE;
+				}
+				return file;
+			})];
 	}
 
 	protected readScriptsPipelineFiles(project: F1Project, module: O23ModuleSettings, structure: Omit<O23ModuleStructure, 'success' | 'message'>) {
@@ -187,18 +198,32 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 			.filter(({name}) => name === 'scripts' || name.endsWith(':scripts') || name.endsWith('-scripts'))
 			.map(({envFiles}) => envFiles)
 			.flat();
-		const directories = Array.from(new Set(envFiles)).map(envFile => {
+		const directories = Array.from(new Set(Array.from(new Set(envFiles)).map(envFile => {
 			const {items} = structure.envs[envFile] ?? {};
 			const found = items?.find(({name}) => name === 'CFG_APP_INIT_PIPELINES_DIR');
 			return (found?.value ?? 'scripts').trim();
-		});
-		structure.scripts.files = this.scanFiles(project, module, directories);
-		const dbScriptsDirectories = Array.from(new Set(envFiles)).map(envFile => {
+		})));
+		structure.scripts.files = [
+			...directories.map(directory => {
+				return {
+					basename: PathWorker.basename(directory), path: directory, dir: true, type: ModuleFileType.DIRECTORY
+				};
+			}),
+			...this.scanFiles(project, module, directories)
+		];
+		const dbScriptsDirectories = Array.from(new Set(Array.from(new Set(envFiles)).map(envFile => {
 			const {items} = structure.envs[envFile] ?? {};
 			const found = items?.find(({name}) => name === 'CFG_APP_DB_SCRIPTS_DIR');
 			return (found?.value ?? 'db-scripts').trim();
-		});
-		structure.dbScripts.files = this.scanFiles(project, module, dbScriptsDirectories);
+		})));
+		structure.dbScripts.files = [
+			...directories.map(directory => {
+				return {
+					basename: PathWorker.basename(directory), path: directory, dir: true, type: ModuleFileType.DIRECTORY
+				};
+			}),
+			...this.scanFiles(project, module, dbScriptsDirectories)
+		];
 	}
 }
 
