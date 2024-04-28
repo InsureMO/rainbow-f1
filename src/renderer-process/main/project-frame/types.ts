@@ -38,7 +38,7 @@ export interface ModuleNodeDef extends Omit<ProjectTreeNodeDef, 'value'> {
 	value: ProjectRoot & { module: F1ModuleStructure };
 }
 
-export interface ModuleSourceFileNodeDef extends Omit<ProjectTreeNodeDef, 'value'> {
+export interface ModuleFileNodeDef extends Omit<ProjectTreeNodeDef, 'value'> {
 	value: ProjectRoot & { module: F1ModuleStructure; file: ModuleFile };
 }
 
@@ -53,6 +53,8 @@ export const MODULE_SERVER_NODE_MARKER = (module: F1ModuleStructure) => `$$modul
 export const MODULE_SCRIPTS_NODE_MARKER = (module: F1ModuleStructure) => `$$module-scripts$$-${module.name}`;
 export const MODULE_DB_SCRIPTS_NODE_MARKER = (module: F1ModuleStructure) => `$$module-db-scripts$$-${module.name}`;
 export const MODULE_NODE_FILES_NODE_MARKER = (module: F1ModuleStructure) => `$$module-node-files$$-${module.name}`;
+export const MODULE_NODE_DIR_NODE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `$$module-node-files$$-${module.name}-${file.path}`;
+export const MODULE_NODE_FILE_NODE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `$$module-node-files$$-${module.name}-${file.path}`;
 export const MODULE_SOURCE_FILES_NODE_MARKER = (module: F1ModuleStructure) => `$$module-source-files$$-${module.name}`;
 export const MODULE_SOURCE_DIR_NODE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `$$module-source-files$$-${module.name}-${file.path}`;
 export const MODULE_SOURCE_FILE_NODE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `$$module-source-files$$-${module.name}-${file.path}`;

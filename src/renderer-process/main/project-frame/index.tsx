@@ -1,7 +1,7 @@
 import {PROPERTY_PATH_ME, Undefinable} from '@rainbow-d9/n1';
 import {GlobalEventHandlers, TreeNodeDef, UnwrappedTree} from '@rainbow-d9/n2';
 import {useState} from 'react';
-import {F1ModuleStructure, F1Project, F1ProjectStructure, O23ModuleStructure} from '../../../shared';
+import {F1ModuleStructure, F1Project, F1ProjectStructure, ModuleFile, O23ModuleStructure} from '../../../shared';
 import {SideContentKey, SideContentPosition} from '../opened/workbench/event-bus';
 import {useAskProjectStructure, useProjectStructure} from '../opened/workbench/use-project';
 import {castTo, isD9Module, isO23Module} from '../utils';
@@ -24,14 +24,16 @@ import {
 	MODULE_COMMAND_NODE_MARKER,
 	MODULE_COMMANDS_NODE_MARKER,
 	MODULE_ENVS_NODE_MARKER,
+	MODULE_NODE_DIR_NODE_MARKER,
+	MODULE_NODE_FILE_NODE_MARKER,
 	MODULE_NODE_FILES_NODE_MARKER,
 	MODULE_NODE_MARKER,
 	MODULE_O23_PIPELINES_NODE_MARKER,
 	MODULE_SOURCE_DIR_NODE_MARKER,
 	MODULE_SOURCE_FILE_NODE_MARKER,
 	MODULE_SOURCE_FILES_NODE_MARKER,
+	ModuleFileNodeDef,
 	ModuleNodeDef,
-	ModuleSourceFileNodeDef,
 	ProjectRoot,
 	ProjectTreeNodeDef,
 	ProjectTreeNodeType,
@@ -200,32 +202,22 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 			return [];
 		}
 	};
-	const createO23ModuleNodeFileNodes = (module: O23ModuleStructure): Array<ProjectTreeNodeDef> => {
-		const files = ([...(module.nodeFiles ?? [])]).sort((f1, f2) => {
+	const createModuleFileNodes = (options: {
+		module: F1ModuleStructure; files?: Array<ModuleFile>;
+		asDirNode: (file: ModuleFile) => ProjectTreeNodeDef; asFileNode: (file: ModuleFile) => ProjectTreeNodeDef;
+	}): Array<ProjectTreeNodeDef> => {
+		const {files, asDirNode, asFileNode} = options;
+		const sorted = ([...(files ?? [])]).sort((f1, f2) => {
 			return f1.path.localeCompare(f2.path, (void 0), {sensitivity: 'base'});
 		});
 		const top: Array<ProjectTreeNodeDef> = [];
 		const map: Record<string, ProjectTreeNodeDef> = {};
-		files.forEach(file => {
+		sorted.forEach(file => {
 			let node;
 			if (file.dir) {
-				node = {
-					value: castTo({...rootData, module, file}),
-					$ip2r: `${rootData.project.directory}/${module.name}/$$source-files$$/$$${file.path}$$`,
-					$ip2p: file.path,
-					marker: MODULE_SOURCE_DIR_NODE_MARKER(module, file),
-					label: <ModuleNodeDirNodeLabel {...rootData} module={module} file={file}/>,
-					$type: ProjectTreeNodeType.MODULE_NODE_DIR
-				} as ProjectTreeNodeDef;
+				node = asDirNode(file);
 			} else {
-				node = {
-					value: castTo({...rootData, module, file}),
-					$ip2r: `${rootData.project.directory}/${module.name}/$$source-files$$/$$${file.path}$$`,
-					$ip2p: file.path,
-					marker: MODULE_SOURCE_FILE_NODE_MARKER(module, file),
-					label: <ModuleNodeFileNodeLabel {...rootData} module={module} file={file}/>,
-					$type: ProjectTreeNodeType.MODULE_NODE_FILE
-				} as ProjectTreeNodeDef;
+				node = asFileNode(file);
 			}
 			map[file.path] = node;
 			let lastSepIndex = file.path.lastIndexOf('/');
@@ -241,7 +233,7 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 				top.push(node);
 			}
 		});
-		const sort = ({value: {file: f1}}: ModuleSourceFileNodeDef, {value: {file: f2}}: ModuleSourceFileNodeDef) => {
+		const sort = ({value: {file: f1}}: ModuleFileNodeDef, {value: {file: f2}}: ModuleFileNodeDef) => {
 			if (f1.dir === f2.dir) {
 				return f1.path.localeCompare(f2.path, (void 0), {sensitivity: 'base'});
 			} else if (f1.dir) {
@@ -250,7 +242,7 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 				return 1;
 			}
 		};
-		const sortChildren = (node: ModuleSourceFileNodeDef) => {
+		const sortChildren = (node: ModuleFileNodeDef) => {
 			(node.$children ?? []).sort((c1, c2) => sort(castTo(c1), castTo(c2)))
 				.forEach(child => sortChildren(castTo(child)));
 		};
@@ -259,79 +251,70 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 
 		return top;
 	};
-	const createModuleNodeFileNodes = (module: F1ModuleStructure) => {
-		if (isD9Module(module)) {
-			return [];
-		} else if (isO23Module(module)) {
-			return createO23ModuleNodeFileNodes(module);
-		} else {
-			return [];
-		}
-	};
 	const createO23ModuleSourceFileNodes = (module: O23ModuleStructure): Array<ProjectTreeNodeDef> => {
-		const files = ([...(module.sourceFiles ?? [])]).sort((f1, f2) => {
-			return f1.path.localeCompare(f2.path, (void 0), {sensitivity: 'base'});
-		});
-		const top: Array<ProjectTreeNodeDef> = [];
-		const map: Record<string, ProjectTreeNodeDef> = {};
-		files.forEach(file => {
-			let node;
-			if (file.dir) {
-				node = {
+		return createModuleFileNodes({
+			module, files: module.sourceFiles,
+			asDirNode: (file: ModuleFile) => {
+				return {
 					value: castTo({...rootData, module, file}),
 					$ip2r: `${rootData.project.directory}/${module.name}/$$source-files$$/$$${file.path}$$`,
 					$ip2p: file.path,
 					marker: MODULE_SOURCE_DIR_NODE_MARKER(module, file),
 					label: <ModuleSourceDirNodeLabel {...rootData} module={module} file={file}/>,
 					$type: ProjectTreeNodeType.MODULE_SOURCE_DIR
-				} as ProjectTreeNodeDef;
-			} else {
-				node = {
+				};
+			},
+			asFileNode: (file: ModuleFile) => {
+				return {
 					value: castTo({...rootData, module, file}),
 					$ip2r: `${rootData.project.directory}/${module.name}/$$source-files$$/$$${file.path}$$`,
 					$ip2p: file.path,
 					marker: MODULE_SOURCE_FILE_NODE_MARKER(module, file),
 					label: <ModuleSourceFileNodeLabel {...rootData} module={module} file={file}/>,
 					$type: ProjectTreeNodeType.MODULE_SOURCE_FILE
-				} as ProjectTreeNodeDef;
-			}
-			map[file.path] = node;
-			let lastSepIndex = file.path.lastIndexOf('/');
-			lastSepIndex = lastSepIndex === -1 ? file.path.lastIndexOf('\\') : lastSepIndex;
-			const parentPath = file.path.substring(0, lastSepIndex);
-			const parent = map[parentPath];
-			if (parent != null) {
-				if (parent.$children == null) {
-					parent.$children = [];
-				}
-				parent.$children.push(node);
-			} else {
-				top.push(node);
+				};
 			}
 		});
-		const sort = ({value: {file: f1}}: ModuleSourceFileNodeDef, {value: {file: f2}}: ModuleSourceFileNodeDef) => {
-			if (f1.dir === f2.dir) {
-				return f1.path.localeCompare(f2.path, (void 0), {sensitivity: 'base'});
-			} else if (f1.dir) {
-				return -1;
-			} else {
-				return 1;
-			}
-		};
-		const sortChildren = (node: ModuleSourceFileNodeDef) => {
-			(node.$children ?? []).sort((c1, c2) => sort(castTo(c1), castTo(c2)))
-				.forEach(child => sortChildren(castTo(child)));
-		};
-		top.sort((n1, n2) => sort(castTo(n1), castTo(n2)))
-			.forEach(node => sortChildren(castTo(node)));
-
-		return top;
 	};
 	const createModuleSourceFileNodes = (module: F1ModuleStructure) => {
 		if (isD9Module(module)) {
 			return [];
 		} else if (isO23Module(module)) {
 			return createO23ModuleSourceFileNodes(module);
+		} else {
+			return [];
+		}
+	};
+	const createO23ModuleNodeFileNodes = (module: O23ModuleStructure): Array<ProjectTreeNodeDef> => {
+		return createModuleFileNodes({
+			module, files: module.nodeFiles,
+			asDirNode: (file: ModuleFile) => {
+				return {
+					value: castTo({...rootData, module, file}),
+					$ip2r: `${rootData.project.directory}/${module.name}/$$node-files$$/$$${file.path}$$`,
+					$ip2p: file.path,
+					marker: MODULE_NODE_DIR_NODE_MARKER(module, file),
+					label: <ModuleNodeDirNodeLabel {...rootData} module={module} file={file}/>,
+					$type: ProjectTreeNodeType.MODULE_NODE_DIR
+				};
+			},
+			asFileNode: (file: ModuleFile) => {
+				return {
+					value: castTo({...rootData, module, file}),
+					$ip2r: `${rootData.project.directory}/${module.name}/$$node-files$$/$$${file.path}$$`,
+					$ip2p: file.path,
+					marker: MODULE_NODE_FILE_NODE_MARKER(module, file),
+					label: <ModuleNodeFileNodeLabel {...rootData} module={module} file={file}/>,
+					$type: ProjectTreeNodeType.MODULE_NODE_FILE
+				};
+			}
+		});
+	};
+	const createModuleNodeFileNodes = (module: F1ModuleStructure) => {
+		if (isD9Module(module)) {
+			return [];
+		} else if (isO23Module(module)) {
+			return createO23ModuleNodeFileNodes(module);
 		} else {
 			return [];
 		}
@@ -352,15 +335,19 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_ENVS) {
 			const {value: {module}} = castTo<ModuleNodeDef>(parentNode);
 			return createModuleEnvsChildNodes(module);
-		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_NODE_FILES) {
-			const {value: {module}} = castTo<ModuleNodeDef>(parentNode);
-			return createModuleNodeFileNodes(module);
 		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_SOURCE_FILES) {
 			const {value: {module}} = castTo<ModuleNodeDef>(parentNode);
 			return createModuleSourceFileNodes(module);
 		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_SOURCE_DIR) {
 			return parentNode.$children ?? [];
 		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_SOURCE_FILE) {
+			return [];
+		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_NODE_FILES) {
+			const {value: {module}} = castTo<ModuleNodeDef>(parentNode);
+			return createModuleNodeFileNodes(module);
+		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_NODE_DIR) {
+			return parentNode.$children ?? [];
+		} else if (castTo<ProjectTreeNodeDef>(parentNode).$type === ProjectTreeNodeType.MODULE_NODE_FILE) {
 			return [];
 		} else if (castTo(parentNode.value) === rootData) {
 			// virtual root, given by tree itself. create physical root node, aka project node
