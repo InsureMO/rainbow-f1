@@ -8,8 +8,8 @@ import {
 	UnwrappedInput
 } from '@rainbow-d9/n2';
 import {useEffect, useRef, useState} from 'react';
-import {InvalidMessage} from '../../common/widgets';
 import {F1ProjectSettings} from '../../../shared';
+import {InvalidMessage} from '../../common/widgets';
 import {ProjectModuleBase} from './types';
 import {useModuleValidate} from './use-module-validate';
 import {validateProjectDirectory, validateProjectName} from './utils';

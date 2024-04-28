@@ -1,7 +1,8 @@
 import React, {SVGProps} from 'react';
 
 export const ProjectRootIcon = (props: Omit<SVGProps<SVGSVGElement>, 'xmlns' | 'viewBox'>) => {
-	return <svg {...props} data-icon="f1-project-root" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+	return <svg {...props} data-icon="f1-project-root" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+	            fill="none">
 		<path
 			d="M14.2194 9.78L11.9994 10.89M11.9994 10.89L9.77937 9.78M11.9994 10.89V13.67M14.2194 3.11L11.9994 2L9.77937 3.11M5.32938 18.67L3.10938 17.56V14.78M18.6694 18.67L20.8894 17.56V14.78"
 			stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

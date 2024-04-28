@@ -1,7 +1,7 @@
 import {UnwrappedCaption, UnwrappedInput} from '@rainbow-d9/n2';
 import {Dispatch, ReactNode, SetStateAction, useEffect, useRef} from 'react';
-import {InvalidMessage} from '../../common/widgets';
 import {F1ModuleSettings, F1ProjectSettings} from '../../../shared';
+import {InvalidMessage} from '../../common/widgets';
 import {CreateProjectEventTypes, useCreateProjectEventBus} from './event-bus';
 import {ModuleSettingsState, ProjectModuleBase} from './types';
 import {validateModuleName, validateModuleNameDuplication} from './utils';

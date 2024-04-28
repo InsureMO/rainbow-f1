@@ -8,8 +8,8 @@ import {
 	useGlobalEventBus
 } from '@rainbow-d9/n2';
 import {useNavigate} from 'react-router-dom';
+import {F1ProjectSettings, ProjectCliSet} from '../../../shared';
 import {ButtonBarSpacer} from '../../common/widgets';
-import {ProjectCliSet, F1ProjectSettings} from '../../../shared';
 import {CreateProjectEventTypes, useCreateProjectEventBus} from './event-bus';
 import {ProjectModuleBase} from './types';
 import {

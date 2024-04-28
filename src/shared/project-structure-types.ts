@@ -28,6 +28,7 @@ export enum ModuleFileType {
 	VITE_CONFIG = 'vite.config',
 	NEST_CONFIG = 'nest.config',
 	BABEL_CONFIG = 'babel.config',
+	PRETTIER_CONFIG = 'prettier.config',
 	TS_CONFIG = 'tsconfig',
 	ESLINT_CONFIG = 'eslint.config',
 	YARN_LOCK = 'yarn.lock',

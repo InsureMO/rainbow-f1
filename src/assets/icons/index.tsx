@@ -1,7 +1,9 @@
 import {Icons} from '@rainbow-d9/n2';
 import React from 'react';
+import {BabelIcon} from './babel';
 import {DatabaseIcon} from './database';
 import {EllipsisVerticalIcon} from './ellipsis-vertical';
+import {EslintIcon} from './eslint';
 import {FolderIcon} from './folder';
 import {FolderClosedIcon} from './folder-closed';
 import {FolderClosedEmptyIcon} from './folder-closed-empty';
@@ -22,10 +24,14 @@ import {ModuleRootIcon} from './module-root';
 import {ModuleScriptsIcon} from './module-scripts';
 import {ModuleServerIcon} from './module-server';
 import {ModuleSourceFilesIcon} from './module-source-files';
+import {NestJsIcon} from './nestjs';
 import {NotificationIcon} from './notification';
+import {PackageJsonIcon} from './package-json';
+import {PrettierIcon} from './prettier';
 import {ProblemIcon} from './problem';
 import {ProjectIcon} from './project';
 import {ProjectRootIcon} from './project-root';
+import {ReadmeIcon} from './readme';
 import {RunIcon} from './run';
 import {SearchIcon} from './search';
 import {SettingsIcon} from './settings';
@@ -34,6 +40,9 @@ import {StructureIcon} from './structure';
 import {TerminalIcon} from './terminal';
 import {TodoIcon} from './todo';
 import {TypescriptIcon} from './typescript';
+import {TypescriptConfigIcon} from './typescript-config';
+import {ViteIcon} from './vite';
+import {WebpackIcon} from './webpack';
 
 Icons.Registrar.register({
 	f1Database: () => <DatabaseIcon/>,
@@ -69,7 +78,16 @@ Icons.Registrar.register({
 	f1ModulePipeline: () => <ModulePipelineIcon/>,
 
 	f1Typescript: () => <TypescriptIcon/>,
-	f1Javascript: () => <JavascriptIcon/>
+	f1Javascript: () => <JavascriptIcon/>,
+	f1NestJs: () => <NestJsIcon/>,
+	f1Prettier: () => <PrettierIcon/>,
+	f1Webpack: () => <WebpackIcon/>,
+	f1Vite: () => <ViteIcon/>,
+	f1Eslint: () => <EslintIcon/>,
+	f1Babel: () => <BabelIcon/>,
+	f1TypescriptConfig: () => <TypescriptConfigIcon/>,
+	f1PackageJson: () => <PackageJsonIcon/>,
+	f1Readme: () => <ReadmeIcon/>
 });
 
 export {
@@ -92,5 +110,7 @@ export {
 
 	LogoIcon,
 
-	TypescriptIcon, JavascriptIcon
+	TypescriptIcon, JavascriptIcon,
+	NestJsIcon, PrettierIcon, WebpackIcon, ViteIcon, EslintIcon, BabelIcon, TypescriptConfigIcon,
+	PackageJsonIcon, ReadmeIcon
 };

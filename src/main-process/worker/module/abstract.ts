@@ -49,6 +49,8 @@ export abstract class AbstractModuleProcessor {
 				return ModuleFileType.VITE_CONFIG;
 			case /^babel\.config\.(json|js|cjs)$/.test(basename) || /^\.babelrc(\.(json|js|cjs))?$/.test(basename):
 				return ModuleFileType.BABEL_CONFIG;
+			case /^prettier\.config\.(json|js|cjs)$/.test(basename) || /^\.prettierrc(\.(json|js|cjs))?$/.test(basename):
+				return ModuleFileType.PRETTIER_CONFIG;
 			case /^tsconfig(\..+)?.json$/.test(basename):
 				return ModuleFileType.TS_CONFIG;
 			case /^eslint\.config\.(json|js|cjs)$/.test(basename) || /^\.eslintrc(\.(json|js|cjs))?$/.test(basename):
@@ -59,6 +61,8 @@ export abstract class AbstractModuleProcessor {
 				return ModuleFileType.NPM_LOCK;
 			case basename === 'package.json':
 				return ModuleFileType.PACKAGE_JSON;
+			case basename === 'README.md':
+				return ModuleFileType.README;
 		}
 		const ext = (PathWorker.extname(file) ?? '').toLowerCase();
 		switch (ext) {

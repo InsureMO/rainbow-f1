@@ -33,9 +33,13 @@ interface CreateCategoryDialogState {
 }
 
 export const CategoryDialog = (props: {
-	root: RecentProjectRoot; options: Array<RecentProjectCategoryCandidate>; map: Record<RecentProjectEntityId, RecentProjectHolder>;
+	root: RecentProjectRoot;
+	options: Array<RecentProjectCategoryCandidate>;
+	map: Record<RecentProjectEntityId, RecentProjectHolder>;
 	parentCategoryId?: RecentProjectEntityId;
-	currentCategoryId?: RecentProjectEntityId; rename?: boolean; move?: boolean;
+	currentCategoryId?: RecentProjectEntityId;
+	rename?: boolean;
+	move?: boolean;
 }) => {
 	const {
 		root, options, map,

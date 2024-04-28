@@ -1,8 +1,6 @@
 import {VUtils} from '@rainbow-d9/n1';
 
 import {
-	ProjectCli,
-	ProjectCliSet,
 	D9ModuleSettings,
 	F1ModuleSettings,
 	F1ModuleType,
@@ -12,7 +10,9 @@ import {
 	isNpmVersionValid,
 	MIN_NODE_VERSION,
 	MIN_NPM_VERSION,
-	O23ModuleSettings
+	O23ModuleSettings,
+	ProjectCli,
+	ProjectCliSet
 } from '../../../shared';
 import {ProjectModuleBase} from './types';
 

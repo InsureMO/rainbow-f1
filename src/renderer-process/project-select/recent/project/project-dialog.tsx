@@ -36,8 +36,11 @@ interface ProjectDialogState {
 }
 
 export const ProjectDialog = (props: {
-	root: RecentProjectRoot; options: Array<RecentProjectCategoryCandidate>; map: Record<RecentProjectEntityId, RecentProjectHolder>;
-	parentCategoryId?: RecentProjectEntityId; project: RecentProject;
+	root: RecentProjectRoot;
+	options: Array<RecentProjectCategoryCandidate>;
+	map: Record<RecentProjectEntityId, RecentProjectHolder>;
+	parentCategoryId?: RecentProjectEntityId;
+	project: RecentProject;
 }) => {
 	const {
 		options, map,

@@ -1,15 +1,15 @@
 import {VUtils} from '@rainbow-d9/n1';
 import {ButtonFill, ButtonInk, UnwrappedButton, UnwrappedCaption} from '@rainbow-d9/n2';
 import {useState} from 'react';
-import {InvalidMessage} from '../../common/widgets';
 import {
-	ProjectCli,
-	ProjectCliSet,
 	F1ProjectSettings,
 	MIN_NODE_VERSION,
 	MIN_NPM_VERSION,
+	ProjectCli,
+	ProjectCliSet,
 	RECOMMENDED_YARN_VERSION
 } from '../../../shared';
+import {InvalidMessage} from '../../common/widgets';
 import {ProjectModuleBase} from './types';
 import {useModuleValidate} from './use-module-validate';
 import {validateEnvCli} from './utils';

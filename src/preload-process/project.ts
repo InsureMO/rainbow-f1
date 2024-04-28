@@ -7,7 +7,7 @@ import {
 	F1ProjectExisted,
 	F1ProjectLoaded,
 	F1ProjectSettings,
-	F1ProjectStructure, F1ProjectStructureLoaded
+	F1ProjectStructureLoaded
 } from '../shared';
 
 export const ProjectBridge: ElectronBridges.WindowElectronProject = {
