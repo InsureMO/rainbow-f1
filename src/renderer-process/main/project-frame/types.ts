@@ -18,6 +18,8 @@ export enum ProjectTreeNodeType {
 	MODULE_DB_SCRIPTS = 'module-db-scripts',
 	MODULE_DB = 'module-db',
 	MODULE_NODE_FILES = 'module-node-files',
+	MODULE_NODE_DIR = 'module-node-dir',
+	MODULE_NODE_FILE = 'module-node-file',
 	MODULE_SOURCE_FILES = 'module-source-files',
 	MODULE_SOURCE_DIR = 'module-source-dir',
 	MODULE_SOURCE_FILE = 'module-source-file',

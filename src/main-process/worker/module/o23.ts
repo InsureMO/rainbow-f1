@@ -121,15 +121,22 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		// find scripts pipeline and db scripts files according to env
 		this.readScriptsPipelineFiles(project, module, structure);
 		// load src folder, recursively
-		const srcFiles = filesScanned.ret.filter(({path}) => path.startsWith(`src${PathWorker.separator()}`));
-		structure.sourceFiles = srcFiles.map(({path, dir}) => {
-			return {
-				basename: PathWorker.basename(path),
-				path,
-				dir,
-				type: dir ? ModuleFileType.DIRECTORY : this.guessFileType(path)
-			};
-		});
+		structure.sourceFiles = filesScanned.ret
+			.filter(({path}) => path.startsWith(`src${PathWorker.separator()}`))
+			.map(({path, dir}) => {
+				return {
+					basename: PathWorker.basename(path), path, dir,
+					type: dir ? ModuleFileType.DIRECTORY : this.guessFileType(path)
+				};
+			});
+		structure.nodeFiles = filesScanned.ret
+			.filter(({path, dir}) => !dir && path.indexOf(PathWorker.separator()) === -1)
+			.map(({path, dir}) => {
+				return {
+					basename: PathWorker.basename(path), path, dir,
+					type: dir ? ModuleFileType.DIRECTORY : this.guessFileType(path)
+				};
+			});
 		// all files
 		structure.files = filesScanned.ret.map(({path, dir}) => {
 			return {

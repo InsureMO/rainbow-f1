@@ -8,6 +8,7 @@ import {FolderClosedEmptyIcon} from './folder-closed-empty';
 import {FolderOpenIcon} from './folder-open';
 import {FolderRootIcon} from './folder-root';
 import {FunctionIcon} from './function';
+import {JavascriptIcon} from './javascript';
 import {LogoIcon} from './logo';
 import {MinusIcon} from './minus';
 import {ModuleCommandIcon} from './module-command';
@@ -67,7 +68,8 @@ Icons.Registrar.register({
 	f1ModulePipelines: () => <ModulePipelinesIcon/>,
 	f1ModulePipeline: () => <ModulePipelineIcon/>,
 
-	f1Typescript: () => <TypescriptIcon/>
+	f1Typescript: () => <TypescriptIcon/>,
+	f1Javascript: () => <JavascriptIcon/>
 });
 
 export {
@@ -90,5 +92,5 @@ export {
 
 	LogoIcon,
 
-	TypescriptIcon
+	TypescriptIcon, JavascriptIcon
 };

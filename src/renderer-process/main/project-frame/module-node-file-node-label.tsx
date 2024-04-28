@@ -3,12 +3,12 @@ import {icon} from '../utils/icons-utils';
 import {ProjectRoot} from './types';
 import {NodeLabel} from './widgets';
 
-export interface ModuleSourceFileNodeLabelProps extends ProjectRoot {
+export interface ModuleNodeFileNodeLabelProps extends ProjectRoot {
 	module: F1ModuleStructure;
 	file: ModuleFile;
 }
 
-export const ModuleSourceFileNodeLabel = (props: ModuleSourceFileNodeLabelProps) => {
+export const ModuleNodeFileNodeLabel = (props: ModuleNodeFileNodeLabelProps) => {
 	const {file} = props;
 
 	return <NodeLabel>
