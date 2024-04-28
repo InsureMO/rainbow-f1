@@ -46,6 +46,13 @@ interface ProjectFrameState {
 	structure?: F1ProjectStructure;
 }
 
+interface ModuleFileNodesCreateOptions {
+	module: F1ModuleStructure;
+	files?: Array<ModuleFile>;
+	asDirNode: (file: ModuleFile) => ProjectTreeNodeDef;
+	asFileNode: (file: ModuleFile) => ProjectTreeNodeDef;
+}
+
 export const ProjectFrame = (props: { position: SideContentPosition }) => {
 	const {position} = props;
 
@@ -166,6 +173,7 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 		});
 	};
 	const createO23ModuleEnvChildNodes = (module: O23ModuleStructure): Array<ProjectTreeNodeDef> => {
+		// TODO
 		return [
 			// server
 			// {
@@ -202,10 +210,7 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 			return [];
 		}
 	};
-	const createModuleFileNodes = (options: {
-		module: F1ModuleStructure; files?: Array<ModuleFile>;
-		asDirNode: (file: ModuleFile) => ProjectTreeNodeDef; asFileNode: (file: ModuleFile) => ProjectTreeNodeDef;
-	}): Array<ProjectTreeNodeDef> => {
+	const createModuleFileNodes = (options: ModuleFileNodesCreateOptions): Array<ProjectTreeNodeDef> => {
 		const {files, asDirNode, asFileNode} = options;
 		const sorted = ([...(files ?? [])]).sort((f1, f2) => {
 			return f1.path.localeCompare(f2.path, (void 0), {sensitivity: 'base'});
