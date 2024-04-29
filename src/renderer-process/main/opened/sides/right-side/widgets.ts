@@ -9,7 +9,7 @@ export const RightBar = styled(SideBar).attrs({[DOM_KEY_WIDGET]: 'f1-wb-right-si
     border-left: var(--f1-border);
     border-left-color: var(--f1-wb-border-color);
 `;
-export const RightContent = styled(SideContent).attrs({[DOM_KEY_WIDGET]: 'f1-wb-right-side-content'})`
+export const RightSideContent = styled(SideContent).attrs({[DOM_KEY_WIDGET]: 'f1-wb-right-side-content'})`
     border-left: var(--f1-border);
     border-left-color: var(--f1-wb-border-color);
     border-left-width: var(--border);

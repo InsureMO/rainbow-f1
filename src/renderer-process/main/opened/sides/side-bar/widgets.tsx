@@ -126,6 +126,13 @@ export const SideContentContainer = styled.div.attrs<{
         }
     }
 
+    &[data-upper]:not([data-lower]),
+    &[data-lower]:not([data-upper]) {
+        > div[data-w=f1-wb-side-inner-slider] {
+            display: none;
+        }
+    }
+
     > div[data-w=f1-wb-side-slider] {
         display: none;
     }
@@ -147,6 +154,50 @@ export interface SideSliderProps {
 	sliderHeight?: number;
 }
 
+export const SideInnerSlider = styled.div.attrs<SideSliderProps>(
+	({active, sliderTop, sliderLeft, sliderWidth}) => {
+		let top, width, height, handleTop, handleLeft, handleWidth;
+		[top, width, height] = [active ? 0 : Utils.toCssSize(sliderTop), active ? '100vw' : '100%', active ? '100vh' : '7px'];
+		[handleTop, handleLeft, handleWidth] = [
+			active ? Utils.toCssSize(sliderTop) : 0, active ? Utils.toCssSize(sliderLeft) : 0, active ? Utils.toCssSize(sliderWidth) : '100%'
+		];
+
+		return {
+			[DOM_KEY_WIDGET]: 'f1-wb-side-inner-slider',
+			style: {
+				'--position': active ? 'fixed' : 'absolute',
+				'--top': top, '--width': width, '--height': height,
+				'--handle-top': handleTop, '--handle-left': handleLeft, '--handle-width': handleWidth,
+				'--z-index': active ? 10000 : 1
+			}
+		};
+	})<SideSliderProps>`
+    display: block;
+    position: var(--position);
+    top: var(--top);
+    left: 0;
+    width: var(--width);
+    height: var(--height);
+    cursor: ns-resize;
+    z-index: var(--z-index);
+
+    &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: var(--handle-top);
+        left: var(--handle-left);
+        width: var(--handle-width);
+        height: 7px;
+        transition: background-color 300ms ease-in-out;
+    }
+
+    &:hover {
+        :before {
+            background-color: var(--f1-wb-side-slider-background-color);
+        }
+    }
+`;
 export const SideSlider = styled.div.attrs<SideSliderProps & { resizeOn: SideContentResizeOn }>(
 	({
 		 active,
@@ -231,7 +282,7 @@ export const SideFrameContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-sid
     display: grid;
     position: relative;
     grid-template-columns: 1fr;
-	grid-template-rows: auto 1fr;
+    grid-template-rows: auto 1fr;
     overflow: hidden;
 `;
 export const SideFrameHeader = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-frame-header'})`

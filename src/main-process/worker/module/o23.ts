@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import {
 	F1ModuleType,
 	F1Project,
+	FileSystemFoldersResult,
 	isBlank,
 	isNotBlank,
 	ModuleCommand,
@@ -120,15 +121,27 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		this.readServerPipelineFiles(project, module, structure);
 		// find scripts pipeline and db scripts files according to env
 		this.readScriptsPipelineFiles(project, module, structure);
-		// load src folder, recursively
-		structure.sourceFiles = filesScanned.ret
-			.filter(({path}) => path.startsWith(`src${PathWorker.separator()}`))
-			.map(({path, dir}) => {
-				return {
-					basename: PathWorker.basename(path), path, dir,
-					type: dir ? ModuleFileType.DIRECTORY : this.guessFileType(path)
-				};
-			});
+		// load source files
+		this.readSourceFiles(structure, filesScanned);
+		// load node files
+		this.readNodeFiles(structure, filesScanned);
+		// all files
+		this.readAllFiles(structure, filesScanned);
+
+		structure.success = true;
+		return structure;
+	}
+
+	protected readAllFiles(structure: O23ModuleStructure, filesScanned: FileSystemFoldersResult) {
+		structure.files = filesScanned.ret.map(({path, dir}) => {
+			return {
+				basename: PathWorker.basename(path), path, dir,
+				type: dir ? ModuleFileType.DIRECTORY : this.guessFileType(path)
+			};
+		});
+	}
+
+	protected readNodeFiles(structure: O23ModuleStructure, filesScanned: FileSystemFoldersResult) {
 		structure.nodeFiles = filesScanned.ret
 			.filter(({path, dir}) => !dir && path.indexOf(PathWorker.separator()) === -1)
 			.map(({path, dir}) => {
@@ -137,16 +150,17 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 					type: dir ? ModuleFileType.DIRECTORY : this.guessFileType(path)
 				};
 			});
-		// all files
-		structure.files = filesScanned.ret.map(({path, dir}) => {
-			return {
-				basename: PathWorker.basename(path), path, dir,
-				type: dir ? ModuleFileType.DIRECTORY : this.guessFileType(path)
-			};
-		});
+	}
 
-		structure.success = true;
-		return structure;
+	protected readSourceFiles(structure: O23ModuleStructure, filesScanned: FileSystemFoldersResult) {
+		structure.sourceFiles = filesScanned.ret
+			.filter(({path}) => path.startsWith(`src${PathWorker.separator()}`))
+			.map(({path, dir}) => {
+				return {
+					basename: PathWorker.basename(path), path, dir,
+					type: dir ? ModuleFileType.DIRECTORY : this.guessFileType(path)
+				};
+			});
 	}
 
 	protected scanFiles(project: F1Project, module: O23ModuleSettings, directories: Array<string>): Array<ModuleFile> {
@@ -217,7 +231,7 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 			return (found?.value ?? 'db-scripts').trim();
 		})));
 		structure.dbScripts.files = [
-			...directories.map(directory => {
+			...dbScriptsDirectories.map(directory => {
 				return {
 					basename: PathWorker.basename(directory), path: directory, dir: true, type: ModuleFileType.DIRECTORY
 				};

@@ -9,6 +9,7 @@ import {
 	SideContentContainer,
 	SideContentPartContainer,
 	SideContentResizeOn,
+	SideInnerSlider,
 	SideSlider,
 	SideSliderProps
 } from './widgets';
@@ -81,12 +82,83 @@ export interface SideContentSliderState extends SideSliderProps {
 	parentHeight?: number;
 }
 
+export interface SideContentInnerSliderState extends SideSliderProps {
+	lowerHeight?: number;
+}
+
 export type ComputeNewSize = (
 	parentWidth: number, parentHeight: number,
 	mouseStartX: number, mouseStartY: number,
 	mouseCurrentX: number, mouseCurrentY: number) => {
 	currentX: number; currentY: number; resizeToWidth: number; resizeToHeight: number
 }
+
+export const SideContentInnerSlider = (props: { resizeTo: (lowerHeight: number) => void }) => {
+	const {resizeTo} = props;
+
+	const ref = useRef<HTMLDivElement>(null);
+	const {on, off} = useWorkbenchEventBus();
+	const [state, setState] = useState<SideContentInnerSliderState>({active: false});
+	useEffect(() => {
+		const onRecomputePosition = () => {
+			setTimeout(() => {
+				const {height} = ref.current.previousElementSibling.previousElementSibling.getBoundingClientRect();
+				setState(state => ({...state, sliderTop: height - 4}));
+			}, 30);
+		};
+		const observer = new ResizeObserver(() => {
+			onRecomputePosition();
+		});
+		observer.observe(ref.current.parentElement);
+		on(WorkbenchEventTypes.SIDE_FRAME_OPENED, onRecomputePosition);
+		on(WorkbenchEventTypes.SIDE_FRAME_CLOSED, onRecomputePosition);
+
+		return () => {
+			off(WorkbenchEventTypes.SIDE_FRAME_OPENED, onRecomputePosition);
+			off(WorkbenchEventTypes.SIDE_FRAME_CLOSED, onRecomputePosition);
+			observer.disconnect();
+		};
+	}, []);
+
+	const onMouseDown = (event: MouseEvent<HTMLDivElement>) => {
+		if (event.button === 0) {
+			// respond to primary button only
+			const {top: sliderTop, left: sliderLeft, width: sliderWidth} = ref.current.getBoundingClientRect();
+			const {height: lowerHeight} = ref.current.previousElementSibling.getBoundingClientRect();
+			const {screenY: startY} = event;
+			setState(state => ({
+				...state, active: true, startY, sliderTop, sliderLeft, sliderWidth, lowerHeight
+			}));
+		}
+	};
+	const onMouseUp = (_event: MouseEvent<HTMLDivElement>) => {
+		const {height} = ref.current.previousElementSibling.previousElementSibling.getBoundingClientRect();
+		setState(state => ({...state, sliderTop: height - 4, active: false}));
+	};
+	const onMouseMove = (event: MouseEvent<HTMLDivElement>) => {
+		if (!state.active) {
+			return;
+		}
+		const {screenY} = event;
+		// compute resize to
+		const MIN_PART_HEIGHT = 150;
+		let lowerHeight = state.lowerHeight + state.startY - screenY;
+		if (lowerHeight < MIN_PART_HEIGHT) {
+			lowerHeight = MIN_PART_HEIGHT;
+		}
+		const {top: parentTop, height: parentHeight} = ref.current.parentElement.getBoundingClientRect();
+		if (parentHeight - lowerHeight < MIN_PART_HEIGHT) {
+			lowerHeight = parentHeight - MIN_PART_HEIGHT;
+		}
+		const sliderTop = parentTop + parentHeight - lowerHeight - 4;
+		setState(state => ({...state, sliderTop}));
+		resizeTo(lowerHeight);
+	};
+
+	return <SideInnerSlider {...state}
+	                        onMouseDown={onMouseDown} onMouseUp={onMouseUp} onMouseMove={onMouseMove}
+	                        ref={ref}/>;
+};
 
 export const SideContentSlider = (props: {
 	resizeOn: SideContentResizeOn; resizeTo: (width: number, height: number) => void; computeNewSize: ComputeNewSize
@@ -264,6 +336,9 @@ export const SideContent = (props: SideContentProps) => {
 			setState(state => ({...state, contentSize: width}));
 		}
 	};
+	const innerResize = (lowerHeight: number) => {
+		setState(state => ({...state, lowerHeight}));
+	};
 
 	return <SideContentContainer upper={state.upper} lower={state.lower}
 	                             vertical={first === SideContentPosition.BOTTOM}
@@ -271,6 +346,7 @@ export const SideContent = (props: SideContentProps) => {
 	                             {...rest} ref={ref}>
 		<SideContentUpper contentPosition={first} switch={switchFrame}/>
 		{second != null ? <SideContentLower contentPosition={second} switch={switchFrame}/> : null}
+		{second != null ? <SideContentInnerSlider resizeTo={innerResize}/> : null}
 		<SideContentSlider resizeOn={resizeOn} resizeTo={resize} computeNewSize={createComputeNewSize(first)}/>
 	</SideContentContainer>;
 };
