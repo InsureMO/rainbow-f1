@@ -225,6 +225,7 @@ export const SideContentPartContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-
     position: relative;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
+    overflow: hidden;
 `;
 export const SideFrameContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-frame-container'})`
     display: grid;
