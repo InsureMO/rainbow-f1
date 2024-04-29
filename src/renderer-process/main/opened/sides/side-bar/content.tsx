@@ -1,10 +1,11 @@
-import {JSX, MouseEvent, useEffect, useRef, useState} from 'react';
+import {MouseEvent, ReactNode, useEffect, useRef, useState} from 'react';
 import {
 	SideContentKey,
 	SideContentPosition,
 	useWorkbenchEventBus,
 	WorkbenchEventTypes
 } from '../../workbench/event-bus';
+import {SideFrame} from '../frames';
 import {
 	SideContentContainer,
 	SideContentPartContainer,
@@ -14,13 +15,13 @@ import {
 	SideSliderProps
 } from './widgets';
 
-export type SwitchFrame = (key: SideContentKey, pos: SideContentPosition) => JSX.Element | undefined;
+export type SwitchFrame = (key: SideContentKey, pos: SideContentPosition) => SideFrame | undefined;
 
 export interface SideContentPartState {
 	key?: SideContentKey;
 }
 
-const useSideContentPart = (switchFrame: SwitchFrame, position: SideContentPosition) => {
+const useSideContentPart = (position: SideContentPosition) => {
 	const {on, off, fire} = useWorkbenchEventBus();
 	const [state, setState] = useState<SideContentPartState>({});
 	useEffect(() => {
@@ -52,26 +53,31 @@ const useSideContentPart = (switchFrame: SwitchFrame, position: SideContentPosit
 		};
 	}, [on, off, state.key, position]);
 
-	return switchFrame(state.key, position);
+	return state.key;
 };
 
-export const SideContentUpper = (props: { contentPosition: SideContentPosition; switch: SwitchFrame }) => {
+export const SideContentPart = (props: { contentPosition: SideContentPosition; switch: SwitchFrame }) => {
 	const {contentPosition, switch: switchFrame} = props;
 
-	const part = useSideContentPart(switchFrame, contentPosition);
+	const [state, setState] = useState<Array<{ key: SideContentKey; keep: boolean; element: ReactNode }>>([]);
+	const key = useSideContentPart(contentPosition);
+	useEffect(() => {
+		// find one which needs to be kept
+		const exists = state.find(({key: existKey, keep}) => keep === true && existKey === key);
+		if (exists != null) {
+			// already exists, let it be last. meanwhile, remove transient elements
+			setState([...state.filter(({key: existKey, keep}) => keep === true && existKey !== key), exists]);
+		} else {
+			const {keep, element} = switchFrame(key, contentPosition) ?? {keep: false, element: (void 0)};
+			setState([
+				...state.filter(({key: existKey, keep}) => keep === true && existKey !== key),
+				...(element == null ? [] : [{key, keep, element}])
+			]);
+		}
+	}, [key, state]);
 
 	return <SideContentPartContainer>
-		{part}
-	</SideContentPartContainer>;
-};
-
-export const SideContentLower = (props: { contentPosition: SideContentPosition; switch: SwitchFrame }) => {
-	const {contentPosition, switch: switchFrame} = props;
-
-	const part = useSideContentPart(switchFrame, contentPosition);
-
-	return <SideContentPartContainer>
-		{part}
+		{state.map(({element}) => element)}
 	</SideContentPartContainer>;
 };
 
@@ -344,8 +350,8 @@ export const SideContent = (props: SideContentProps) => {
 	                             vertical={first === SideContentPosition.BOTTOM}
 	                             contentSize={state.contentSize} lowerHeight={state.lowerHeight}
 	                             {...rest} ref={ref}>
-		<SideContentUpper contentPosition={first} switch={switchFrame}/>
-		{second != null ? <SideContentLower contentPosition={second} switch={switchFrame}/> : null}
+		<SideContentPart contentPosition={first} switch={switchFrame}/>
+		{second != null ? <SideContentPart contentPosition={second} switch={switchFrame}/> : null}
 		{second != null ? <SideContentInnerSlider resizeTo={innerResize}/> : null}
 		<SideContentSlider resizeOn={resizeOn} resizeTo={resize} computeNewSize={createComputeNewSize(first)}/>
 	</SideContentContainer>;
