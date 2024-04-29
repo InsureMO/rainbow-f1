@@ -5,6 +5,7 @@ export const ProjectFrameContainer = styled(SideFrame)`
     > div[data-w=f1-wb-side-frame-body] {
         display: flex;
         flex-grow: 1;
+        overflow: hidden;
 
         > div[data-w=d9-tree] {
             flex-grow: 1;

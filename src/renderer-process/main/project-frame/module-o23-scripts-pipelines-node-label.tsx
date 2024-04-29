@@ -10,6 +10,6 @@ export interface ModuleScriptsNodeLabelProps extends ProjectRoot {
 export const ModuleO23ScriptsPipelinesNodeLabel = (_props: ModuleScriptsNodeLabelProps) => {
 	return <NodeLabel>
 		<ModuleScriptsIcon/>
-		<span data-name="">Scripts</span>
+		<span data-name="">Scripts Pipelines</span>
 	</NodeLabel>;
 };

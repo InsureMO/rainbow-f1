@@ -227,9 +227,10 @@ export const SideContentPartContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-
     grid-template-rows: 1fr;
 `;
 export const SideFrameContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-frame-container'})`
-    display: flex;
+    display: grid;
     position: relative;
-    flex-direction: column;
+    grid-template-columns: 1fr;
+	grid-template-rows: auto 1fr;
     overflow: hidden;
 `;
 export const SideFrameHeader = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-frame-header'})`
@@ -295,7 +296,6 @@ export const SideFrameHeaderButtonContainer = styled.span.attrs({[DOM_KEY_WIDGET
 export const SideFrameBody = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-frame-body'})`
     display: block;
     position: relative;
-    flex-grow: 1;
     overflow: hidden;
 
     span[data-w=d9-tree-node-toggle] {

@@ -7,6 +7,7 @@ import {
 	PrettierIcon,
 	ReadmeIcon,
 	SourceFileIcon,
+	SQLIcon,
 	TypescriptConfigIcon,
 	TypescriptIcon,
 	ViteIcon,
@@ -25,6 +26,8 @@ export const icon = (file: ModuleFile) => {
 			return <TypescriptIcon/>;
 		case ModuleFileType.O23_PIPELINE:
 			return <ModulePipelineIcon/>;
+		case ModuleFileType.SQL:
+			return <SQLIcon/>;
 		case ModuleFileType.PACKAGE_JSON:
 			return <PackageJsonIcon/>;
 		case ModuleFileType.README:

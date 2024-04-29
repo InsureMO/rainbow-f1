@@ -16,6 +16,7 @@ import {MinusIcon} from './minus';
 import {ModuleCommandIcon} from './module-command';
 import {ModuleCommandsIcon} from './module-commands';
 import {ModuleDBScriptsIcon} from './module-db-scripts';
+import {ModuleEnvIcon} from './module-env';
 import {ModuleEnvsIcon} from './module-envs';
 import {ModuleNodeFilesIcon} from './module-node-files';
 import {ModulePipelineIcon} from './module-pipeline';
@@ -37,6 +38,7 @@ import {RunIcon} from './run';
 import {SearchIcon} from './search';
 import {SettingsIcon} from './settings';
 import {SourceFileIcon} from './source-file';
+import {SQLIcon} from './sql';
 import {StructureIcon} from './structure';
 import {TerminalIcon} from './terminal';
 import {TodoIcon} from './todo';
@@ -68,6 +70,7 @@ Icons.Registrar.register({
 	f1ProjectRoot: () => <ProjectRootIcon/>,
 	f1ModuleRoot: () => <ModuleRootIcon/>,
 	f1ModuleEnvs: () => <ModuleEnvsIcon/>,
+	f1ModuleEnv: () => <ModuleEnvIcon/>,
 	f1ModuleServer: () => <ModuleServerIcon/>,
 	f1ModuleScripts: () => <ModuleScriptsIcon/>,
 	f1ModuleDBScripts: () => <ModuleDBScriptsIcon/>,
@@ -81,6 +84,7 @@ Icons.Registrar.register({
 
 	f1Typescript: () => <TypescriptIcon/>,
 	f1Javascript: () => <JavascriptIcon/>,
+	f1Sql: () => <SQLIcon/>,
 	f1NestJs: () => <NestJsIcon/>,
 	f1Prettier: () => <PrettierIcon/>,
 	f1Webpack: () => <WebpackIcon/>,
@@ -107,12 +111,13 @@ export {
 	EllipsisVerticalIcon,
 
 	ProjectRootIcon, ModuleRootIcon,
-	ModuleEnvsIcon, ModuleServerIcon, ModuleScriptsIcon, ModuleDBScriptsIcon, ModuleCommandsIcon, ModuleCommandIcon,
+	ModuleEnvsIcon, ModuleEnvIcon, ModuleServerIcon, ModuleScriptsIcon, ModuleDBScriptsIcon,
+	ModuleCommandsIcon, ModuleCommandIcon,
 	ModuleNodeFilesIcon, ModuleSourceFilesIcon, ModulePipelinesIcon, ModulePipelineIcon,
 
 	LogoIcon, O23PipelineIcon,
 
-	TypescriptIcon, JavascriptIcon,
+	TypescriptIcon, JavascriptIcon, SQLIcon,
 	NestJsIcon, PrettierIcon, WebpackIcon, ViteIcon, EslintIcon, BabelIcon, TypescriptConfigIcon,
 	PackageJsonIcon, ReadmeIcon
 };
