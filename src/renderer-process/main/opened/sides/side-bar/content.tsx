@@ -120,6 +120,7 @@ export const SideContentInnerSlider = (props: { resizeTo: (lowerHeight: number) 
 		};
 	}, []);
 
+	const MIN_PART_HEIGHT = 150;
 	const onMouseDown = (event: MouseEvent<HTMLDivElement>) => {
 		if (event.button === 0) {
 			// respond to primary button only
@@ -141,7 +142,6 @@ export const SideContentInnerSlider = (props: { resizeTo: (lowerHeight: number) 
 		}
 		const {screenY} = event;
 		// compute resize to
-		const MIN_PART_HEIGHT = 150;
 		let lowerHeight = state.lowerHeight + state.startY - screenY;
 		if (lowerHeight < MIN_PART_HEIGHT) {
 			lowerHeight = MIN_PART_HEIGHT;
