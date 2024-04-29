@@ -1,4 +1,5 @@
-import {MouseEvent, ReactNode, useEffect, useRef, useState} from 'react';
+import {Fragment, MouseEvent, ReactNode, useEffect, useRef, useState} from 'react';
+import {isBlank} from '../../../../../shared';
 import {
 	SideContentKey,
 	SideContentPosition,
@@ -59,14 +60,29 @@ const useSideContentPart = (position: SideContentPosition) => {
 export const SideContentPart = (props: { contentPosition: SideContentPosition; switch: SwitchFrame }) => {
 	const {contentPosition, switch: switchFrame} = props;
 
+	// at most one transient element
 	const [state, setState] = useState<Array<{ key: SideContentKey; keep: boolean; element: ReactNode }>>([]);
 	const key = useSideContentPart(contentPosition);
 	useEffect(() => {
-		// find one which needs to be kept
-		const exists = state.find(({key: existKey, keep}) => keep === true && existKey === key);
+		if (isBlank(key)) {
+			const hasTransient = state.some(({keep}) => keep === false);
+			if (!hasTransient) {
+				return;
+			} else {
+				// otherwise remove the transient element
+				setState(state.filter(({keep}) => keep === true));
+			}
+		}
+		// find existing
+		const exists = state.find(({key: existKey}) => existKey === key);
 		if (exists != null) {
-			// already exists, let it be last. meanwhile, remove transient elements
-			setState([...state.filter(({key: existKey, keep}) => keep === true && existKey !== key), exists]);
+			if (exists === state[state.length - 1]) {
+				// do nothing
+				return;
+			} else {
+				// already exists, let it be last. meanwhile, remove transient elements
+				setState([...state.filter(({key: existKey}) => existKey !== key), exists]);
+			}
 		} else {
 			const {keep, element} = switchFrame(key, contentPosition) ?? {keep: false, element: (void 0)};
 			setState([
@@ -77,7 +93,9 @@ export const SideContentPart = (props: { contentPosition: SideContentPosition; s
 	}, [key, state]);
 
 	return <SideContentPartContainer>
-		{state.map(({element}) => element)}
+		{state.map(({key, element}) => {
+			return <Fragment key={key}>{element}</Fragment>;
+		})}
 	</SideContentPartContainer>;
 };
 

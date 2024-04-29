@@ -277,6 +277,10 @@ export const SideContentPartContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
     overflow: hidden;
+
+    > div[data-w=f1-wb-side-frame-container]:not(:last-child) {
+        display: none;
+    }
 `;
 export const SideFrameContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-side-frame-container'})`
     display: grid;
