@@ -1,5 +1,12 @@
 import {TreeNodeDef} from '@rainbow-d9/n2';
-import {F1ModuleStructure, F1Project, F1ProjectStructure, ModuleCommand, ModuleFile} from '../../../shared';
+import {
+	F1ModuleStructure,
+	F1Project,
+	F1ProjectStructure,
+	ModuleCommand,
+	ModuleFile,
+	O23ModuleStructure
+} from '../../../shared';
 
 export interface ProjectRoot {
 	project: F1Project;
@@ -47,6 +54,10 @@ export interface ProjectNodeDef extends Omit<ProjectTreeNodeDef, 'value'> {
 
 export interface ModuleNodeDef extends Omit<ProjectTreeNodeDef, 'value'> {
 	value: ProjectRoot & { module: F1ModuleStructure };
+}
+
+export interface O23ModuleNodeDef extends ModuleNodeDef {
+	value: ProjectRoot & { module: O23ModuleStructure };
 }
 
 export interface ModuleFileNodeDef extends Omit<ProjectTreeNodeDef, 'value'> {
