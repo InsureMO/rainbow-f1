@@ -1,6 +1,6 @@
-import {ProjectRootIcon} from '../../../assets/icons';
-import {ProjectRoot} from './types';
-import {NodeLabel} from './widgets';
+import {ProjectRootIcon} from '../../../../assets/icons';
+import {ProjectRoot} from '../types';
+import {NodeLabel} from '../widgets';
 
 export interface ProjectNodeLabelProps extends ProjectRoot {
 }

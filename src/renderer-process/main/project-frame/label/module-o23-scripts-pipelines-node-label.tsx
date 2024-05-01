@@ -1,7 +1,7 @@
-import {ModuleScriptsIcon} from '../../../assets/icons';
-import {F1ModuleStructure} from '../../../shared';
-import {ProjectRoot} from './types';
-import {NodeLabel} from './widgets';
+import {ModuleScriptsIcon} from '../../../../assets/icons';
+import {F1ModuleStructure} from '../../../../shared';
+import {ProjectRoot} from '../types';
+import {NodeLabel} from '../widgets';
 
 export interface ModuleScriptsNodeLabelProps extends ProjectRoot {
 	module: F1ModuleStructure;

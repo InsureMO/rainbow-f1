@@ -1,7 +1,7 @@
-import {ModuleCommandsIcon} from '../../../assets/icons';
-import {F1ModuleStructure} from '../../../shared';
-import {ProjectRoot} from './types';
-import {NodeLabel} from './widgets';
+import {ModuleCommandsIcon} from '../../../../assets/icons';
+import {F1ModuleStructure} from '../../../../shared';
+import {ProjectRoot} from '../types';
+import {NodeLabel} from '../widgets';
 
 export interface ModuleCommandsNodeLabelProps extends ProjectRoot {
 	module: F1ModuleStructure;

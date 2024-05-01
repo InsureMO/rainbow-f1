@@ -1,5 +1,5 @@
-import {TreeNodeInnerLabel} from '../opened/sides/side-bar';
-import {ProjectRoot} from './types';
+import {TreeNodeInnerLabel} from '../../opened/sides/side-bar';
+import {ProjectRoot} from '../types';
 
 export interface AddModuleNodeLabelProps extends ProjectRoot {
 }

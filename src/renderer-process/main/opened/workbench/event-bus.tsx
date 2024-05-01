@@ -20,10 +20,20 @@ export enum SideContentPosition {
 	BOTTOM = 'bottom'
 }
 
+export interface ActiveResourceSegment {
+	label: string;
+	icon?: ReactNode;
+}
+
+export interface ActiveResource {
+	segments: Array<ActiveResourceSegment>;
+}
+
 export enum WorkbenchEventTypes {
 	OPEN_SIDE_FRAME = 'open-side-frame', SIDE_FRAME_OPENED = 'side-frame-opened',
 	CLOSE_SIDE_FRAME = 'close-side-frame', SIDE_FRAME_CLOSED = 'side-frame-closed',
-	ASK_PROJECT = 'ask-project', ASK_PROJECT_STRUCTURE = 'ask-project-structure'
+	ASK_PROJECT = 'ask-project', ASK_PROJECT_STRUCTURE = 'ask-project-structure',
+	RESOURCE_ACTIVE = 'resource-active'
 }
 
 export interface WorkbenchEventBus {
@@ -62,6 +72,12 @@ export interface WorkbenchEventBus {
 	on(type: WorkbenchEventTypes.ASK_PROJECT_STRUCTURE, listener: (callback: (project: F1Project, structure: F1ProjectStructure) => void) => void): this;
 
 	off(type: WorkbenchEventTypes.ASK_PROJECT_STRUCTURE, listener: (callback: (project: F1Project, structure: F1ProjectStructure) => void) => void): this;
+
+	fire(type: WorkbenchEventTypes.RESOURCE_ACTIVE, resource: ActiveResource): this;
+
+	on(type: WorkbenchEventTypes.RESOURCE_ACTIVE, listener: (resource: ActiveResource) => void): this;
+
+	off(type: WorkbenchEventTypes.RESOURCE_ACTIVE, listener: (resource: ActiveResource) => void): this;
 }
 
 const Context = createContext<WorkbenchEventBus>({} as WorkbenchEventBus);

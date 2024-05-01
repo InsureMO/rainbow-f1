@@ -1,6 +1,19 @@
 import {PROPERTY_PATH_ME, Undefinable} from '@rainbow-d9/n1';
 import {GlobalEventHandlers, TreeNodeDef, UnwrappedTree} from '@rainbow-d9/n2';
-import {useState} from 'react';
+import React, {useState} from 'react';
+import {
+	FolderIcon,
+	ModuleCommandIcon,
+	ModuleCommandsIcon,
+	ModuleDBScriptsIcon,
+	ModuleEnvIcon,
+	ModuleEnvsIcon,
+	ModuleNodeFilesIcon,
+	ModuleRootIcon,
+	ModuleScriptsIcon,
+	ModuleServerIcon,
+	ModuleSourceFilesIcon
+} from '../../../assets/icons';
 import {
 	F1ModuleStructure,
 	F1Project,
@@ -9,32 +22,41 @@ import {
 	ModuleFile,
 	O23ModuleStructure
 } from '../../../shared';
-import {SideContentKey, SideContentPosition} from '../opened/workbench/event-bus';
+import {
+	ActiveResourceSegment,
+	SideContentKey,
+	SideContentPosition,
+	useWorkbenchEventBus,
+	WorkbenchEventTypes
+} from '../opened/workbench/event-bus';
 import {useAskProjectStructure, useProjectStructure} from '../opened/workbench/use-project';
 import {castTo, isD9Module, isO23Module} from '../utils';
-import {AddModuleNodeLabel} from './add-module-node-label';
-import {ModuleCommandNodeLabel} from './module-command-node-label';
-import {ModuleCommandsNodeLabel} from './module-commands-node-label';
-import {ModuleDBScriptsDirNodeLabel} from './module-db-scripts-dir-node-label';
-import {ModuleDBScriptsFileNodeLabel} from './module-db-scripts-file-node-label';
-import {ModuleDBScriptsNodeLabel} from './module-db-scripts-node-label';
-import {ModuleEnvCommandNodeLabel} from './module-env-command-node-label';
-import {ModuleEnvNodeLabel} from './module-env-node-label';
-import {ModuleEnvsNodeLabel} from './module-envs-node-label';
-import {ModuleNodeDirNodeLabel} from './module-node-dir-node-label';
-import {ModuleNodeFileNodeLabel} from './module-node-file-node-label';
-import {ModuleNodeFilesNodeLabel} from './module-node-files-node-label';
-import {ModuleO23ScriptsPipelineDirNodeLabel} from './module-o23-scripts-pipeline-dir-node-label';
-import {ModuleO23ScriptsPipelineFileNodeLabel} from './module-o23-scripts-pipeline-file-node-label';
-import {ModuleO23ScriptsPipelinesNodeLabel} from './module-o23-scripts-pipelines-node-label';
-import {ModuleO23ServerPipelineDirNodeLabel} from './module-o23-server-pipeline-dir-node-label';
-import {ModuleO23ServerPipelineFileNodeLabel} from './module-o23-server-pipeline-file-node-label';
-import {ModuleO23ServerPipelinesNodeLabel} from './module-o23-server-pipelines-node-label';
-import {ModuleRootNodeLabel} from './module-root-node-label';
-import {ModuleSourceDirNodeLabel} from './module-source-dir-node-label';
-import {ModuleSourceFileNodeLabel} from './module-source-file-node-label';
-import {ModuleSourceFilesNodeLabel} from './module-source-files-node-label';
-import {ProjectRootNodeLabel} from './project-root-node-label';
+import {icon} from '../utils/icons-utils';
+import {
+	AddModuleNodeLabel,
+	ModuleCommandNodeLabel,
+	ModuleCommandsNodeLabel,
+	ModuleDBScriptsDirNodeLabel,
+	ModuleDBScriptsFileNodeLabel,
+	ModuleDBScriptsNodeLabel,
+	ModuleEnvCommandNodeLabel,
+	ModuleEnvNodeLabel,
+	ModuleEnvsNodeLabel,
+	ModuleNodeDirNodeLabel,
+	ModuleNodeFileNodeLabel,
+	ModuleNodeFilesNodeLabel,
+	ModuleO23ScriptsPipelineDirNodeLabel,
+	ModuleO23ScriptsPipelineFileNodeLabel,
+	ModuleO23ScriptsPipelinesNodeLabel,
+	ModuleO23ServerPipelineDirNodeLabel,
+	ModuleO23ServerPipelineFileNodeLabel,
+	ModuleO23ServerPipelinesNodeLabel,
+	ModuleRootNodeLabel,
+	ModuleSourceDirNodeLabel,
+	ModuleSourceFileNodeLabel,
+	ModuleSourceFilesNodeLabel,
+	ProjectRootNodeLabel
+} from './label';
 import {
 	ADD_MODULE,
 	ADD_MODULE_NODE_MARKER,
@@ -85,6 +107,7 @@ interface ModuleFileNodesCreateOptions {
 export const ProjectFrame = (props: { position: SideContentPosition }) => {
 	const {position} = props;
 
+	const {fire} = useWorkbenchEventBus();
 	const {ask} = useProjectStructure();
 	const [state, setState] = useState<ProjectFrameState>({});
 	useAskProjectStructure(ask, (project, structure) => setState({project, structure}));
@@ -100,7 +123,10 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 			value: castTo(rootData),
 			$ip2r: rootData.project.directory, $ip2p: PROPERTY_PATH_ME, marker: ROOT_NODE_MARKER,
 			label: <ProjectRootNodeLabel {...rootData}/>,
-			$type: ProjectTreeNodeType.ROOT
+			$type: ProjectTreeNodeType.ROOT,
+			click: async () => {
+				fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {segments: []});
+			}
 		};
 	};
 	const createAddModuleNode = (): ProjectTreeNodeDef => {
@@ -110,7 +136,10 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 			$ip2r: `${rootData.project.directory}/modules`, $ip2p: 'modules',
 			marker: ADD_MODULE_NODE_MARKER(rootData.project),
 			label: <AddModuleNodeLabel {...rootData}/>,
-			$type: ProjectTreeNodeType.ADD_MODULE
+			$type: ProjectTreeNodeType.ADD_MODULE,
+			click: async () => {
+				fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {segments: []});
+			}
 		};
 	};
 	const createModuleNode = (module: F1ModuleStructure): ProjectTreeNodeDef => {
@@ -120,7 +149,10 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 			$ip2r: `${rootData.project.directory}/${module.name}/envs`, $ip2p: module.name,
 			marker: MODULE_NODE_MARKER(module),
 			label: <ModuleRootNodeLabel {...rootData} module={module}/>,
-			$type: ProjectTreeNodeType.MODULE
+			$type: ProjectTreeNodeType.MODULE,
+			click: async () => {
+				fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {segments: [{label: module.name, icon: <ModuleRootIcon/>}]});
+			}
 		};
 	};
 	const createModuleNodes = (): Array<ProjectTreeNodeDef> => {
@@ -142,7 +174,15 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 				$ip2r: `${rootData.project.directory}/${module.name}/$$commands$$`, $ip2p: '$$commands$$',
 				marker: MODULE_COMMANDS_NODE_MARKER(module),
 				label: <ModuleCommandsNodeLabel {...rootData} module={module}/>,
-				$type: ProjectTreeNodeType.MODULE_COMMANDS
+				$type: ProjectTreeNodeType.MODULE_COMMANDS,
+				click: async () => {
+					fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+						segments: [
+							{label: module.name, icon: <ModuleRootIcon/>},
+							{label: 'CLI Commands', icon: <ModuleCommandsIcon/>}
+						]
+					});
+				}
 			},
 			// environments
 			{
@@ -150,7 +190,15 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 				$ip2r: `${rootData.project.directory}/${module.name}/$$envs$$`, $ip2p: '$$envs$$',
 				marker: MODULE_ENVS_NODE_MARKER(module),
 				label: <ModuleEnvsNodeLabel {...rootData} module={module}/>,
-				$type: ProjectTreeNodeType.MODULE_ENVS
+				$type: ProjectTreeNodeType.MODULE_ENVS,
+				click: async () => {
+					fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+						segments: [
+							{label: module.name, icon: <ModuleRootIcon/>},
+							{label: 'Environments', icon: <ModuleEnvsIcon/>}
+						]
+					});
+				}
 			},
 			// server pipelines
 			{
@@ -158,7 +206,15 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 				$ip2r: `${rootData.project.directory}/${module.name}/$$o23-pipelines$$/$$server$$`, $ip2p: '$$server$$',
 				marker: MODULE_O23_SERVER_PIPELINES_NODE_MARKER(module),
 				label: <ModuleO23ServerPipelinesNodeLabel {...rootData} module={module}/>,
-				$type: ProjectTreeNodeType.MODULE_O23_SERVER_PIPELINES
+				$type: ProjectTreeNodeType.MODULE_O23_SERVER_PIPELINES,
+				click: async () => {
+					fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+						segments: [
+							{label: module.name, icon: <ModuleRootIcon/>},
+							{label: 'Server Pipelines', icon: <ModuleServerIcon/>}
+						]
+					});
+				}
 			},
 			// scripts pipelines
 			{
@@ -167,7 +223,15 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 				$ip2p: '$$scripts$$',
 				marker: MODULE_O23_SCRIPTS_PIPELINES_NODE_MARKER(module),
 				label: <ModuleO23ScriptsPipelinesNodeLabel {...rootData} module={module}/>,
-				$type: ProjectTreeNodeType.MODULE_O23_SCRIPTS_PIPELINES
+				$type: ProjectTreeNodeType.MODULE_O23_SCRIPTS_PIPELINES,
+				click: async () => {
+					fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+						segments: [
+							{label: module.name, icon: <ModuleRootIcon/>},
+							{label: 'Scripts Pipelines', icon: <ModuleScriptsIcon/>}
+						]
+					});
+				}
 			},
 			// db-scripts
 			{
@@ -175,7 +239,15 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 				$ip2r: `${rootData.project.directory}/${module.name}/$$o23-db-scripts$$`, $ip2p: '$$o23-db-scripts$$',
 				marker: MODULE_DB_SCRIPTS_NODE_MARKER(module),
 				label: <ModuleDBScriptsNodeLabel {...rootData} module={module}/>,
-				$type: ProjectTreeNodeType.MODULE_DB_SCRIPTS
+				$type: ProjectTreeNodeType.MODULE_DB_SCRIPTS,
+				click: async () => {
+					fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+						segments: [
+							{label: module.name, icon: <ModuleRootIcon/>},
+							{label: 'Database Scripts', icon: <ModuleDBScriptsIcon/>}
+						]
+					});
+				}
 			},
 			// source files
 			{
@@ -183,7 +255,15 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 				$ip2r: `${rootData.project.directory}/${module.name}/$$source-files$$`, $ip2p: '$$source-files$$',
 				marker: MODULE_SOURCE_FILES_NODE_MARKER(module),
 				label: <ModuleSourceFilesNodeLabel {...rootData} module={module}/>,
-				$type: ProjectTreeNodeType.MODULE_SOURCE_FILES
+				$type: ProjectTreeNodeType.MODULE_SOURCE_FILES,
+				click: async () => {
+					fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+						segments: [
+							{label: module.name, icon: <ModuleRootIcon/>},
+							{label: 'SRC', icon: <ModuleSourceFilesIcon/>}
+						]
+					});
+				}
 			},
 			// node files
 			{
@@ -191,9 +271,16 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 				$ip2r: `${rootData.project.directory}/${module.name}/$$node-files$$`, $ip2p: '$$node-files$$',
 				marker: MODULE_NODE_FILES_NODE_MARKER(module),
 				label: <ModuleNodeFilesNodeLabel {...rootData} module={module}/>,
-				$type: ProjectTreeNodeType.MODULE_NODE_FILES
+				$type: ProjectTreeNodeType.MODULE_NODE_FILES,
+				click: async () => {
+					fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+						segments: [
+							{label: module.name, icon: <ModuleRootIcon/>},
+							{label: 'NodeJS', icon: <ModuleNodeFilesIcon/>}
+						]
+					});
+				}
 			}
-			// root files
 		];
 	};
 	const createModuleChildNodes = (module: F1ModuleStructure): Array<ProjectTreeNodeDef> => {
@@ -211,10 +298,19 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 		}).map(cmd => {
 			return {
 				value: castTo({...rootData, module, cmd}),
-				$ip2r: `${rootData.project.directory}/${module.name}/$$${cmd.name}$$`, $ip2p: cmd.name,
+				$ip2r: `${rootData.project.directory}/${module.name}/$$commands$$/${cmd.name}`, $ip2p: cmd.name,
 				marker: MODULE_COMMAND_NODE_MARKER(module, cmd),
 				label: <ModuleCommandNodeLabel {...rootData} module={module} command={cmd}/>,
-				$type: ProjectTreeNodeType.MODULE_COMMAND
+				$type: ProjectTreeNodeType.MODULE_COMMAND,
+				click: async () => {
+					fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+						segments: [
+							{label: module.name, icon: <ModuleRootIcon/>},
+							{label: 'CLI Commands', icon: <ModuleCommandsIcon/>},
+							{label: cmd.name, icon: <ModuleCommandIcon/>}
+						]
+					});
+				}
 			};
 		});
 	};
@@ -247,7 +343,16 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 					$ip2r: `${rootData.project.directory}/${module.name}/$$envs$$/${env.name}`, $ip2p: env.name,
 					marker: MODULE_ENV_NODE_MARKER(module, env),
 					label: <ModuleEnvNodeLabel {...rootData} module={module} env={env}/>,
-					$type: ProjectTreeNodeType.MODULE_ENV
+					$type: ProjectTreeNodeType.MODULE_ENV,
+					click: async () => {
+						fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+							segments: [
+								{label: module.name, icon: <ModuleRootIcon/>},
+								{label: 'Environments', icon: <ModuleEnvsIcon/>},
+								{label: env.name, icon: <ModuleEnvIcon/>}
+							]
+						});
+					}
 				};
 			});
 	};
@@ -270,7 +375,17 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 					$ip2p: command.name,
 					marker: MODULE_ENV_COMMAND_NODE_MARKER(module, env, command),
 					label: <ModuleEnvCommandNodeLabel {...rootData} module={module} env={env} command={command}/>,
-					$type: ProjectTreeNodeType.MODULE_ENV_COMMAND
+					$type: ProjectTreeNodeType.MODULE_ENV_COMMAND,
+					click: async () => {
+						fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+							segments: [
+								{label: module.name, icon: <ModuleRootIcon/>},
+								{label: 'Environments', icon: <ModuleEnvsIcon/>},
+								{label: env.name, icon: <ModuleEnvIcon/>},
+								{label: command.name, icon: <ModuleCommandIcon/>}
+							]
+						});
+					}
 				};
 			});
 	};
@@ -324,6 +439,13 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 
 		return top;
 	};
+	const buildModuleFileAsActiveResource = (file: ModuleFile): Array<ActiveResourceSegment> => {
+		const [last, ...others] = file.path.split(/[\/|\\]/g).reverse();
+		return [
+			...others.reverse().map(label => ({label})),
+			{label: last, icon: file.dir ? <FolderIcon/> : icon(file)}
+		];
+	};
 	const createModuleO23ServerPipelineChildNodes = (module: O23ModuleStructure): Array<ProjectTreeNodeDef> => {
 		return createModuleFileNodes({
 			module, files: module.server.files,
@@ -334,7 +456,16 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 					$ip2p: file.path,
 					marker: MODULE_O23_SERVER_PIPELINE_DIR_NODE_MARKER(module, file),
 					label: <ModuleO23ServerPipelineDirNodeLabel {...rootData} module={module} file={file}/>,
-					$type: ProjectTreeNodeType.MODULE_O23_SERVER_PIPELINE_DIR
+					$type: ProjectTreeNodeType.MODULE_O23_SERVER_PIPELINE_DIR,
+					click: async () => {
+						fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+							segments: [
+								{label: module.name, icon: <ModuleRootIcon/>},
+								{label: 'Server Pipelines', icon: <ModuleServerIcon/>},
+								...buildModuleFileAsActiveResource(file)
+							]
+						});
+					}
 				};
 			},
 			asFileNode: (file: ModuleFile) => {
@@ -344,7 +475,16 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 					$ip2p: file.path,
 					marker: MODULE_O23_SERVER_PIPELINE_FILE_NODE_MARKER(module, file),
 					label: <ModuleO23ServerPipelineFileNodeLabel {...rootData} module={module} file={file}/>,
-					$type: ProjectTreeNodeType.MODULE_O23_SERVER_PIPELINE_FILE
+					$type: ProjectTreeNodeType.MODULE_O23_SERVER_PIPELINE_FILE,
+					click: async () => {
+						fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+							segments: [
+								{label: module.name, icon: <ModuleRootIcon/>},
+								{label: 'Server Pipelines', icon: <ModuleServerIcon/>},
+								...buildModuleFileAsActiveResource(file)
+							]
+						});
+					}
 				};
 			}
 		});
@@ -359,7 +499,16 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 					$ip2p: file.path,
 					marker: MODULE_O23_SCRIPTS_PIPELINE_DIR_NODE_MARKER(module, file),
 					label: <ModuleO23ScriptsPipelineDirNodeLabel {...rootData} module={module} file={file}/>,
-					$type: ProjectTreeNodeType.MODULE_O23_SCRIPTS_PIPELINE_DIR
+					$type: ProjectTreeNodeType.MODULE_O23_SCRIPTS_PIPELINE_DIR,
+					click: async () => {
+						fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+							segments: [
+								{label: module.name, icon: <ModuleRootIcon/>},
+								{label: 'Scripts Pipelines', icon: <ModuleScriptsIcon/>},
+								...buildModuleFileAsActiveResource(file)
+							]
+						});
+					}
 				};
 			},
 			asFileNode: (file: ModuleFile) => {
@@ -369,7 +518,16 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 					$ip2p: file.path,
 					marker: MODULE_O23_SCRIPTS_PIPELINE_FILE_NODE_MARKER(module, file),
 					label: <ModuleO23ScriptsPipelineFileNodeLabel {...rootData} module={module} file={file}/>,
-					$type: ProjectTreeNodeType.MODULE_O23_SCRIPTS_PIPELINE_FILE
+					$type: ProjectTreeNodeType.MODULE_O23_SCRIPTS_PIPELINE_FILE,
+					click: async () => {
+						fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+							segments: [
+								{label: module.name, icon: <ModuleRootIcon/>},
+								{label: 'Scripts Pipelines', icon: <ModuleScriptsIcon/>},
+								...buildModuleFileAsActiveResource(file)
+							]
+						});
+					}
 				};
 			}
 		});
@@ -384,7 +542,16 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 					$ip2p: file.path,
 					marker: MODULE_DB_SCRIPTS_DIR_NODE_MARKER(module, file),
 					label: <ModuleDBScriptsDirNodeLabel {...rootData} module={module} file={file}/>,
-					$type: ProjectTreeNodeType.MODULE_DB_SCRIPTS_DIR
+					$type: ProjectTreeNodeType.MODULE_DB_SCRIPTS_DIR,
+					click: async () => {
+						fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+							segments: [
+								{label: module.name, icon: <ModuleRootIcon/>},
+								{label: 'Database Scripts', icon: <ModuleDBScriptsIcon/>},
+								...buildModuleFileAsActiveResource(file)
+							]
+						});
+					}
 				};
 			},
 			asFileNode: (file: ModuleFile) => {
@@ -394,7 +561,16 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 					$ip2p: file.path,
 					marker: MODULE_DB_SCRIPTS_FILE_NODE_MARKER(module, file),
 					label: <ModuleDBScriptsFileNodeLabel {...rootData} module={module} file={file}/>,
-					$type: ProjectTreeNodeType.MODULE_DB_SCRIPTS_FILE
+					$type: ProjectTreeNodeType.MODULE_DB_SCRIPTS_FILE,
+					click: async () => {
+						fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+							segments: [
+								{label: module.name, icon: <ModuleRootIcon/>},
+								{label: 'Database Scripts', icon: <ModuleDBScriptsIcon/>},
+								...buildModuleFileAsActiveResource(file)
+							]
+						});
+					}
 				};
 			}
 		});
@@ -409,7 +585,16 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 					$ip2p: file.path,
 					marker: MODULE_SOURCE_DIR_NODE_MARKER(module, file),
 					label: <ModuleSourceDirNodeLabel {...rootData} module={module} file={file}/>,
-					$type: ProjectTreeNodeType.MODULE_SOURCE_DIR
+					$type: ProjectTreeNodeType.MODULE_SOURCE_DIR,
+					click: async () => {
+						fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+							segments: [
+								{label: module.name, icon: <ModuleRootIcon/>},
+								{label: 'SRC', icon: <ModuleSourceFilesIcon/>},
+								...buildModuleFileAsActiveResource(file)
+							]
+						});
+					}
 				};
 			},
 			asFileNode: (file: ModuleFile) => {
@@ -419,7 +604,16 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 					$ip2p: file.path,
 					marker: MODULE_SOURCE_FILE_NODE_MARKER(module, file),
 					label: <ModuleSourceFileNodeLabel {...rootData} module={module} file={file}/>,
-					$type: ProjectTreeNodeType.MODULE_SOURCE_FILE
+					$type: ProjectTreeNodeType.MODULE_SOURCE_FILE,
+					click: async () => {
+						fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+							segments: [
+								{label: module.name, icon: <ModuleRootIcon/>},
+								{label: 'SRC', icon: <ModuleSourceFilesIcon/>},
+								...buildModuleFileAsActiveResource(file)
+							]
+						});
+					}
 				};
 			}
 		});
@@ -443,7 +637,16 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 					$ip2p: file.path,
 					marker: MODULE_NODE_DIR_NODE_MARKER(module, file),
 					label: <ModuleNodeDirNodeLabel {...rootData} module={module} file={file}/>,
-					$type: ProjectTreeNodeType.MODULE_NODE_DIR
+					$type: ProjectTreeNodeType.MODULE_NODE_DIR,
+					click: async () => {
+						fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+							segments: [
+								{label: module.name, icon: <ModuleRootIcon/>},
+								{label: 'NodeJS', icon: <ModuleNodeFilesIcon/>},
+								...buildModuleFileAsActiveResource(file)
+							]
+						});
+					}
 				};
 			},
 			asFileNode: (file: ModuleFile) => {
@@ -453,7 +656,16 @@ export const ProjectFrame = (props: { position: SideContentPosition }) => {
 					$ip2p: file.path,
 					marker: MODULE_NODE_FILE_NODE_MARKER(module, file),
 					label: <ModuleNodeFileNodeLabel {...rootData} module={module} file={file}/>,
-					$type: ProjectTreeNodeType.MODULE_NODE_FILE
+					$type: ProjectTreeNodeType.MODULE_NODE_FILE,
+					click: async () => {
+						fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
+							segments: [
+								{label: module.name, icon: <ModuleRootIcon/>},
+								{label: 'NodeJS', icon: <ModuleNodeFilesIcon/>},
+								...buildModuleFileAsActiveResource(file)
+							]
+						});
+					}
 				};
 			}
 		});

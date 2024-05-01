@@ -13,6 +13,13 @@ export const LocationBarContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-l
     background-color: var(--f1-wb-bar-background-color);
     white-space: nowrap;
     overflow: hidden;
+
+    > svg {
+        height: calc(var(--f1-wb-location-bar-height) * 0.4);
+        width: calc(var(--f1-wb-location-bar-height) * 0.4);
+        color: var(--f1-wb-location-segment-icon-color);
+        opacity: 0.2;
+    }
 `;
 
 export const LocationSegment = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-location-segment'})`
