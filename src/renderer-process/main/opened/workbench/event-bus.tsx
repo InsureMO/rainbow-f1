@@ -1,6 +1,7 @@
 import {useCreateEventBus} from '@rainbow-d9/n1';
 import {createContext, ReactNode, useContext} from 'react';
 import {F1Project, F1ProjectStructure} from '../../../../shared';
+import {Resource} from '../types';
 
 export enum SideContentKey {
 	PROJECT = 'project',
@@ -20,20 +21,12 @@ export enum SideContentPosition {
 	BOTTOM = 'bottom'
 }
 
-export interface ActiveResourceSegment {
-	label: string;
-	icon?: ReactNode;
-}
-
-export interface ActiveResource {
-	segments: Array<ActiveResourceSegment>;
-}
-
 export enum WorkbenchEventTypes {
 	OPEN_SIDE_FRAME = 'open-side-frame', SIDE_FRAME_OPENED = 'side-frame-opened',
 	CLOSE_SIDE_FRAME = 'close-side-frame', SIDE_FRAME_CLOSED = 'side-frame-closed',
 	ASK_PROJECT = 'ask-project', ASK_PROJECT_STRUCTURE = 'ask-project-structure',
-	RESOURCE_ACTIVE = 'resource-active'
+	RESOURCE_SELECTED = 'resource-selected',
+	OPEN_RESOURCE = 'open-resource'
 }
 
 export interface WorkbenchEventBus {
@@ -73,11 +66,17 @@ export interface WorkbenchEventBus {
 
 	off(type: WorkbenchEventTypes.ASK_PROJECT_STRUCTURE, listener: (callback: (project: F1Project, structure: F1ProjectStructure) => void) => void): this;
 
-	fire(type: WorkbenchEventTypes.RESOURCE_ACTIVE, resource: ActiveResource): this;
+	fire(type: WorkbenchEventTypes.RESOURCE_SELECTED, resource: Resource): this;
 
-	on(type: WorkbenchEventTypes.RESOURCE_ACTIVE, listener: (resource: ActiveResource) => void): this;
+	on(type: WorkbenchEventTypes.RESOURCE_SELECTED, listener: (resource: Resource) => void): this;
 
-	off(type: WorkbenchEventTypes.RESOURCE_ACTIVE, listener: (resource: ActiveResource) => void): this;
+	off(type: WorkbenchEventTypes.RESOURCE_SELECTED, listener: (resource: Resource) => void): this;
+
+	fire(type: WorkbenchEventTypes.OPEN_RESOURCE, resource: Resource): this;
+
+	on(type: WorkbenchEventTypes.OPEN_RESOURCE, listener: (resource: Resource) => void): this;
+
+	off(type: WorkbenchEventTypes.OPEN_RESOURCE, listener: (resource: Resource) => void): this;
 }
 
 const Context = createContext<WorkbenchEventBus>({} as WorkbenchEventBus);

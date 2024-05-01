@@ -4,6 +4,7 @@ import {
 	F1Project,
 	F1ProjectStructure,
 	ModuleCommand,
+	ModuleEnv,
 	ModuleFile,
 	O23ModuleStructure
 } from '../../../shared';
@@ -11,11 +12,6 @@ import {
 export interface ProjectRoot {
 	project: F1Project;
 	structure: F1ProjectStructure;
-}
-
-export interface ModuleEnv {
-	name: string;
-	commands: Array<ModuleCommand>;
 }
 
 export enum ProjectTreeNodeType {

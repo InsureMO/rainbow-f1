@@ -1,7 +1,7 @@
 import React from 'react';
 import {FolderIcon} from '../../../../assets/icons';
 import {F1ModuleStructure, ModuleFile} from '../../../../shared';
-import {ActiveResourceSegment} from '../../opened/workbench/event-bus';
+import {ModuleFileResource, PresentResourceSegment} from '../../opened/types';
 import {castTo} from '../../utils';
 import {icon} from '../../utils/icons-utils';
 import {ModuleFileNodeDef, ProjectTreeNodeDef} from '../types';
@@ -63,10 +63,13 @@ export const createModuleFileNodes = (options: ModuleFileNodesCreateOptions): Ar
 
 	return top;
 };
-export const buildModuleFileAsActiveResource = (file: ModuleFile): Array<ActiveResourceSegment> => {
+export const buildModuleFileAsResourceSegments = (file: ModuleFile): Array<PresentResourceSegment> => {
 	const [last, ...others] = file.path.split(/[\/|\\]/g).reverse();
 	return [
 		...others.reverse().map(label => ({label})),
 		{label: last, icon: file.dir ? <FolderIcon/> : icon(file)}
 	];
+};
+export const buildModuleFileAsResource = (file: ModuleFile, marker: string, segments: () => Array<PresentResourceSegment>): ModuleFileResource => {
+	return {file, marker, segments: segments()};
 };

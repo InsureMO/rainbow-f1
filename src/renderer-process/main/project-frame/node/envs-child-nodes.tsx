@@ -1,18 +1,28 @@
 import React from 'react';
 import {ModuleCommandIcon, ModuleEnvIcon, ModuleEnvsIcon, ModuleRootIcon} from '../../../../assets/icons';
-import {F1ModuleStructure, ModuleCommand} from '../../../../shared';
+import {F1ModuleStructure, ModuleCommand, ModuleEnv} from '../../../../shared';
+import {ModuleCommandResource, ModuleEnvResource} from '../../opened/types';
 import {WorkbenchEventBus, WorkbenchEventTypes} from '../../opened/workbench/event-bus';
 import {castTo} from '../../utils';
 import {ModuleEnvCommandNodeLabel, ModuleEnvNodeLabel} from '../label';
 import {
 	MODULE_ENV_COMMAND_NODE_MARKER,
 	MODULE_ENV_NODE_MARKER,
-	ModuleEnv,
 	ProjectRoot,
 	ProjectTreeNodeDef,
 	ProjectTreeNodeType
 } from '../types';
 
+const buildAsEnvResource = (module: F1ModuleStructure, env: ModuleEnv, marker: string): ModuleEnvResource => {
+	return {
+		env, marker,
+		segments: [
+			{label: module.name, icon: <ModuleRootIcon/>},
+			{label: 'Environments', icon: <ModuleEnvsIcon/>},
+			{label: env.name, icon: <ModuleEnvIcon/>}
+		]
+	};
+};
 export const createModuleEnvsChildNodes = (rootData: ProjectRoot, fire: WorkbenchEventBus['fire']) => (module: F1ModuleStructure): Array<ProjectTreeNodeDef> => {
 	const envs: Record<string, Array<ModuleCommand>> = {};
 	Object.entries(module.commands ?? {}).forEach(([, command]) => {
@@ -35,46 +45,46 @@ export const createModuleEnvsChildNodes = (rootData: ProjectRoot, fire: Workbenc
 	return Object.entries(envs)
 		.sort(([n1], [n2]) => {
 			return n1.localeCompare(n2, (void 0), {sensitivity: 'base'});
-		}).map(([name, commands]) => ({name, commands}))
+		}).map(([name, commands]) => ({name, commands} as ModuleEnv))
 		.map((env) => {
+			const marker = MODULE_ENV_NODE_MARKER(module, env);
 			return {
 				value: castTo({...rootData, module, env}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$envs$$/${env.name}`, $ip2p: env.name,
-				marker: MODULE_ENV_NODE_MARKER(module, env),
+				marker,
 				label: <ModuleEnvNodeLabel {...rootData} module={module} env={env}/>,
 				$type: ProjectTreeNodeType.MODULE_ENV,
 				click: async () => {
-					fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
-						segments: [
-							{label: module.name, icon: <ModuleRootIcon/>},
-							{label: 'Environments', icon: <ModuleEnvsIcon/>},
-							{label: env.name, icon: <ModuleEnvIcon/>}
-						]
-					});
+					fire(WorkbenchEventTypes.RESOURCE_SELECTED, buildAsEnvResource(module, env, marker));
 				}
 			};
 		});
+};
+const buildAsEnvCommandResource = (module: F1ModuleStructure, env: ModuleEnv, command: ModuleCommand, marker: string): ModuleCommandResource => {
+	return {
+		env, command, marker,
+		segments: [
+			{label: module.name, icon: <ModuleRootIcon/>},
+			{label: 'Environments', icon: <ModuleEnvsIcon/>},
+			{label: env.name, icon: <ModuleEnvIcon/>},
+			{label: command.name, icon: <ModuleCommandIcon/>}
+		]
+	};
 };
 export const createModuleEnvChildNodes = (rootData: ProjectRoot, fire: WorkbenchEventBus['fire']) => (module: F1ModuleStructure, env: ModuleEnv): Array<ProjectTreeNodeDef> => {
 	return [...env.commands]
 		.sort((c1, c2) => c1.name.localeCompare(c2.name, (void 0)))
 		.map(command => {
+			const marker = MODULE_ENV_COMMAND_NODE_MARKER(module, env, command);
 			return {
 				value: castTo({...rootData, module, env, command}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$envs$$/${env.name}/${command.name}`,
 				$ip2p: command.name,
-				marker: MODULE_ENV_COMMAND_NODE_MARKER(module, env, command),
+				marker,
 				label: <ModuleEnvCommandNodeLabel {...rootData} module={module} env={env} command={command}/>,
 				$type: ProjectTreeNodeType.MODULE_ENV_COMMAND,
 				click: async () => {
-					fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
-						segments: [
-							{label: module.name, icon: <ModuleRootIcon/>},
-							{label: 'Environments', icon: <ModuleEnvsIcon/>},
-							{label: env.name, icon: <ModuleEnvIcon/>},
-							{label: command.name, icon: <ModuleCommandIcon/>}
-						]
-					});
+					fire(WorkbenchEventTypes.RESOURCE_SELECTED, buildAsEnvCommandResource(module, env, command, marker));
 				}
 			};
 		});

@@ -11,46 +11,48 @@ import {
 	ProjectTreeNodeDef,
 	ProjectTreeNodeType
 } from '../types';
-import {buildModuleFileAsActiveResource, createModuleFileNodes} from './module-file-nodes';
+import {buildModuleFileAsResource, buildModuleFileAsResourceSegments, createModuleFileNodes} from './module-file-nodes';
 
 const createO23ModuleNodeFileNodes = (rootData: ProjectRoot, module: O23ModuleStructure, fire: WorkbenchEventBus['fire']): Array<ProjectTreeNodeDef> => {
 	return createModuleFileNodes({
 		module, files: module.nodeFiles,
 		asDirNode: (file: ModuleFile) => {
+			const marker = MODULE_NODE_DIR_NODE_MARKER(module, file);
 			return {
 				value: castTo({...rootData, module, file}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$node-files$$/$$${file.path}$$`,
 				$ip2p: file.path,
-				marker: MODULE_NODE_DIR_NODE_MARKER(module, file),
+				marker,
 				label: <ModuleNodeDirNodeLabel {...rootData} module={module} file={file}/>,
 				$type: ProjectTreeNodeType.MODULE_NODE_DIR,
 				click: async () => {
-					fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
-						segments: [
+					fire(WorkbenchEventTypes.RESOURCE_SELECTED, buildModuleFileAsResource(file, marker, () => {
+						return [
 							{label: module.name, icon: <ModuleRootIcon/>},
 							{label: 'NodeJS', icon: <ModuleNodeFilesIcon/>},
-							...buildModuleFileAsActiveResource(file)
-						]
-					});
+							...buildModuleFileAsResourceSegments(file)
+						];
+					}));
 				}
 			};
 		},
 		asFileNode: (file: ModuleFile) => {
+			const marker = MODULE_NODE_FILE_NODE_MARKER(module, file);
 			return {
 				value: castTo({...rootData, module, file}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$node-files$$/$$${file.path}$$`,
 				$ip2p: file.path,
-				marker: MODULE_NODE_FILE_NODE_MARKER(module, file),
+				marker,
 				label: <ModuleNodeFileNodeLabel {...rootData} module={module} file={file}/>,
 				$type: ProjectTreeNodeType.MODULE_NODE_FILE,
 				click: async () => {
-					fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
-						segments: [
+					fire(WorkbenchEventTypes.RESOURCE_SELECTED, buildModuleFileAsResource(file, marker, () => {
+						return [
 							{label: module.name, icon: <ModuleRootIcon/>},
 							{label: 'NodeJS', icon: <ModuleNodeFilesIcon/>},
-							...buildModuleFileAsActiveResource(file)
-						]
-					});
+							...buildModuleFileAsResourceSegments(file)
+						];
+					}));
 				}
 			};
 		}

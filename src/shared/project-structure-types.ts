@@ -11,6 +11,11 @@ export interface ModuleCommands {
 	[key: string]: ModuleCommand;
 }
 
+export interface ModuleEnv {
+	name: string;
+	commands: Array<ModuleCommand>;
+}
+
 export enum ModuleFileType {
 	DIRECTORY = 'dir',
 	TYPESCRIPT = 'ts',

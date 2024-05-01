@@ -11,46 +11,48 @@ import {
 	ProjectTreeNodeDef,
 	ProjectTreeNodeType
 } from '../types';
-import {buildModuleFileAsActiveResource, createModuleFileNodes} from './module-file-nodes';
+import {buildModuleFileAsResource, buildModuleFileAsResourceSegments, createModuleFileNodes} from './module-file-nodes';
 
 export const createModuleDBScriptsChildNodes = (rootData: ProjectRoot, fire: WorkbenchEventBus['fire']) => (module: O23ModuleStructure): Array<ProjectTreeNodeDef> => {
 	return createModuleFileNodes({
 		module, files: module.dbScripts.files,
 		asDirNode: (file: ModuleFile) => {
+			const marker = MODULE_DB_SCRIPTS_DIR_NODE_MARKER(module, file);
 			return {
 				value: castTo({...rootData, module, file}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$$$o23-db-scripts$$$$/$$${file.path}$$`,
 				$ip2p: file.path,
-				marker: MODULE_DB_SCRIPTS_DIR_NODE_MARKER(module, file),
+				marker,
 				label: <ModuleDBScriptsDirNodeLabel {...rootData} module={module} file={file}/>,
 				$type: ProjectTreeNodeType.MODULE_DB_SCRIPTS_DIR,
 				click: async () => {
-					fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
-						segments: [
+					fire(WorkbenchEventTypes.RESOURCE_SELECTED, buildModuleFileAsResource(file, marker, () => {
+						return [
 							{label: module.name, icon: <ModuleRootIcon/>},
 							{label: 'Database Scripts', icon: <ModuleDBScriptsIcon/>},
-							...buildModuleFileAsActiveResource(file)
-						]
-					});
+							...buildModuleFileAsResourceSegments(file)
+						];
+					}));
 				}
 			};
 		},
 		asFileNode: (file: ModuleFile) => {
+			const marker = MODULE_DB_SCRIPTS_FILE_NODE_MARKER(module, file);
 			return {
 				value: castTo({...rootData, module, file}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$$$o23-db-scripts$$$$/$$${file.path}$$`,
 				$ip2p: file.path,
-				marker: MODULE_DB_SCRIPTS_FILE_NODE_MARKER(module, file),
+				marker,
 				label: <ModuleDBScriptsFileNodeLabel {...rootData} module={module} file={file}/>,
 				$type: ProjectTreeNodeType.MODULE_DB_SCRIPTS_FILE,
 				click: async () => {
-					fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {
-						segments: [
+					fire(WorkbenchEventTypes.RESOURCE_SELECTED, buildModuleFileAsResource(file, marker, () => {
+						return [
 							{label: module.name, icon: <ModuleRootIcon/>},
 							{label: 'Database Scripts', icon: <ModuleDBScriptsIcon/>},
-							...buildModuleFileAsActiveResource(file)
-						]
-					});
+							...buildModuleFileAsResourceSegments(file)
+						];
+					}));
 				}
 			};
 		}

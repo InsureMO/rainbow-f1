@@ -15,27 +15,31 @@ import {
 
 const createAddModuleNode = (rootData: ProjectRoot, fire: WorkbenchEventBus['fire']): ProjectTreeNodeDef => {
 	// use project and ADD_MODULE as value, tuple
+	const marker = ADD_MODULE_NODE_MARKER(rootData.project);
 	return {
 		value: castTo({...rootData, module: ADD_MODULE}),
 		$ip2r: `${rootData.project.directory}/modules`, $ip2p: 'modules',
-		marker: ADD_MODULE_NODE_MARKER(rootData.project),
+		marker,
 		label: <AddModuleNodeLabel {...rootData}/>,
 		$type: ProjectTreeNodeType.ADD_MODULE,
 		click: async () => {
-			fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {segments: []});
+			// TODO, TO ADD NEW MODULE
 		}
 	};
 };
 const createModuleNode = (rootData: ProjectRoot, module: F1ModuleStructure, fire: WorkbenchEventBus['fire']): ProjectTreeNodeDef => {
 	// use module as value
+	const marker = MODULE_NODE_MARKER(module);
 	return {
 		value: castTo({...rootData, module}),
 		$ip2r: `${rootData.project.directory}/${module.name}/envs`, $ip2p: module.name,
-		marker: MODULE_NODE_MARKER(module),
+		marker,
 		label: <ModuleRootNodeLabel {...rootData} module={module}/>,
 		$type: ProjectTreeNodeType.MODULE,
 		click: async () => {
-			fire(WorkbenchEventTypes.RESOURCE_ACTIVE, {segments: [{label: module.name, icon: <ModuleRootIcon/>}]});
+			fire(WorkbenchEventTypes.RESOURCE_SELECTED, {
+				marker, segments: [{label: module.name, icon: <ModuleRootIcon/>}]
+			});
 		}
 	};
 };

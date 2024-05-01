@@ -94,6 +94,8 @@ export const GlobalStyles: any = createGlobalStyle`
         --f1-wb-side-frame-header-button-icon-color: #292d32;
         --f1-wb-side-frame-header-button-tooltip-background-color: #f7f7f7;
         --f1-wb-side-frame-header-button-tooltip-shadow: 0px 0px 10px 3px #c3c3c3;
+        --f1-wb-work-area-header-height: 40px;
+        --f1-wb-work-area-header-hover-color: var(--f1-hover-color);
 
         color: var(--f1-font-color);
         background-color: var(--f1-background-color);
