@@ -30,6 +30,9 @@ export const createModuleCommandsChildNodes = (rootData: ProjectRoot, fire: Work
 			$type: ProjectTreeNodeType.MODULE_COMMAND,
 			click: async () => {
 				fire(WorkbenchEventTypes.RESOURCE_SELECTED, buildAsResource(module, cmd, marker));
+			},
+			dblClick: async () => {
+				fire(WorkbenchEventTypes.OPEN_RESOURCE, buildAsResource(module, cmd, marker));
 			}
 		};
 	});

@@ -15,16 +15,17 @@ interface WorkAreaHeaderResource extends WorkAreaResource {
 export const WorkAreaHeader = () => {
 	const {on, off} = useWorkbenchEventBus();
 	const [resources, setResources] = useState<Array<WorkAreaHeaderResource>>([
-		{resource: {marker: '1', segments: [{icon: <O23PipelineIcon/>, label: '01-pipeline.yaml'}]}, active: true},
-		{resource: {marker: '2', segments: [{icon: <O23PipelineIcon/>, label: '02-pipeline.yaml'}]}}
+		// {resource: {marker: '1', segments: [{icon: <O23PipelineIcon/>, label: '01-pipeline.yaml'}]}, active: true},
+		// {resource: {marker: '2', segments: [{icon: <O23PipelineIcon/>, label: '02-pipeline.yaml'}]}}
 	]);
 	useEffect(() => {
 		const onOpenResource = (resource: Resource) => {
 			// TODO
+			console.log(resource);
 		};
 		on(WorkbenchEventTypes.OPEN_RESOURCE, onOpenResource);
 		return () => {
-			on(WorkbenchEventTypes.OPEN_RESOURCE, onOpenResource);
+			off(WorkbenchEventTypes.OPEN_RESOURCE, onOpenResource);
 		};
 	}, [on, off]);
 	const forceUpdate = useForceUpdate();
