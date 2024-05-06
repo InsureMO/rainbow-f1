@@ -38,6 +38,13 @@ export const createModuleO23ScriptsPipelineChildNodes = (rootData: ProjectRoot, 
 		},
 		asFileNode: (file: ModuleFile) => {
 			const marker = MODULE_O23_SCRIPTS_PIPELINE_FILE_NODE_MARKER(module, file);
+			const resource = buildModuleFileAsResource(file, marker, () => {
+				return [
+					{label: module.name, icon: <ModuleRootIcon/>},
+					{label: 'Scripts Pipelines', icon: <ModuleScriptsIcon/>},
+					...buildModuleFileAsResourceSegments(file)
+				];
+			});
 			return {
 				value: castTo({...rootData, module, file}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$o23-pipelines$$/$$server$$/$$${file.path}$$`,
@@ -46,13 +53,10 @@ export const createModuleO23ScriptsPipelineChildNodes = (rootData: ProjectRoot, 
 				label: <ModuleO23ScriptsPipelineFileNodeLabel {...rootData} module={module} file={file}/>,
 				$type: ProjectTreeNodeType.MODULE_O23_SCRIPTS_PIPELINE_FILE,
 				click: async () => {
-					fire(WorkbenchEventTypes.RESOURCE_SELECTED, buildModuleFileAsResource(file, marker, () => {
-						return [
-							{label: module.name, icon: <ModuleRootIcon/>},
-							{label: 'Scripts Pipelines', icon: <ModuleScriptsIcon/>},
-							...buildModuleFileAsResourceSegments(file)
-						];
-					}));
+					fire(WorkbenchEventTypes.RESOURCE_SELECTED, resource);
+				},
+				dblClick: async () => {
+					fire(WorkbenchEventTypes.OPEN_RESOURCE, resource);
 				}
 			};
 		}

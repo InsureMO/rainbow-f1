@@ -46,10 +46,13 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		}
 	}
 
-	protected readCommands(structure: O23ModuleStructure, packageJson: NodeJsPackageJson) {
+	protected readCommands(structure: O23ModuleStructure, packageFile: string, packageJson: NodeJsPackageJson) {
+		const file = {
+			basename: PathWorker.basename(packageFile), path: packageFile, dir: false, type: ModuleFileType.COMMAND
+		};
 		Object.entries(packageJson.scripts ?? {}).forEach(([key, value]) => {
 			if (isBlank(value)) {
-				structure.commands[key] = {name: key, cli: value, args: {}, envFiles: []};
+				structure.commands[key] = {name: key, cli: value, args: {}, envFiles: [], ...file};
 			} else {
 				const parts = value.split(' ').filter(isNotBlank);
 				structure.commands[key] = {
@@ -66,7 +69,8 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 						} else {
 							return [];
 						}
-					})()
+					})(),
+					...file
 				};
 			}
 		});
@@ -109,13 +113,14 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		if (packageJsonFile == null) {
 			return {success: false, message: 'Project file[package.json] not found.', ...structure};
 		}
-		const packageJson: NodeJsPackageJson = FileSystemWorker.readJSON(PathWorker.resolve(project.directory, module.name, 'package.json'));
+		const packageFile = PathWorker.resolve(project.directory, module.name, 'package.json');
+		const packageJson: NodeJsPackageJson = FileSystemWorker.readJSON(packageFile);
 		if (packageJson == null) {
 			return {success: false, message: 'Failed to read content of package.json.', ...structure};
 		}
 		// read commands, find build, test, start. o23 has more commands, find build and start standalone commands as well.
 		// typically, all following commands are defined for development.
-		this.readCommands(structure, packageJson);
+		this.readCommands(structure, packageFile, packageJson);
 		this.readEnvFiles(project, module, structure);
 		// find server pipeline files according to env
 		this.readServerPipelineFiles(project, module, structure);

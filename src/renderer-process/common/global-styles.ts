@@ -31,8 +31,9 @@ export const GlobalStyles: any = createGlobalStyle`
         --f1-primary-hover-shadow: 0 0 0 3px ${color('#5f88d6').alpha(0.2).toString()};
         --f1-dialog-shadow: 0 0 18px 6px ${color('#000').alpha(0.4).toString()};
         // border
+        --f1-border-width: 1px;
         --f1-border-color: #e9e9e9;
-        --f1-border: 1px solid var(--f1-border-color);
+        --f1-border: var(--f1-border-width) solid var(--f1-border-color);
         --f1-border-radius: 4px;
         // scrollbar
         --f1-scroll-background-color: rgba(229, 229, 229, 0.5);
@@ -86,6 +87,7 @@ export const GlobalStyles: any = createGlobalStyle`
         --f1-wb-side-bar-button-active-background-color: #d1d1d1;
         --f1-wb-side-bar-button-tooltip-background-color: #f7f7f7;
         --f1-wb-side-bar-button-tooltip-shadow: 0px 0px 10px 3px #c3c3c3;
+        --f1-wb-side-bar-button-tooltip-z-index: 10000;
         --f1-wb-side-slider-background-color: var(--f1-hover-color);
         --f1-wb-status-bar-height: 28px;
         --f1-wb-side-frame-header-height: 40px;
@@ -96,6 +98,9 @@ export const GlobalStyles: any = createGlobalStyle`
         --f1-wb-side-frame-header-button-tooltip-shadow: 0px 0px 10px 3px #c3c3c3;
         --f1-wb-work-area-header-height: 40px;
         --f1-wb-work-area-header-hover-color: var(--f1-hover-color);
+        --f1-wb-work-area-header-button-size: 30px;
+        --f1-wb-work-area-header-popover-shadow: 0px 0px 10px 3px #c3c3c3;
+        --f1-wb-work-area-header-popover-z-index: 10000;
 
         color: var(--f1-font-color);
         background-color: var(--f1-background-color);
@@ -202,6 +207,8 @@ export const GlobalStyles: any = createGlobalStyle`
             --f1-wb-side-frame-header-button-icon-color: #d6d2cd;
             --f1-wb-side-frame-header-button-tooltip-background-color: #393b40;
             --f1-wb-side-frame-header-button-tooltip-shadow: 0px 0px 10px 3px #1a1c1d;
+            --f1-wb-work-area-header-hover-color: var(--f1-hover-color);
+            --f1-wb-work-area-header-popover-shadow: 0px 0px 10px 3px #1a1c1d;
         }
     }
 

@@ -71,5 +71,5 @@ export const buildModuleFileAsResourceSegments = (file: ModuleFile): Array<Prese
 	];
 };
 export const buildModuleFileAsResource = (file: ModuleFile, marker: string, segments: () => Array<PresentResourceSegment>): ModuleFileResource => {
-	return {file, marker, segments: segments()};
+	return {file, marker, segments: segments(), absolutePath: () => file.path};
 };

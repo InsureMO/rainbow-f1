@@ -15,12 +15,13 @@ import {
 
 const buildAsEnvResource = (module: F1ModuleStructure, env: ModuleEnv, marker: string): ModuleEnvResource => {
 	return {
-		env, marker,
+		env, marker, file: env,
 		segments: [
 			{label: module.name, icon: <ModuleRootIcon/>},
 			{label: 'Environments', icon: <ModuleEnvsIcon/>},
 			{label: env.name, icon: <ModuleEnvIcon/>}
-		]
+		],
+		absolutePath: () => `${env.path}`
 	};
 };
 export const createModuleEnvsChildNodes = (rootData: ProjectRoot, fire: WorkbenchEventBus['fire']) => (module: F1ModuleStructure): Array<ProjectTreeNodeDef> => {
@@ -60,22 +61,21 @@ export const createModuleEnvsChildNodes = (rootData: ProjectRoot, fire: Workbenc
 			};
 		});
 };
-const buildAsEnvCommandResource = (module: F1ModuleStructure, env: ModuleEnv, command: ModuleCommand, marker: string): ModuleCommandResource => {
-	return {
-		env, command, marker,
-		segments: [
-			{label: module.name, icon: <ModuleRootIcon/>},
-			{label: 'Environments', icon: <ModuleEnvsIcon/>},
-			{label: env.name, icon: <ModuleEnvIcon/>},
-			{label: command.name, icon: <ModuleCommandIcon/>}
-		]
-	};
-};
 export const createModuleEnvChildNodes = (rootData: ProjectRoot, fire: WorkbenchEventBus['fire']) => (module: F1ModuleStructure, env: ModuleEnv): Array<ProjectTreeNodeDef> => {
 	return [...env.commands]
 		.sort((c1, c2) => c1.name.localeCompare(c2.name, (void 0)))
 		.map(command => {
 			const marker = MODULE_ENV_COMMAND_NODE_MARKER(module, env, command);
+			const resource: ModuleCommandResource = {
+				env, command, marker, file: command,
+				segments: [
+					{label: module.name, icon: <ModuleRootIcon/>},
+					{label: 'Environments', icon: <ModuleEnvsIcon/>},
+					{label: env.name, icon: <ModuleEnvIcon/>},
+					{label: command.name, icon: <ModuleCommandIcon/>}
+				],
+				absolutePath: () => `${command.path}::${command.name}`
+			};
 			return {
 				value: castTo({...rootData, module, env, command}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$envs$$/${env.name}/${command.name}`,
@@ -84,7 +84,10 @@ export const createModuleEnvChildNodes = (rootData: ProjectRoot, fire: Workbench
 				label: <ModuleEnvCommandNodeLabel {...rootData} module={module} env={env} command={command}/>,
 				$type: ProjectTreeNodeType.MODULE_ENV_COMMAND,
 				click: async () => {
-					fire(WorkbenchEventTypes.RESOURCE_SELECTED, buildAsEnvCommandResource(module, env, command, marker));
+					fire(WorkbenchEventTypes.RESOURCE_SELECTED, resource);
+				},
+				dblClick: async () => {
+					fire(WorkbenchEventTypes.OPEN_RESOURCE, resource);
 				}
 			};
 		});

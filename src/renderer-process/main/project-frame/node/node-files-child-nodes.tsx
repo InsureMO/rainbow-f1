@@ -38,6 +38,13 @@ const createO23ModuleNodeFileNodes = (rootData: ProjectRoot, module: O23ModuleSt
 		},
 		asFileNode: (file: ModuleFile) => {
 			const marker = MODULE_NODE_FILE_NODE_MARKER(module, file);
+			const resource = buildModuleFileAsResource(file, marker, () => {
+				return [
+					{label: module.name, icon: <ModuleRootIcon/>},
+					{label: 'NodeJS', icon: <ModuleNodeFilesIcon/>},
+					...buildModuleFileAsResourceSegments(file)
+				];
+			});
 			return {
 				value: castTo({...rootData, module, file}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$node-files$$/$$${file.path}$$`,
@@ -46,13 +53,10 @@ const createO23ModuleNodeFileNodes = (rootData: ProjectRoot, module: O23ModuleSt
 				label: <ModuleNodeFileNodeLabel {...rootData} module={module} file={file}/>,
 				$type: ProjectTreeNodeType.MODULE_NODE_FILE,
 				click: async () => {
-					fire(WorkbenchEventTypes.RESOURCE_SELECTED, buildModuleFileAsResource(file, marker, () => {
-						return [
-							{label: module.name, icon: <ModuleRootIcon/>},
-							{label: 'NodeJS', icon: <ModuleNodeFilesIcon/>},
-							...buildModuleFileAsResourceSegments(file)
-						];
-					}));
+					fire(WorkbenchEventTypes.RESOURCE_SELECTED, resource);
+				},
+				dblClick: async () => {
+					fire(WorkbenchEventTypes.OPEN_RESOURCE, resource);
 				}
 			};
 		}

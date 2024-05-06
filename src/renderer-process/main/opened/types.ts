@@ -9,21 +9,23 @@ export interface PresentResourceSegment {
 export interface Resource {
 	marker: string;
 	segments: Array<PresentResourceSegment>;
+	renamable?: boolean;
 }
 
 export interface VirtualNodeResource extends Resource {
 }
 
-export interface ModuleCommandResource extends Resource {
+export interface ModuleFileResource extends Resource {
+	file: ModuleFile;
+	absolutePath: () => string;
+}
+
+export interface ModuleCommandResource extends ModuleFileResource {
 	// env will be existed when this resource is constructed under an env
 	env?: ModuleEnv;
 	command: ModuleCommand;
 }
 
-export interface ModuleEnvResource extends Resource {
+export interface ModuleEnvResource extends ModuleFileResource {
 	env: ModuleEnv;
-}
-
-export interface ModuleFileResource extends Resource {
-	file: ModuleFile;
 }

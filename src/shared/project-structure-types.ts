@@ -1,21 +1,5 @@
 import {F1ModuleType} from './project-types';
 
-export interface ModuleCommand {
-	name: string;
-	cli: string;
-	args: Record<string, string | undefined>;
-	envFiles: Array<string>;
-}
-
-export interface ModuleCommands {
-	[key: string]: ModuleCommand;
-}
-
-export interface ModuleEnv {
-	name: string;
-	commands: Array<ModuleCommand>;
-}
-
 export enum ModuleFileType {
 	DIRECTORY = 'dir',
 	TYPESCRIPT = 'ts',
@@ -42,6 +26,9 @@ export enum ModuleFileType {
 
 	O23_PIPELINE = 'o23-pipeline',
 
+	/** might not be a file, just a script command in package.json */
+	COMMAND = 'command',
+
 	UNKNOWN = 'unknown',
 }
 
@@ -54,6 +41,22 @@ export interface ModuleFile {
 	path: string;
 	dir: boolean;
 	type: ModuleFileType;
+}
+
+export interface ModuleCommand extends ModuleFile {
+	name: string;
+	cli: string;
+	args: Record<string, string | undefined>;
+	envFiles: Array<string>;
+}
+
+export interface ModuleCommands {
+	[key: string]: ModuleCommand;
+}
+
+export interface ModuleEnv extends ModuleFile {
+	name: string;
+	commands: Array<ModuleCommand>;
 }
 
 export interface F1ModuleStructure {

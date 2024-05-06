@@ -38,6 +38,13 @@ export const createModuleDBScriptsChildNodes = (rootData: ProjectRoot, fire: Wor
 		},
 		asFileNode: (file: ModuleFile) => {
 			const marker = MODULE_DB_SCRIPTS_FILE_NODE_MARKER(module, file);
+			const resource = buildModuleFileAsResource(file, marker, () => {
+				return [
+					{label: module.name, icon: <ModuleRootIcon/>},
+					{label: 'Database Scripts', icon: <ModuleDBScriptsIcon/>},
+					...buildModuleFileAsResourceSegments(file)
+				];
+			});
 			return {
 				value: castTo({...rootData, module, file}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$$$o23-db-scripts$$$$/$$${file.path}$$`,
@@ -46,13 +53,10 @@ export const createModuleDBScriptsChildNodes = (rootData: ProjectRoot, fire: Wor
 				label: <ModuleDBScriptsFileNodeLabel {...rootData} module={module} file={file}/>,
 				$type: ProjectTreeNodeType.MODULE_DB_SCRIPTS_FILE,
 				click: async () => {
-					fire(WorkbenchEventTypes.RESOURCE_SELECTED, buildModuleFileAsResource(file, marker, () => {
-						return [
-							{label: module.name, icon: <ModuleRootIcon/>},
-							{label: 'Database Scripts', icon: <ModuleDBScriptsIcon/>},
-							...buildModuleFileAsResourceSegments(file)
-						];
-					}));
+					fire(WorkbenchEventTypes.RESOURCE_SELECTED, resource);
+				},
+				dblClick: async () => {
+					fire(WorkbenchEventTypes.OPEN_RESOURCE, resource);
 				}
 			};
 		}

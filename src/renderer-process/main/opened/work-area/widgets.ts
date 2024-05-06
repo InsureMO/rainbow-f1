@@ -1,4 +1,4 @@
-import {DOM_KEY_WIDGET} from '@rainbow-d9/n2';
+import {DOM_KEY_WIDGET, UnwrappedButton} from '@rainbow-d9/n2';
 import styled from 'styled-components';
 
 export const WorkAreaContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area'})`
@@ -14,34 +14,19 @@ export const WorkAreaHeaderContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-w
     position: relative;
     grid-template-columns: 1fr auto;
     width: 100%;
-    height: var(--f1-wb-work-area-header-height);
-    border-bottom: var(--f1-border);
+    //min-height: var(--f1-wb-work-area-header-height);
     align-items: center;
+    align-self: start;
+    background-image: linear-gradient(to bottom, transparent calc(var(--f1-wb-work-area-header-height) - var(--f1-border-width)), var(--f1-border-color) var(--f1-border-width));
+    background-size: 100% var(--f1-wb-work-area-header-height);
 `;
 export const WorkAreaHeaderTabsContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-header-tabs'})`
     display: flex;
     position: relative;
+    flex-wrap: wrap;
     width: 100%;
-    height: var(--f1-wb-work-area-header-height);
-    border-bottom: var(--f1-border);
-
-    + button {
-        margin-left: 4px;
-        margin-right: 4px;
-        border-radius: calc(var(--f1-border-radius) * 2);
-
-        &:hover {
-            background-color: var(--f1-primary-color);
-
-            > span[data-w=d9-deco-lead] > svg {
-                fill: var(--f1-invert-color);
-            }
-        }
-
-        > span[data-w=d9-deco-lead] > svg {
-            transition: fill 300ms ease-in-out;
-        }
-    }
+    //min-height: var(--f1-wb-work-area-header-height);
+    overflow: hidden;
 `;
 export const WorkAreaHeaderTabContainer = styled.div.attrs<{ active?: boolean }>(({active}) => {
 	return {
@@ -54,7 +39,7 @@ export const WorkAreaHeaderTabContainer = styled.div.attrs<{ active?: boolean }>
     display: flex;
     position: relative;
     align-items: center;
-    height: calc(var(--f1-wb-work-area-header-height) - 1px);
+    height: var(--f1-wb-work-area-header-height);
     padding: 0 8px;
     cursor: pointer;
 
@@ -63,7 +48,7 @@ export const WorkAreaHeaderTabContainer = styled.div.attrs<{ active?: boolean }>
         display: var(--active-bar-visible, none);
         position: absolute;
         left: 0;
-        bottom: -1px;
+        bottom: 0;
         width: 100%;
         height: 3px;
         border-radius: 1px;
@@ -79,27 +64,29 @@ export const WorkAreaHeaderTabContainer = styled.div.attrs<{ active?: boolean }>
         width: calc(var(--f1-wb-work-area-header-height) * 0.4);
         margin-right: 8px;
     }
+`;
+export const WorkAreaHeaderTabTitle = styled.span.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-header-tab-title'})`
+    white-space: nowrap;
+`;
+export const WorkAreaHeaderTabCloseButton = styled(UnwrappedButton).attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-header-tab-close-button'})`
+    height: calc(var(--f1-wb-work-area-header-height) * 0.5);
+    width: calc(var(--f1-wb-work-area-header-height) * 0.5);
+    border-radius: 100%;
+    padding: 0;
+    margin-left: 4px;
 
-    > button[data-close] {
-        height: calc(var(--f1-wb-work-area-header-height) * 0.5);
-        width: calc(var(--f1-wb-work-area-header-height) * 0.5);
-        border-radius: 100%;
-        padding: 0;
-        margin-left: 4px;
-
-        &:hover {
-            background-color: var(--f1-waive-color);
-
-            > span[data-w=d9-deco-lead] > svg {
-                fill: var(--f1-invert-color);
-            }
-        }
+    &:hover {
+        background-color: var(--f1-waive-color);
 
         > span[data-w=d9-deco-lead] > svg {
-            height: calc(var(--f1-wb-work-area-header-height) * 0.35);
-            width: calc(var(--f1-wb-work-area-header-height) * 0.35);
-            fill: var(--f1-waive-color);
-            transition: fill 300ms ease-in-out;
+            fill: var(--f1-invert-color);
         }
+    }
+
+    > span[data-w=d9-deco-lead] > svg {
+        height: calc(var(--f1-wb-work-area-header-height) * 0.35);
+        width: calc(var(--f1-wb-work-area-header-height) * 0.35);
+        fill: var(--f1-waive-color);
+        transition: fill 300ms ease-in-out;
     }
 `;
