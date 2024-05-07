@@ -26,7 +26,7 @@ export enum WorkbenchEventTypes {
 	CLOSE_SIDE_FRAME = 'close-side-frame', SIDE_FRAME_CLOSED = 'side-frame-closed',
 	ASK_PROJECT = 'ask-project', ASK_PROJECT_STRUCTURE = 'ask-project-structure',
 	RESOURCE_SELECTED = 'resource-selected',
-	OPEN_RESOURCE = 'open-resource'
+	OPEN_RESOURCE = 'open-resource', CLOSE_RESOURCE = 'close-resource'
 }
 
 export interface WorkbenchEventBus {
@@ -77,6 +77,12 @@ export interface WorkbenchEventBus {
 	on(type: WorkbenchEventTypes.OPEN_RESOURCE, listener: (resource: Resource) => void): this;
 
 	off(type: WorkbenchEventTypes.OPEN_RESOURCE, listener: (resource: Resource) => void): this;
+
+	fire(type: WorkbenchEventTypes.CLOSE_RESOURCE, resource?: Resource): this;
+
+	on(type: WorkbenchEventTypes.CLOSE_RESOURCE, listener: (resource?: Resource) => void): this;
+
+	off(type: WorkbenchEventTypes.CLOSE_RESOURCE, listener: (resource?: Resource) => void): this;
 }
 
 const Context = createContext<WorkbenchEventBus>({} as WorkbenchEventBus);

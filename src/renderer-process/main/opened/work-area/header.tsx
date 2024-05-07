@@ -1,5 +1,5 @@
 import {ButtonFill, Icons} from '@rainbow-d9/n2';
-import {MouseEvent, useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {ContextMenuItem, showContextMenu} from '../../../common/context-menu';
 import {ModuleFileResource, Resource} from '../types';
 import {useWorkbenchEventBus, WorkbenchEventTypes} from '../workbench/event-bus';
@@ -47,12 +47,20 @@ export const WorkAreaHeader = () => {
 		} else {
 			nextActive = state.active;
 		}
+		if (nextActive == null) {
+			fire(WorkbenchEventTypes.CLOSE_RESOURCE, resource);
+		} else {
+			fire(WorkbenchEventTypes.OPEN_RESOURCE, nextActive);
+		}
 		setState({resources, active: nextActive});
 	};
 	const closeOtherResources = (resource: Resource) => {
 		setState({resources: [resource], active: resource});
 	};
-	const closeAllResources = () => setState({resources: []});
+	const closeAllResources = () => {
+		fire(WorkbenchEventTypes.CLOSE_RESOURCE, state.active);
+		setState({resources: []});
+	};
 	const copyPath = async (resource: Resource) => {
 		const path = resource.segments.map(segment => segment.label).join('/');
 		await window.navigator.clipboard.writeText(path);
@@ -67,7 +75,8 @@ export const WorkAreaHeader = () => {
 	const renameResource = (resource: Resource) => {
 		// TODO RENAME RESOURCE
 	};
-	const onClicked = (resource: Resource) => (event: MouseEvent<HTMLDivElement>) => {
+	const onClicked = (resource: Resource) => () => {
+		fire(WorkbenchEventTypes.OPEN_RESOURCE, resource);
 		setState(state => ({...state, active: resource}));
 		fire(WorkbenchEventTypes.RESOURCE_SELECTED, resource);
 	};

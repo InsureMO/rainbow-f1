@@ -101,6 +101,7 @@ export const GlobalStyles: any = createGlobalStyle`
         --f1-wb-work-area-header-button-size: 30px;
         --f1-wb-work-area-header-popover-shadow: 0px 0px 10px 3px #c3c3c3;
         --f1-wb-work-area-header-popover-z-index: 10000;
+        --f1-wb-work-area-segment-icon-color: #292d32;
 
         color: var(--f1-font-color);
         background-color: var(--f1-background-color);
@@ -209,6 +210,7 @@ export const GlobalStyles: any = createGlobalStyle`
             --f1-wb-side-frame-header-button-tooltip-shadow: 0px 0px 10px 3px #1a1c1d;
             --f1-wb-work-area-header-hover-color: var(--f1-hover-color);
             --f1-wb-work-area-header-popover-shadow: 0px 0px 10px 3px #1a1c1d;
+            --f1-wb-work-area-segment-icon-color: #d6d2cd;
         }
     }
 

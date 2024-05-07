@@ -21,7 +21,7 @@ export enum ModuleFileType {
 	TS_CONFIG = 'tsconfig',
 	ESLINT_CONFIG = 'eslint.config',
 	YARN_LOCK = 'yarn.lock',
-	NPM_LOCK = 'package-lock',
+	NPM_LOCK = 'package.lock',
 	PACKAGE_JSON = 'package.json',
 
 	O23_PIPELINE = 'o23-pipeline',
