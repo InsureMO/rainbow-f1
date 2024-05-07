@@ -17,6 +17,8 @@ export interface JsonEditorState {
 }
 
 export const JsonEditor = (props: JsonEditorProps) => {
+	const {resource} = props;
+
 	const ref = useRef<HTMLDivElement>(null);
 
 	const [state, setState] = useState<JsonEditorState>({});

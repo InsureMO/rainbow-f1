@@ -1,3 +1,4 @@
+import {Fragment, useEffect} from 'react';
 import {F1Project, F1ProjectStructure} from '../../../../shared';
 import {LocationBar} from '../location-bar';
 import {BottomSide} from '../sides/bottom-side';
@@ -5,9 +6,24 @@ import {LeftSide, LeftSideBar} from '../sides/left-side';
 import {RightSide, RightSideBar} from '../sides/right-side';
 import {StatusBar} from '../status-bar';
 import {WorkArea} from '../work-area';
-import {WorkbenchEventBusProvider} from './event-bus';
+import {
+	SideContentKey,
+	SideContentPosition,
+	useWorkbenchEventBus,
+	WorkbenchEventBusProvider,
+	WorkbenchEventTypes
+} from './event-bus';
 import {ProjectHolder} from './project-holder';
 import {ProjectWorkbenchContainer} from './widgets';
+
+const ProjectWorkbenchInitializer = () => {
+	const {fire} = useWorkbenchEventBus();
+	useEffect(() => {
+		fire(WorkbenchEventTypes.OPEN_SIDE_FRAME, SideContentKey.PROJECT, SideContentPosition.LEFT_UPPER);
+	}, []);
+
+	return <Fragment/>;
+};
 
 export const ProjectWorkbench = (props: { project: F1Project; structure: F1ProjectStructure }) => {
 	const {project, structure} = props;
@@ -24,5 +40,6 @@ export const ProjectWorkbench = (props: { project: F1Project; structure: F1Proje
 			<BottomSide/>
 			<StatusBar/>
 		</ProjectWorkbenchContainer>
+		<ProjectWorkbenchInitializer/>
 	</WorkbenchEventBusProvider>;
 };

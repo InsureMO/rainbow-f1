@@ -1,13 +1,15 @@
 import {ReactNode} from 'react';
-import {DatabaseFrame} from '../../database-frame';
-import {NotificationsFrame} from '../../notifications-frame';
-import {ProblemFrame} from '../../problem-frame';
-import {ProjectFrame} from '../../project-frame';
-import {RunFrame} from '../../run-frame';
-import {SearchFrame} from '../../search-frame';
-import {StructureFrame} from '../../structure-frame';
-import {TerminalFrame} from '../../terminal-frame';
-import {TodoFrame} from '../../todo-frame';
+import {
+	DatabaseFrame,
+	NotificationsFrame,
+	ProblemFrame,
+	ProjectFrame,
+	RunFrame,
+	SearchFrame,
+	StructureFrame,
+	TerminalFrame,
+	TodoFrame
+} from '../../frames';
 import {SideContentKey, SideContentPosition} from '../workbench/event-bus';
 
 export interface SideFrame {
