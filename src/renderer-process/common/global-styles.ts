@@ -102,6 +102,10 @@ export const GlobalStyles: any = createGlobalStyle`
         --f1-wb-work-area-header-popover-shadow: 0px 0px 10px 3px #c3c3c3;
         --f1-wb-work-area-header-popover-z-index: 10000;
         --f1-wb-work-area-segment-icon-color: #292d32;
+        --f1-wb-work-area-editor-gutter-background-color: var(--f1-background-color);
+        --f1-wb-work-area-editor-lint-tooltip-background-color: var(--f1-background-color);
+        /** color copied from code mirror */
+        --f1-wb-work-area-editor-active-line-background-color: #cceeff44;
 
         color: var(--f1-font-color);
         background-color: var(--f1-background-color);

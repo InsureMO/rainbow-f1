@@ -1,4 +1,4 @@
-import {F1ModuleStructure, F1Project, ModuleCommand, ModuleEnv, ModuleFile} from '../../../shared';
+import {F1ModuleStructure, F1Project, ModuleCommand, ModuleEnv, ModuleFile, ModuleFileType} from '../../../shared';
 
 export const ADD_MODULE = Symbol();
 
@@ -48,3 +48,11 @@ export const MODULE_NODE_FILES_FILE_MARKER = (module: F1ModuleStructure, file: M
 export const MODULE_SOURCE_FILES_MARKER = (module: F1ModuleStructure) => `${MODULE_SOURCE_FILES_MARKER_PREFIX}-${module.name}`;
 export const MODULE_SOURCE_FILES_DIR_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_SOURCE_DIR_MARKER_PREFIX}-${module.name}-${file.path}`;
 export const MODULE_SOURCE_FILES_FILE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_SOURCE_FILE_MARKER_PREFIX}-${module.name}-${file.path}`;
+
+export const isJsonFile = (file: ModuleFile) => {
+	return [ModuleFileType.JSON, ModuleFileType.PACKAGE_JSON].includes(file.type) || file.basename.endsWith('.json');
+};
+export const isJavascriptFile = (file: ModuleFile) => {
+	return [ModuleFileType.JAVASCRIPT, ModuleFileType.COMMON_JAVASCRIPT, ModuleFileType.ECMA_MODULE_JAVASCRIPT].includes(file.type)
+		|| file.basename.endsWith('.js') || file.basename.endsWith('.cjs') || file.basename.endsWith('.mjs');
+};

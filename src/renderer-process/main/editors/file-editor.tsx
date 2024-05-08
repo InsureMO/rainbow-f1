@@ -1,6 +1,6 @@
-import {ModuleFileType} from '../../../shared';
-import {JsonEditor} from './index';
 import {ModuleFileResource} from '../opened/types';
+import {isJavascriptFile, isJsonFile} from '../utils';
+import {JavascriptEditor, JsonEditor} from './index';
 
 import {EditorContainer} from './widgets';
 
@@ -13,7 +13,9 @@ export const ModuleFileEditor = (props: ModuleFileEditorProps) => {
 	const {file} = resource;
 
 	let editor = null;
-	if (file.type === ModuleFileType.JSON || file.basename.endsWith('.json')) {
+	if (isJavascriptFile(file)) {
+		editor = <JavascriptEditor resource={resource}/>;
+	} else if (isJsonFile(file)) {
 		editor = <JsonEditor resource={resource}/>;
 	}
 

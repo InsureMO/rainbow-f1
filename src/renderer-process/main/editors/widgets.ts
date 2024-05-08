@@ -90,6 +90,24 @@ export const EditorPanel = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-
                 background-color: ${CssVars.SCROLL_THUMB_COLOR};
                 border-radius: ${CssVars.SCROLL_BORDER_RADIUS};
             }
+
+            > div.cm-gutters {
+                background-color: var(--f1-wb-work-area-editor-gutter-background-color);
+
+                div.cm-gutter.cm-lineNumbers {
+                    > div.cm-activeLineGutter {
+                        color: var(--f1-font-color);
+                    }
+                }
+
+                div.cm-activeLineGutter {
+                    background-color: var(--f1-wb-work-area-editor-active-line-background-color);
+                }
+            }
+        }
+
+        > ul.cm-tooltip-lint {
+            background-color: var(--f1-wb-work-area-editor-lint-tooltip-background-color);
         }
 
         div.cm-search.cm-panel {
