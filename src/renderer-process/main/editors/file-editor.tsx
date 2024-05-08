@@ -1,6 +1,7 @@
 import {ModuleFileResource} from '../opened/types';
-import {isJavascriptFile, isJsonFile} from '../utils';
-import {JavascriptEditor, JsonEditor} from './index';
+import {isJavascriptFile, isJsonFile, isSqlFile, isTypescriptFile, isYamlFile} from '../utils';
+import {JavascriptEditor, JsonEditor, SqlEditor, YamlEditor} from './index';
+import {TypescriptEditor} from './typescript-editor';
 
 import {EditorContainer} from './widgets';
 
@@ -13,13 +14,21 @@ export const ModuleFileEditor = (props: ModuleFileEditorProps) => {
 	const {file} = resource;
 
 	let editor = null;
-	if (isJavascriptFile(file)) {
+	if (isSqlFile(file)) {
+		editor = <SqlEditor resource={resource}/>;
+	} else if (isYamlFile(file)) {
+		editor = <YamlEditor resource={resource}/>;
+	} else if (isJavascriptFile(file)) {
 		editor = <JavascriptEditor resource={resource}/>;
+	} else if (isTypescriptFile(file)) {
+		editor = <TypescriptEditor resource={resource}/>;
 	} else if (isJsonFile(file)) {
 		editor = <JsonEditor resource={resource}/>;
 	}
 
-	return <EditorContainer>
-		{editor}
-	</EditorContainer>;
+	return <>
+		<EditorContainer>
+			{editor}
+		</EditorContainer>
+	</>;
 };

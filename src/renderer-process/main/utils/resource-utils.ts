@@ -49,10 +49,30 @@ export const MODULE_SOURCE_FILES_MARKER = (module: F1ModuleStructure) => `${MODU
 export const MODULE_SOURCE_FILES_DIR_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_SOURCE_DIR_MARKER_PREFIX}-${module.name}-${file.path}`;
 export const MODULE_SOURCE_FILES_FILE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_SOURCE_FILE_MARKER_PREFIX}-${module.name}-${file.path}`;
 
+export const isRCConfigJsonFile = (file: ModuleFile) => {
+	return [
+		ModuleFileType.WEBPACK_CONFIG, ModuleFileType.VITE_CONFIG,
+		ModuleFileType.BABEL_CONFIG, ModuleFileType.ESLINT_CONFIG, ModuleFileType.TS_CONFIG, ModuleFileType.PRETTIER_CONFIG
+	].includes(file.type) && file.basename.startsWith('.') && file.basename.endsWith('rc');
+};
 export const isJsonFile = (file: ModuleFile) => {
-	return [ModuleFileType.JSON, ModuleFileType.PACKAGE_JSON].includes(file.type) || file.basename.endsWith('.json');
+	return [ModuleFileType.JSON, ModuleFileType.PACKAGE_JSON].includes(file.type)
+		|| isRCConfigJsonFile(file)
+		|| file.basename.endsWith('.json');
 };
 export const isJavascriptFile = (file: ModuleFile) => {
 	return [ModuleFileType.JAVASCRIPT, ModuleFileType.COMMON_JAVASCRIPT, ModuleFileType.ECMA_MODULE_JAVASCRIPT].includes(file.type)
 		|| file.basename.endsWith('.js') || file.basename.endsWith('.cjs') || file.basename.endsWith('.mjs');
+};
+export const isTypescriptFile = (file: ModuleFile) => {
+	return [ModuleFileType.TYPESCRIPT].includes(file.type) && file.basename.endsWith('.ts');
+};
+export const isTsxFile = (file: ModuleFile) => {
+	return [ModuleFileType.TYPESCRIPT].includes(file.type) && file.basename.endsWith('.tsx');
+};
+export const isYamlFile = (file: ModuleFile) => {
+	return [ModuleFileType.YAML].includes(file.type);
+};
+export const isSqlFile = (file: ModuleFile) => {
+	return [ModuleFileType.SQL].includes(file.type);
 };

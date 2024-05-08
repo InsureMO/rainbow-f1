@@ -37,7 +37,7 @@ export abstract class AbstractModuleProcessor {
 	protected guessFileType(file: string): ModuleFileType {
 		const basename = PathWorker.basename(file);
 		switch (true) {
-			case basename === 'readme.md':
+			case basename === 'readme.md' || basename === 'README.md':
 				return ModuleFileType.README;
 			// only for O23, use vite for D9
 			case basename === 'webpack.config.js':
@@ -61,12 +61,11 @@ export abstract class AbstractModuleProcessor {
 				return ModuleFileType.NPM_LOCK;
 			case basename === 'package.json':
 				return ModuleFileType.PACKAGE_JSON;
-			case basename === 'README.md':
-				return ModuleFileType.README;
 		}
 		const ext = (PathWorker.extname(file) ?? '').toLowerCase();
 		switch (ext) {
 			case '.ts':
+			case '.tsx':
 				return ModuleFileType.TYPESCRIPT;
 			case '.js':
 				return ModuleFileType.JAVASCRIPT;
