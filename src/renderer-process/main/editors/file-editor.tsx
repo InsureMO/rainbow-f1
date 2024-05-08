@@ -2,8 +2,7 @@ import {ModuleFileResource} from '../opened/types';
 import {isJavascriptFile, isJsonFile, isSqlFile, isTypescriptFile, isYamlFile} from '../utils';
 import {JavascriptEditor, JsonEditor, SqlEditor, YamlEditor} from './index';
 import {TypescriptEditor} from './typescript-editor';
-
-import {EditorContainer} from './widgets';
+import {EditorContainer, EditorStatusBar, EditorStatusBarGrabber} from './widgets';
 
 export interface ModuleFileEditorProps {
 	resource: ModuleFileResource;
@@ -30,5 +29,8 @@ export const ModuleFileEditor = (props: ModuleFileEditorProps) => {
 		<EditorContainer>
 			{editor}
 		</EditorContainer>
+		<EditorStatusBar>
+			<EditorStatusBarGrabber/>
+		</EditorStatusBar>
 	</>;
 };

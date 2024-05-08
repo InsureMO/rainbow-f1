@@ -77,18 +77,18 @@ export const EditorPanel = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-
 
             &::-webkit-scrollbar {
                 background-color: transparent;
-                height: ${CssVars.SCROLL_HEIGHT};
-                width: ${CssVars.SCROLL_WEIGHT};
+                height: var(--f1-wb-work-area-editor-scroll-height);
+                width: var(--f1-wb-work-area-editor-scroll-width);
             }
 
             &::-webkit-scrollbar-track {
-                background-color: ${CssVars.SCROLL_TRACK_COLOR};
-                border-radius: ${CssVars.SCROLL_BORDER_RADIUS};
+                background-color: var(--f1-wb-work-area-editor-scroll-track-color);
+                border-radius: var(--f1-wb-work-area-editor-scroll-border-radius);
             }
 
             &::-webkit-scrollbar-thumb {
-                background-color: ${CssVars.SCROLL_THUMB_COLOR};
-                border-radius: ${CssVars.SCROLL_BORDER_RADIUS};
+                background-color: var(--f1-wb-work-area-editor-scroll-thumb-color);
+                border-radius: var(--f1-wb-work-area-editor-scroll-border-radius);
             }
 
             > div.cm-gutters {
@@ -118,6 +118,7 @@ export const EditorPanel = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-
             grid-column-gap: 8px;
             grid-template-rows: auto auto auto;
             grid-row-gap: 8px;
+            background-color: var(--f1-wb-work-area-editor-search-background-color);
 
             > * {
                 margin: 0;
@@ -125,6 +126,9 @@ export const EditorPanel = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-
 
             > input {
                 grid-column: span 3;
+                background-color: transparent;
+                border-radius: var(--f1-border-radius);
+                color: var(--f1-font-color);
 
                 &:not(:first-child) {
                     grid-row: 3;
@@ -135,15 +139,22 @@ export const EditorPanel = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-
                 }
             }
 
+            > label {
+                color: var(--f1-font-color);
+            }
+
             > button {
                 background-image: none;
-                border: ${CssVars.BORDER};
-                border-radius: ${CssVars.BORDER_RADIUS};
+                border: 0;
+                border-radius: var(--f1-border-radius);
                 text-transform: capitalize;
                 cursor: pointer;
+                color: var(--f1-invert-color);
+                background-color: var(--f1-primary-color);
 
                 &:last-child {
                     padding: 0 8px;
+                    background-color: var(--f1-danger-color);
                 }
             }
 
@@ -171,18 +182,18 @@ export const EditorPanel = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-
             > ul {
                 &::-webkit-scrollbar {
                     background-color: transparent;
-                    height: ${CssVars.SCROLL_HEIGHT};
-                    width: ${CssVars.SCROLL_WEIGHT};
+                    height: var(--f1-wb-work-area-editor-scroll-height);
+                    width: var(--f1-wb-work-area-editor-scroll-width);
                 }
 
                 &::-webkit-scrollbar-track {
-                    background-color: ${CssVars.SCROLL_TRACK_COLOR};
-                    border-radius: ${CssVars.SCROLL_BORDER_RADIUS};
+                    background-color: var(--f1-wb-work-area-editor-scroll-track-color);
+                    border-radius: var(--f1-wb-work-area-editor-scroll-border-radius);
                 }
 
                 &::-webkit-scrollbar-thumb {
-                    background-color: ${CssVars.SCROLL_THUMB_COLOR};
-                    border-radius: ${CssVars.SCROLL_BORDER_RADIUS};
+                    background-color: var(--f1-wb-work-area-editor-scroll-thumb-color);
+                    border-radius: var(--f1-wb-work-area-editor-scroll-border-radius);
                 }
             }
 
@@ -192,4 +203,15 @@ export const EditorPanel = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-
             }
         }
     }
+`;
+export const EditorStatusBar = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-editor-status-bar'})`
+    display: flex;
+    position: relative;
+    min-height: var(--f1-wb-work-area-status-height);
+    border-top: var(--f1-border);
+`;
+export const EditorStatusBarGrabber = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-editor-status-bar-grabber'})`
+    display: block;
+    position: relative;
+    flex-grow: 1;
 `;

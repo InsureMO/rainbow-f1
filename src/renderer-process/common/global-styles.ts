@@ -102,8 +102,15 @@ export const GlobalStyles: any = createGlobalStyle`
         --f1-wb-work-area-header-popover-shadow: 0px 0px 10px 3px #c3c3c3;
         --f1-wb-work-area-header-popover-z-index: 10000;
         --f1-wb-work-area-segment-icon-color: #292d32;
+        --f1-wb-work-area-status-height: 32px;
         --f1-wb-work-area-editor-gutter-background-color: var(--f1-background-color);
         --f1-wb-work-area-editor-lint-tooltip-background-color: var(--f1-background-color);
+        --f1-wb-work-area-editor-search-background-color: var(--f1-background-color);
+        --f1-wb-work-area-editor-scroll-height: 6px;
+        --f1-wb-work-area-editor-scroll-width: 4px;
+        --f1-wb-work-area-editor-scroll-track-color: rgba(229, 229, 229, 0.5);
+        --f1-wb-work-area-editor-scroll-thumb-color: rgb(193, 193, 193);
+        --f1-wb-work-area-editor-scroll-border-radius: 2px;
         /** color copied from code mirror */
         --f1-wb-work-area-editor-active-line-background-color: #cceeff44;
 
@@ -215,6 +222,13 @@ export const GlobalStyles: any = createGlobalStyle`
             --f1-wb-work-area-header-hover-color: var(--f1-hover-color);
             --f1-wb-work-area-header-popover-shadow: 0px 0px 10px 3px #1a1c1d;
             --f1-wb-work-area-segment-icon-color: #d6d2cd;
+            --f1-wb-work-area-editor-gutter-background-color: var(--f1-background-color);
+            --f1-wb-work-area-editor-lint-tooltip-background-color: var(--f1-background-color);
+            --f1-wb-work-area-editor-search-background-color: var(--f1-background-color);
+            --f1-wb-work-area-editor-scroll-track-color: rgba(229, 229, 229, 0.5);
+            --f1-wb-work-area-editor-scroll-thumb-color: rgb(193, 193, 193);
+            /** color copied from code mirror */
+            --f1-wb-work-area-editor-active-line-background-color: #cceeff44;
         }
     }
 
