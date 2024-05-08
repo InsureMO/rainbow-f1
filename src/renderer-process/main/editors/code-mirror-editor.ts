@@ -1,6 +1,6 @@
 import {EditorState as CodeMirrorState, Extension} from '@codemirror/state';
 import {EditorView, ViewUpdate} from '@codemirror/view';
-import {useEffect, useRef, useState} from 'react';
+import {MutableRefObject, useEffect, useRef, useState} from 'react';
 import {ModuleFileResource} from '../opened/types';
 import {useWorkbenchEventBus, WorkbenchEventTypes} from '../opened/workbench/event-bus';
 
@@ -16,10 +16,16 @@ export interface CodeMirrorEditorOptions {
 
 export interface CodeMirrorEditorState {
 	editor?: EditorView;
+	/** only available when error occurred */
+	message?: string;
 }
 
-export const useCodeMirrorEditor = (options: CodeMirrorEditorOptions) => {
-	const {resource, createConfigState} = options;
+export interface CodeMirrorEditorHookReturn extends CodeMirrorEditorState {
+	ref: MutableRefObject<HTMLDivElement>;
+}
+
+export const useCodeMirrorEditor = (options: CodeMirrorEditorOptions): CodeMirrorEditorHookReturn => {
+	const {resource, createConfigState, contentChanged} = options;
 
 	const ref = useRef<HTMLDivElement>(null);
 	const {fire} = useWorkbenchEventBus();
@@ -31,17 +37,19 @@ export const useCodeMirrorEditor = (options: CodeMirrorEditorOptions) => {
 
 		const editor = new EditorView({
 			state: createConfigState({
-				docChanged: EditorView.updateListener.of((view: ViewUpdate) => {
+				docChanged: EditorView.updateListener.of(async (view: ViewUpdate) => {
 					if (view.docChanged) {
 						const doc = view.state.doc;
 						const value = doc.toString();
-						// fire(PlaygroundEventTypes.CONTENT_CHANGED, value);
+						if (contentChanged != null) {
+							await contentChanged(value);
+						}
 					}
 				})
 			}),
 			parent: ref.current
 		});
-		setState(state => ({...state, editor}));
+		setState({editor});
 		return () => {
 			editor.destroy();
 		};
@@ -54,12 +62,12 @@ export const useCodeMirrorEditor = (options: CodeMirrorEditorOptions) => {
 			(content: string) => {
 				const doc = state.editor.state.doc;
 				state.editor.dispatch({changes: {from: 0, to: doc.length, insert: content}});
+				setState(state => ({editor: state.editor}));
 			},
 			(message: string) => {
-				// TODO
-				console.log(message);
+				setState(state => ({editor: state.editor, message}));
 			});
 	}, [fire, resource, state.editor]);
 
-	return {ref, editor: state.editor};
+	return {ref, editor: state.editor, message: state.message};
 };
