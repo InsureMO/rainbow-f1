@@ -28,7 +28,9 @@ export const createModuleEnvsChildNodes = (rootData: ProjectRoot, fire: Workbenc
 		}
 		const parts = name.split(/[:\-]/);
 		if (parts.length > 1) {
-			const env = parts[0];
+			let env = parts[0];
+			// treat debug as local
+			env = env === 'debug' ? 'local' : env;
 			const cmd = parts[parts.length - 1];
 			if (cmd === 'start' || cmd === 'scripts') {
 				envs[env] = envs[env] ?? [];
