@@ -1,6 +1,6 @@
 import {ContextMenu} from './context-menu-types';
 import {OpenDialogOptions, OpenDialogResult} from './dialog-types';
-import {FileSystemBooleanResult} from './file-system-types';
+import {FileSystemBooleanResult, FileSystemContentResult} from './file-system-types';
 import {ProjectCliSet} from './project-cli-types';
 import {
 	F1Project,
@@ -51,6 +51,7 @@ export namespace ElectronBridges {
 		empty: (directory: string) => FileSystemBooleanResult;
 		mkdir: (directory: string) => FileSystemBooleanResult;
 		createFile: (path: string, content: string) => FileSystemBooleanResult;
+		readFile: (path: string) => FileSystemContentResult;
 	}
 
 	export interface WindowElectronPath {

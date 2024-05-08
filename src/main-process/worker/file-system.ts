@@ -2,6 +2,7 @@ import {ipcMain} from 'electron';
 import fs from 'fs';
 import {
 	FileSystemBooleanResult,
+	FileSystemContentResult,
 	FileSystemEvent,
 	FileSystemFoldersResult,
 	FileSystemOperationResult,
@@ -106,10 +107,12 @@ class FileSystemWorker {
 
 	/**
 	 * default including all files and directories, not recursive.
-	 * please note if recursive is true, the result will include all descendant files not matter directory is included or not.
+	 * please note:
+	 * 1. if recursive is true, the result will include all descendant files not matter directory is included or not.
+	 * 2. paths of result files are relative to given directory
 	 */
 	public dir(directory: string, options?: {
-		dir?: boolean, file?: boolean, recursive?: boolean
+		dir?: boolean; file?: boolean; recursive?: boolean; relative?: boolean;
 	}): FileSystemFoldersResult {
 		return this.invalidOr(directory, () => {
 			if (!fs.existsSync(directory) || fs.lstatSync(directory).isFile()) {
@@ -122,6 +125,7 @@ class FileSystemWorker {
 			const includeDirectory = options?.dir ?? true;
 			const includeFile = options?.file ?? true;
 			const recursive = options?.recursive ?? false;
+			const relative = options?.relative ?? true;
 			try {
 				const files = this.scanDir({directory, recursive}).filter(({dir}) => {
 					if (includeDirectory && includeFile) {
@@ -131,8 +135,16 @@ class FileSystemWorker {
 					} else {
 						return !dir;
 					}
-				}).map(({path, dir}) => ({path: path.substring(directory.length + 1), dir}));
-				return {success: true, ret: files};
+				});
+				if (relative) {
+					return {
+						success: true, ret: files.map(({path, dir}) => {
+							return ({path: path.substring(directory.length + 1), dir});
+						})
+					};
+				} else {
+					return {success: true, ret: files};
+				}
 			} catch (e) {
 				return {success: false, ret: [], message: e.message};
 			}
@@ -169,13 +181,30 @@ class FileSystemWorker {
 	/**
 	 * read given file to json format, use u8. return undefined when file not found or not valid json
 	 */
-	public readJSON<T>(file: string): T | undefined {
+	public readJSON<T>(path: string): T | undefined {
 		try {
-			const content = fs.readFileSync(file, {encoding: 'utf-8'});
+			const content = fs.readFileSync(path, {encoding: 'utf-8'});
 			return JSON.parse(content);
 		} catch {
 			return (void 0);
 		}
+	}
+
+	public readFile(path: string): FileSystemContentResult {
+		return this.invalidOr(path, () => {
+			try {
+				if (!fs.existsSync(path)) {
+					return {success: false, message: 'File doesn\'t exist.'};
+				}
+				if (!fs.lstatSync(path).isFile()) {
+					return {success: false, message: 'Given path is not a file.'};
+				}
+				const content = fs.readFileSync(path, {encoding: 'utf-8'});
+				return {success: true, ret: content};
+			} catch (e) {
+				return {success: false, message: e.message};
+			}
+		});
 	}
 }
 
@@ -192,6 +221,9 @@ const INSTANCE = (() => {
 	});
 	ipcMain.on(FileSystemEvent.CREATE_FILE, (event: Electron.IpcMainEvent, path: string, content: string): void => {
 		event.returnValue = worker.createFile(path, content);
+	});
+	ipcMain.on(FileSystemEvent.READ_FILE, (event: Electron.IpcMainEvent, path: string): void => {
+		event.returnValue = worker.readFile(path);
 	});
 	return worker;
 })();

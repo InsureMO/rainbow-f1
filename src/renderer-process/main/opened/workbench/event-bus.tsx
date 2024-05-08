@@ -1,7 +1,7 @@
 import {useCreateEventBus} from '@rainbow-d9/n1';
 import {createContext, ReactNode, useContext} from 'react';
 import {F1Project, F1ProjectStructure} from '../../../../shared';
-import {Resource} from '../types';
+import {ModuleFileResource, Resource} from '../types';
 
 export enum SideContentKey {
 	PROJECT = 'project',
@@ -26,7 +26,8 @@ export enum WorkbenchEventTypes {
 	CLOSE_SIDE_FRAME = 'close-side-frame', SIDE_FRAME_CLOSED = 'side-frame-closed',
 	ASK_PROJECT = 'ask-project', ASK_PROJECT_STRUCTURE = 'ask-project-structure',
 	RESOURCE_SELECTED = 'resource-selected',
-	OPEN_RESOURCE = 'open-resource', CLOSE_RESOURCE = 'close-resource'
+	OPEN_RESOURCE = 'open-resource', CLOSE_RESOURCE = 'close-resource',
+	ASK_MODULE_FILE_CONTENT = 'ask-module-file-content'
 }
 
 export interface WorkbenchEventBus {
@@ -83,6 +84,12 @@ export interface WorkbenchEventBus {
 	on(type: WorkbenchEventTypes.CLOSE_RESOURCE, listener: (resource?: Resource) => void): this;
 
 	off(type: WorkbenchEventTypes.CLOSE_RESOURCE, listener: (resource?: Resource) => void): this;
+
+	fire(type: WorkbenchEventTypes.ASK_MODULE_FILE_CONTENT, resource: ModuleFileResource, onContent: (content: string) => void, onError: (message: string) => void): this;
+
+	on(type: WorkbenchEventTypes.ASK_MODULE_FILE_CONTENT, listener: (resource: ModuleFileResource, onContent: (content: string) => void, onError: (message: string) => void) => void): this;
+
+	off(type: WorkbenchEventTypes.ASK_MODULE_FILE_CONTENT, listener: (resource: ModuleFileResource, onContent: (content: string) => void, onError: (message: string) => void) => void): this;
 }
 
 const Context = createContext<WorkbenchEventBus>({} as WorkbenchEventBus);

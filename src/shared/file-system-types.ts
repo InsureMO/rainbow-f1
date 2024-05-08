@@ -9,6 +9,9 @@ export interface FileSystemOperationResult<R> {
 export interface FileSystemBooleanResult extends FileSystemOperationResult<boolean> {
 }
 
+export interface FileSystemContentResult extends FileSystemOperationResult<string> {
+}
+
 export interface ScannedFile {
 	path: string;
 	dir: boolean;
@@ -22,4 +25,5 @@ export enum FileSystemEvent {
 	IS_EMPTY_DIR = 'fs-is-empty-dir',
 	MKDIR = 'fs-mkdir',
 	CREATE_FILE = 'fs-create-file',
+	READ_FILE = 'fs-read-file'
 }

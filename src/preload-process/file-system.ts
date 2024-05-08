@@ -1,5 +1,5 @@
 import {ipcRenderer} from 'electron';
-import {ElectronBridges, FileSystemBooleanResult, FileSystemEvent} from '../shared';
+import {ElectronBridges, FileSystemBooleanResult, FileSystemContentResult, FileSystemEvent} from '../shared';
 
 export const FileSystemBridge: ElectronBridges.WindowElectronFileSystem = {
 	exists: (path: string): FileSystemBooleanResult => {
@@ -13,5 +13,8 @@ export const FileSystemBridge: ElectronBridges.WindowElectronFileSystem = {
 	},
 	createFile: (path: string, content: string): FileSystemBooleanResult => {
 		return ipcRenderer.sendSync(FileSystemEvent.CREATE_FILE, path, content);
+	},
+	readFile: (path: string): FileSystemContentResult => {
+		return ipcRenderer.sendSync(FileSystemEvent.READ_FILE, path);
 	}
 };

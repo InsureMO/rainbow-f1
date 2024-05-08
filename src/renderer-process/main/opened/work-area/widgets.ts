@@ -8,6 +8,7 @@ export const WorkAreaContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
     //height: calc(100vh - var(--f1-wb-location-bar-height) - var(--f1-wb-status-bar-height));
+    overflow: hidden;
 `;
 export const WorkAreaHeaderContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-header'})`
     display: grid;
@@ -98,6 +99,7 @@ export const WorkAreaEditorContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-w
     width: 100%;
     align-items: center;
     align-self: stretch;
+    overflow: hidden;
 `;
 export const EditorNotSupportedContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-editor-not-supported'})`
     display: grid;

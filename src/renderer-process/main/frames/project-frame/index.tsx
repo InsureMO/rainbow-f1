@@ -1,6 +1,6 @@
 import {UnwrappedTree} from '@rainbow-d9/n2';
 import React, {useState} from 'react';
-import {F1Project, F1ProjectStructure} from '../../../../../shared';
+import {F1Project, F1ProjectStructure} from '../../../../shared';
 import {SideContentKey, SideContentPosition, useWorkbenchEventBus} from '../../opened/workbench/event-bus';
 import {useAskProjectStructure, useProjectStructure} from '../../opened/workbench/use-project';
 import {createDetective} from './node';

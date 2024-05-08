@@ -15,7 +15,11 @@ export interface Resource {
 export interface VirtualNodeResource extends Resource {
 }
 
-export interface ModuleFileResource extends Resource {
+export interface ModuleResource extends Resource {
+	// modulePath: string;
+}
+
+export interface ModuleFileResource extends ModuleResource {
 	file: ModuleFile;
 	absolutePath: () => string;
 }
