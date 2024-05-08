@@ -1,6 +1,6 @@
 import {Icons} from '@rainbow-d9/n2';
 import {Fragment} from 'react';
-import {ModuleFileResource, Resource} from '../types';
+import {ModuleFileResource, Resource} from '../opened/types';
 import {ModuleFileEditor} from './file-editor';
 import {EditorNotSupportedContainer, EditorResourceLocation, EditorResourceLocationSegment} from './widgets';
 

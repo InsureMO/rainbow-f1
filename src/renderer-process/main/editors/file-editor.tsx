@@ -1,6 +1,7 @@
-import {ModuleFileType} from '../../../../shared';
-import {ModuleFileResource} from '../types';
-import {JsonEditor} from './json-editor';
+import {ModuleFileType} from '../../../shared';
+import {JsonEditor} from './index';
+import {ModuleFileResource} from '../opened/types';
+
 import {EditorContainer} from './widgets';
 
 export interface ModuleFileEditorProps {
