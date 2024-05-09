@@ -14,6 +14,7 @@ export const GlobalStyles: any = createGlobalStyle`
 
     body {
         --f1-font-family: 'Roboto Mono', 'Noto Sans SC', 'Noto Sans JP', Arial, Helvetica, sans-serif;
+        --f1-font-size: 14px;
         --f1-row-height: 32px;
         // color
         --f1-background-color: #fdfdfd;
@@ -38,6 +39,8 @@ export const GlobalStyles: any = createGlobalStyle`
         // scrollbar
         --f1-scroll-background-color: rgba(229, 229, 229, 0.5);
         --f1-scroll-thumb-color: rgb(193, 193, 193);
+        // d9 size
+        --d9-font-size: var(--f1-font-size);
         // d9 color
         --d9-background-color: var(--f1-background-color);
         --d9-font-color: var(--f1-font-color);

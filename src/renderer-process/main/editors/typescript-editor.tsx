@@ -45,7 +45,7 @@ export const TypescriptEditor = (props: TypescriptEditorProps) => {
 					// 		// semi: ['error', 'never'],
 					// 	}
 					// })),
-					options.docChanged
+					...options.extensions
 				]
 			});
 		}

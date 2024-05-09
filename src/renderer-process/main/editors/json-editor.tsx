@@ -1,7 +1,7 @@
 import {indentWithTab} from '@codemirror/commands';
 import {json, jsonParseLinter} from '@codemirror/lang-json';
 import {linter, lintGutter} from '@codemirror/lint';
-import {EditorState as CodeMirrorState} from '@codemirror/state';
+import {EditorState} from '@codemirror/state';
 import {keymap} from '@codemirror/view';
 import {basicSetup} from 'codemirror';
 import {ModuleFileResource} from '../opened/types';
@@ -18,7 +18,7 @@ export const JsonEditor = (props: JsonEditorProps) => {
 
 	const {ref} = useCodeMirrorEditor({
 		resource, createConfigState: (options) => {
-			return CodeMirrorState.create({
+			return EditorState.create({
 				doc: '',
 				extensions: [
 					basicSetup,
@@ -26,7 +26,7 @@ export const JsonEditor = (props: JsonEditorProps) => {
 					json(),
 					lintGutter(),
 					linter(jsonParseLinter()),
-					options.docChanged
+					...options.extensions
 				]
 			});
 		}

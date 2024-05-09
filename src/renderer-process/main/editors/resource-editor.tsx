@@ -1,6 +1,7 @@
 import {Icons} from '@rainbow-d9/n2';
 import {Fragment} from 'react';
 import {ModuleFileResource, Resource} from '../opened/types';
+import {WorkAreaEditorEventBusProvider} from './event-bus';
 import {ModuleFileEditor} from './file-editor';
 import {EditorNotSupportedContainer, EditorResourceLocation, EditorResourceLocationSegment} from './widgets';
 
@@ -34,6 +35,8 @@ export const ResourceEditor = (props: ResourceEditorProps) => {
 	if (file == null) {
 		return <EditorNotSupported resource={resource}/>;
 	} else {
-		return <ModuleFileEditor resource={resource as ModuleFileResource}/>;
+		return <WorkAreaEditorEventBusProvider>
+			<ModuleFileEditor resource={resource as ModuleFileResource}/>
+		</WorkAreaEditorEventBusProvider>;
 	}
 };

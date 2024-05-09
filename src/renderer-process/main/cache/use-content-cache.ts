@@ -1,5 +1,4 @@
-import {Fragment, useEffect, useState} from 'react';
-import {F1Project} from '../../../shared';
+import {useEffect, useState} from 'react';
 import {ModuleFileResource} from '../opened/types';
 import {useWorkbenchEventBus, WorkbenchEventTypes} from '../opened/workbench/event-bus';
 
@@ -14,13 +13,7 @@ export interface ResourceCacheContents {
 	[key: string]: ResourceCacheContent;
 }
 
-export interface ResourceCacheHolderProps {
-	project: F1Project;
-}
-
-export const ResourceCacheHolder = (props: ResourceCacheHolderProps) => {
-	const {project} = props;
-
+export const useContentCache = () => {
 	const {on, off, fire} = useWorkbenchEventBus();
 	const [contents] = useState<ResourceCacheContents>({});
 	useEffect(() => {
@@ -43,5 +36,4 @@ export const ResourceCacheHolder = (props: ResourceCacheHolderProps) => {
 			off(WorkbenchEventTypes.ASK_MODULE_FILE_CONTENT, onAskModuleFileContent);
 		};
 	}, [on, off, contents]);
-	return <Fragment/>;
 };

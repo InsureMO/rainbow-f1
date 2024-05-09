@@ -11,6 +11,7 @@ import {FolderOpenIcon} from './folder-open';
 import {FolderRootIcon} from './folder-root';
 import {FunctionIcon} from './function';
 import {JavascriptIcon} from './javascript';
+import {LockIcon} from './lock';
 import {LogoIcon} from './logo';
 import {MinusIcon} from './minus';
 import {ModuleCommandIcon} from './module-command';
@@ -44,6 +45,7 @@ import {TerminalIcon} from './terminal';
 import {TodoIcon} from './todo';
 import {TypescriptIcon} from './typescript';
 import {TypescriptConfigIcon} from './typescript-config';
+import {UnlockIcon} from './unlock';
 import {ViteIcon} from './vite';
 import {WebpackIcon} from './webpack';
 
@@ -67,6 +69,8 @@ Icons.Registrar.register({
 	f1Folder: () => <FolderIcon/>,
 	f1SourceFile: () => <SourceFileIcon/>,
 	f1EllipsisVertical: () => <EllipsisVerticalIcon/>,
+	f1Lock: () => <LockIcon/>,
+	f1Unlock: () => <UnlockIcon/>,
 	f1ProjectRoot: () => <ProjectRootIcon/>,
 	f1ModuleRoot: () => <ModuleRootIcon/>,
 	f1ModuleEnvs: () => <ModuleEnvsIcon/>,
@@ -108,7 +112,7 @@ export {
 
 	FolderOpenIcon, FolderClosedIcon, FolderClosedEmptyIcon, FolderIcon, SourceFileIcon,
 
-	EllipsisVerticalIcon,
+	LockIcon, UnlockIcon, EllipsisVerticalIcon,
 
 	ProjectRootIcon, ModuleRootIcon,
 	ModuleEnvsIcon, ModuleEnvIcon, ModuleServerIcon, ModuleScriptsIcon, ModuleDBScriptsIcon,

@@ -24,7 +24,7 @@ export const YamlEditor = (props: YamlEditorProps) => {
 					keymap.of([indentWithTab]),
 					yaml(),
 					lintGutter(),
-					options.docChanged
+					...options.extensions
 				]
 			});
 		}

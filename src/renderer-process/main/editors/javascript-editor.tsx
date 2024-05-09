@@ -47,7 +47,7 @@ export const JavascriptEditor = (props: JavascriptEditorProps) => {
 							// semi: ['error', 'never'],
 						}
 					})),
-					options.docChanged
+					...options.extensions
 				]
 			});
 		}

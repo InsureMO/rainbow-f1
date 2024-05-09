@@ -24,7 +24,7 @@ export const SqlEditor = (props: SqlEditorProps) => {
 					keymap.of([indentWithTab]),
 					sql(),
 					lintGutter(),
-					options.docChanged
+					...options.extensions
 				]
 			});
 		}

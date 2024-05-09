@@ -1,5 +1,6 @@
 import {ModuleFileResource} from '../opened/types';
 import {isJavascriptFile, isJsonFile, isSqlFile, isTypescriptFile, isYamlFile} from '../utils';
+import {EditModeSwitcher} from './edit-mode-switcher';
 import {JavascriptEditor, JsonEditor, SqlEditor, YamlEditor} from './index';
 import {TypescriptEditor} from './typescript-editor';
 import {EditorContainer, EditorStatusBar, EditorStatusBarGrabber} from './widgets';
@@ -31,6 +32,7 @@ export const ModuleFileEditor = (props: ModuleFileEditorProps) => {
 		</EditorContainer>
 		<EditorStatusBar>
 			<EditorStatusBarGrabber/>
+			<EditModeSwitcher resource={resource}/>
 		</EditorStatusBar>
 	</>;
 };

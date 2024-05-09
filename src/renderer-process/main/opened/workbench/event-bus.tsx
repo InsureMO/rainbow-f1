@@ -27,7 +27,9 @@ export enum WorkbenchEventTypes {
 	ASK_PROJECT = 'ask-project', ASK_PROJECT_STRUCTURE = 'ask-project-structure',
 	RESOURCE_SELECTED = 'resource-selected',
 	OPEN_RESOURCE = 'open-resource', CLOSE_RESOURCE = 'close-resource',
-	ASK_MODULE_FILE_CONTENT = 'ask-module-file-content'
+	ASK_MODULE_FILE_CONTENT = 'ask-module-file-content',
+	ASK_RESOURCE_LOCK_STATUS = 'ask-resource-lock-status',
+	SWITCH_RESOURCE_LOCK_STATUS = 'switch-resource-lock-status'
 }
 
 export interface WorkbenchEventBus {
@@ -90,6 +92,18 @@ export interface WorkbenchEventBus {
 	on(type: WorkbenchEventTypes.ASK_MODULE_FILE_CONTENT, listener: (resource: ModuleFileResource, onContent: (content: string) => void, onError: (message: string) => void) => void): this;
 
 	off(type: WorkbenchEventTypes.ASK_MODULE_FILE_CONTENT, listener: (resource: ModuleFileResource, onContent: (content: string) => void, onError: (message: string) => void) => void): this;
+
+	fire(type: WorkbenchEventTypes.ASK_RESOURCE_LOCK_STATUS, resource: Resource, onStatus: (lock: boolean, switchable: boolean) => void): this;
+
+	on(type: WorkbenchEventTypes.ASK_RESOURCE_LOCK_STATUS, listener: (resource: Resource, onStatus: (lock: boolean, switchable: boolean) => void) => void): this;
+
+	off(type: WorkbenchEventTypes.ASK_RESOURCE_LOCK_STATUS, listener: (resource: Resource, onStatus: (lock: boolean, switchable: boolean) => void) => void): this;
+
+	fire(type: WorkbenchEventTypes.SWITCH_RESOURCE_LOCK_STATUS, resource: Resource, locked: boolean): this;
+
+	on(type: WorkbenchEventTypes.SWITCH_RESOURCE_LOCK_STATUS, listener: (resource: Resource, locked: boolean) => void): this;
+
+	off(type: WorkbenchEventTypes.SWITCH_RESOURCE_LOCK_STATUS, listener: (resource: Resource, locked: boolean) => void): this;
 }
 
 const Context = createContext<WorkbenchEventBus>({} as WorkbenchEventBus);

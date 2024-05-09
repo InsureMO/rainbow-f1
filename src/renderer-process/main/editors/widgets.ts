@@ -1,4 +1,4 @@
-import {CssVars, DOM_KEY_WIDGET} from '@rainbow-d9/n2';
+import {CssVars, DOM_KEY_WIDGET, UnwrappedButton} from '@rainbow-d9/n2';
 import styled from 'styled-components';
 
 export const EditorNotSupportedContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-editor-not-supported'})`
@@ -214,4 +214,42 @@ export const EditorStatusBarGrabber = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb
     display: block;
     position: relative;
     flex-grow: 1;
+`;
+export const EditorStatusButton = styled(UnwrappedButton)`
+    border-radius: 0;
+    border: 0;
+    height: unset;
+    font-size: calc(var(--f1-font-size) * 0.8);
+    padding: 0 8px 0 12px;
+    box-shadow: none;
+
+    &[data-ink=primary] {
+        background-color: transparent;
+        color: var(--f1-font-color);
+    }
+
+    &[data-ink=primary]:hover {
+        background-color: var(--f1-primary-color);
+        color: var(--f1-invert-color);
+        box-shadow: none;
+
+        > span[data-w=d9-deco-lead] > svg {
+            color: var(--f1-invert-color);
+        }
+    }
+
+    &[data-ink=primary]:focus, &[data-ink=primary]:active {
+        box-shadow: none;
+    }
+
+    > span[data-w=d9-deco-lead] {
+        padding-left: 0;
+        min-width: unset;
+        color: var(--f1-font-color);
+
+        > svg {
+            height: calc(var(--f1-font-size) * 0.8);
+            transition: color 0.3s ease-in-out;
+        }
+    }
 `;

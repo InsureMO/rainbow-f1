@@ -1,4 +1,5 @@
 import {F1ModuleStructure, F1Project, ModuleCommand, ModuleEnv, ModuleFile, ModuleFileType} from '../../../shared';
+import {Resource} from '../opened/types';
 
 export const ADD_MODULE = Symbol();
 
@@ -71,8 +72,34 @@ export const isTsxFile = (file: ModuleFile) => {
 	return [ModuleFileType.TYPESCRIPT].includes(file.type) && file.basename.endsWith('.tsx');
 };
 export const isYamlFile = (file: ModuleFile) => {
-	return [ModuleFileType.YAML].includes(file.type);
+	return [ModuleFileType.YAML, ModuleFileType.O23_PIPELINE].includes(file.type);
 };
 export const isSqlFile = (file: ModuleFile) => {
 	return [ModuleFileType.SQL].includes(file.type);
+};
+
+export const isO23ServerPipelineFile = (marker: string) => {
+	return marker.startsWith(`${MODULE_O23_SERVER_PIPELINE_FILE_MARKER_PREFIX}-`);
+};
+export const isO23ScriptsPipelineFile = (marker: string) => {
+	return marker.startsWith(`${MODULE_O23_SCRIPTS_PIPELINE_FILE_MARKER_PREFIX}-`);
+};
+
+export const isResourceInitLocked = (resource: Resource) => {
+	const {marker} = resource;
+	// noinspection RedundantIfStatementJS
+	if (isO23ServerPipelineFile(marker) || isO23ScriptsPipelineFile(marker)) {
+		return false;
+	} else {
+		return true;
+	}
+};
+export const isResourceLockStatusSwitchable = (resource: Resource) => {
+	const {marker} = resource;
+	// noinspection RedundantIfStatementJS
+	if (isO23ServerPipelineFile(marker) || isO23ScriptsPipelineFile(marker)) {
+		return true;
+	} else {
+		return false;
+	}
 };
