@@ -1,4 +1,4 @@
-export * from './code-mirror-editor';
+export * from './use-code-mirror-editor';
 
 export * from './json-editor';
 export * from './javascript-editor';

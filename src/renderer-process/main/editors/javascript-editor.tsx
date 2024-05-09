@@ -7,8 +7,9 @@ import {basicSetup} from 'codemirror';
 import * as eslint from 'eslint-linter-browserify';
 import globals from 'globals';
 import {ModuleFileResource} from '../opened/types';
-import {useCodeMirrorEditor} from './code-mirror-editor';
+import {MissedContent} from './missed-content';
 import {TypescriptEslintPlugin} from './typescript-eslint-plugin';
+import {useCodeMirrorEditor} from './use-code-mirror-editor';
 import {EditorPanel} from './widgets';
 
 export interface JavascriptEditorProps {
@@ -18,7 +19,7 @@ export interface JavascriptEditorProps {
 export const JavascriptEditor = (props: JavascriptEditorProps) => {
 	const {resource} = props;
 
-	const {ref} = useCodeMirrorEditor({
+	const {ref, message} = useCodeMirrorEditor({
 		resource, createConfigState: (options) => {
 			return CodeMirrorState.create({
 				doc: '',
@@ -53,5 +54,7 @@ export const JavascriptEditor = (props: JavascriptEditorProps) => {
 		}
 	});
 
-	return <EditorPanel ref={ref}/>;
+	return <MissedContent message={message}>
+		<EditorPanel ref={ref}/>
+	</MissedContent>;
 };

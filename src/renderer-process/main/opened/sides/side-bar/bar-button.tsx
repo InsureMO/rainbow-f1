@@ -23,19 +23,12 @@ export const SideBarButton = (props: SideBarButtonProps) => {
 	const [opened, setOpened] = useState(false);
 	useEffect(() => {
 		const onOpened = (key: SideContentKey, pos: SideContentPosition) => {
-			if (pos !== contentPosition) {
-				return;
+			if (pos === contentPosition && key === contentKey) {
+				setOpened(true);
 			}
-			if (key === contentKey) {
-				return;
-			}
-			setOpened(false);
 		};
 		const onClosed = (key: SideContentKey, pos: SideContentPosition) => {
-			if (pos !== contentPosition) {
-				return;
-			}
-			if (key === contentKey) {
+			if (pos === contentPosition && key === contentKey) {
 				setOpened(false);
 			}
 		};

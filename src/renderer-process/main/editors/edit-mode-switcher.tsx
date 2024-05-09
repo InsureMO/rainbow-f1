@@ -45,7 +45,7 @@ export const EditModeSwitcher = (props: EditModeSwitcherProps) => {
 
 	if (state.locked) {
 		return <EditorStatusButton leads={['$icons.f1Lock']} onClick={onUnlockClicked}>
-			{state.switchable ? 'Read Mode' : 'Read Mode Only'}
+			{state.switchable ? 'Read Mode' : 'Read Only'}
 		</EditorStatusButton>;
 	} else {
 		return <EditorStatusButton leads={['$icons.f1Unlock']} onClick={onLockClicked}>Edit Mode</EditorStatusButton>;

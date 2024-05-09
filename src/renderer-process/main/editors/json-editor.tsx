@@ -5,7 +5,8 @@ import {EditorState} from '@codemirror/state';
 import {keymap} from '@codemirror/view';
 import {basicSetup} from 'codemirror';
 import {ModuleFileResource} from '../opened/types';
-import {useCodeMirrorEditor} from './code-mirror-editor';
+import {MissedContent} from './missed-content';
+import {useCodeMirrorEditor} from './use-code-mirror-editor';
 
 import {EditorPanel} from './widgets';
 
@@ -16,7 +17,7 @@ export interface JsonEditorProps {
 export const JsonEditor = (props: JsonEditorProps) => {
 	const {resource} = props;
 
-	const {ref} = useCodeMirrorEditor({
+	const {ref, message} = useCodeMirrorEditor({
 		resource, createConfigState: (options) => {
 			return EditorState.create({
 				doc: '',
@@ -32,5 +33,7 @@ export const JsonEditor = (props: JsonEditorProps) => {
 		}
 	});
 
-	return <EditorPanel ref={ref}/>;
+	return <MissedContent message={message}>
+		<EditorPanel ref={ref}/>
+	</MissedContent>;
 };

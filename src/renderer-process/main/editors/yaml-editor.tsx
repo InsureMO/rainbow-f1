@@ -5,7 +5,8 @@ import {EditorState as CodeMirrorState} from '@codemirror/state';
 import {keymap} from '@codemirror/view';
 import {basicSetup} from 'codemirror';
 import {ModuleFileResource} from '../opened/types';
-import {useCodeMirrorEditor} from './code-mirror-editor';
+import {MissedContent} from './missed-content';
+import {useCodeMirrorEditor} from './use-code-mirror-editor';
 import {EditorPanel} from './widgets';
 
 export interface YamlEditorProps {
@@ -15,7 +16,7 @@ export interface YamlEditorProps {
 export const YamlEditor = (props: YamlEditorProps) => {
 	const {resource} = props;
 
-	const {ref} = useCodeMirrorEditor({
+	const {ref, message} = useCodeMirrorEditor({
 		resource, createConfigState: (options) => {
 			return CodeMirrorState.create({
 				doc: '',
@@ -30,5 +31,7 @@ export const YamlEditor = (props: YamlEditorProps) => {
 		}
 	});
 
-	return <EditorPanel ref={ref}/>;
+	return <MissedContent message={message}>
+		<EditorPanel ref={ref}/>
+	</MissedContent>;
 };

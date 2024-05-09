@@ -22,7 +22,7 @@ export interface CodeMirrorEditorState {
 	message?: string;
 }
 
-export interface CodeMirrorEditorHookReturn extends CodeMirrorEditorState {
+export interface CodeMirrorEditorHookReturn extends Pick<CodeMirrorEditorState, 'editor' | 'message'> {
 	ref: MutableRefObject<HTMLDivElement>;
 }
 
@@ -81,7 +81,6 @@ export const useCodeMirrorEditor = (options: CodeMirrorEditorOptions): CodeMirro
 			if (state.editor == null) {
 				return;
 			}
-			console.log('switch to', to);
 			state.editor.dispatch({
 				effects: state.readOnly.reconfigure(EditorState.readOnly.of(to))
 			});
