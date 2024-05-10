@@ -63,12 +63,19 @@ export const createModuleFileNodes = (options: ModuleFileNodesCreateOptions): Ar
 	return top;
 };
 export const buildModuleFileAsResourceSegments = (file: ModuleFile): Array<PresentResourceSegment> => {
-	const [last, ...others] = file.path.split(/[\/|\\]/g).reverse();
+	const [last, ...others] = file.pathRelativeToModuleRoot.split(/[\/|\\]/g).reverse();
 	return [
 		...others.reverse().map(label => ({label})),
 		{label: last, icon: file.dir ? <FolderIcon/> : icon(file)}
 	];
 };
 export const buildModuleFileAsResource = (file: ModuleFile, marker: string, segments: () => Array<PresentResourceSegment>): ModuleFileResource => {
-	return {file, marker, segments: segments(), absolutePath: () => file.path};
+	return {
+		file, marker, segments: segments(),
+		absolutePath: () => file.path,
+		relativePathToRoot: () => file.pathRelativeToRoot,
+		relativePathToProjectRoot: () => file.pathRelativeToProjectRoot,
+		relativePathToModuleRoot: () => file.pathRelativeToModuleRoot
+	};
 };
+

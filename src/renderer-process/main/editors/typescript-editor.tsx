@@ -52,7 +52,7 @@ export const TypescriptEditor = (props: TypescriptEditorProps) => {
 		}
 	});
 
-	return <MissedContent message={message}>
+	return <MissedContent resource={resource} message={message}>
 		<EditorPanel ref={ref}/>
 	</MissedContent>;
 };

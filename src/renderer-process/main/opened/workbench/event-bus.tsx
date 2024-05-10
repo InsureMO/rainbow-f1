@@ -26,7 +26,7 @@ export enum WorkbenchEventTypes {
 	CLOSE_SIDE_FRAME = 'close-side-frame', SIDE_FRAME_CLOSED = 'side-frame-closed',
 	ASK_PROJECT = 'ask-project', ASK_PROJECT_STRUCTURE = 'ask-project-structure',
 	RESOURCE_SELECTED = 'resource-selected',
-	OPEN_RESOURCE = 'open-resource', CLOSE_RESOURCE = 'close-resource',
+	OPEN_RESOURCE = 'open-resource', CLOSE_RESOURCE = 'close-resource', ASK_CLOSE_RESOURCE = 'ask-close-resource',
 	ASK_MODULE_FILE_CONTENT = 'ask-module-file-content',
 	ASK_RESOURCE_LOCK_STATUS = 'ask-resource-lock-status',
 	SWITCH_RESOURCE_LOCK_STATUS = 'switch-resource-lock-status'
@@ -81,11 +81,17 @@ export interface WorkbenchEventBus {
 
 	off(type: WorkbenchEventTypes.OPEN_RESOURCE, listener: (resource: Resource) => void): this;
 
-	fire(type: WorkbenchEventTypes.CLOSE_RESOURCE, resource?: Resource): this;
+	fire(type: WorkbenchEventTypes.CLOSE_RESOURCE, resource: Resource): this;
 
-	on(type: WorkbenchEventTypes.CLOSE_RESOURCE, listener: (resource?: Resource) => void): this;
+	on(type: WorkbenchEventTypes.CLOSE_RESOURCE, listener: (resource: Resource) => void): this;
 
-	off(type: WorkbenchEventTypes.CLOSE_RESOURCE, listener: (resource?: Resource) => void): this;
+	off(type: WorkbenchEventTypes.CLOSE_RESOURCE, listener: (resource: Resource) => void): this;
+
+	fire(type: WorkbenchEventTypes.ASK_CLOSE_RESOURCE, resource: Resource): this;
+
+	on(type: WorkbenchEventTypes.ASK_CLOSE_RESOURCE, listener: (resource: Resource) => void): this;
+
+	off(type: WorkbenchEventTypes.ASK_CLOSE_RESOURCE, listener: (resource: Resource) => void): this;
 
 	fire(type: WorkbenchEventTypes.ASK_MODULE_FILE_CONTENT, resource: ModuleFileResource, onContent: (content: string) => void, onError: (message: string) => void): this;
 

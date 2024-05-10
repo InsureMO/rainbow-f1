@@ -18,6 +18,10 @@ class PathWorker {
 		return p.sep;
 	}
 
+	public dirname(path: string): string {
+		return p.dirname(path);
+	}
+
 	public basename(path: string, suffix?: string): string | undefined {
 		if (!this.isValid(path)) {
 			return (void 0);

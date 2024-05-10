@@ -30,29 +30,34 @@ export const WorkAreaHeader = () => {
 				setState({resources: [...state.resources, resource], active: resource});
 			}
 		};
+		const onAskCloseResource = (resource: Resource) => {
+			const index = state.resources.findIndex(item => item === resource);
+			const resources = state.resources.filter(item => item !== resource);
+			let nextActive: Undefinable<Resource> = (void 0);
+			if (state.active === resource) {
+				if (resources.length !== 0) {
+					nextActive = resources[Math.min(index, resources.length - 1)];
+				}
+			} else {
+				nextActive = state.active;
+			}
+			if (nextActive == null) {
+				fire(WorkbenchEventTypes.CLOSE_RESOURCE, resource);
+			} else {
+				fire(WorkbenchEventTypes.OPEN_RESOURCE, nextActive);
+			}
+			setState({resources, active: nextActive});
+		};
 		on(WorkbenchEventTypes.OPEN_RESOURCE, onOpenResource);
+		on(WorkbenchEventTypes.ASK_CLOSE_RESOURCE, onAskCloseResource);
 		return () => {
 			off(WorkbenchEventTypes.OPEN_RESOURCE, onOpenResource);
+			off(WorkbenchEventTypes.ASK_CLOSE_RESOURCE, onAskCloseResource);
 		};
-	}, [on, off, state.resources]);
+	}, [on, off, fire, state.resources, state.active]);
 
 	const closeResource = (resource: Resource) => {
-		const index = state.resources.findIndex(item => item === resource);
-		const resources = state.resources.filter(item => item !== resource);
-		let nextActive: Undefinable<Resource> = (void 0);
-		if (state.active === resource) {
-			if (resources.length !== 0) {
-				nextActive = resources[Math.min(index, resources.length - 1)];
-			}
-		} else {
-			nextActive = state.active;
-		}
-		if (nextActive == null) {
-			fire(WorkbenchEventTypes.CLOSE_RESOURCE, resource);
-		} else {
-			fire(WorkbenchEventTypes.OPEN_RESOURCE, nextActive);
-		}
-		setState({resources, active: nextActive});
+		fire(WorkbenchEventTypes.ASK_CLOSE_RESOURCE, resource);
 	};
 	const closeOtherResources = (resource: Resource) => {
 		setState({resources: [resource], active: resource});
@@ -69,6 +74,20 @@ export const WorkAreaHeader = () => {
 		const hasAbsolutePath = (resource as ModuleFileResource).absolutePath != null;
 		if (hasAbsolutePath) {
 			const path = (resource as ModuleFileResource).absolutePath();
+			await window.navigator.clipboard.writeText(path);
+		}
+	};
+	const copyRelativePathToProject = async (resource: Resource) => {
+		const hasAbsolutePath = (resource as ModuleFileResource).absolutePath != null;
+		if (hasAbsolutePath) {
+			const path = (resource as ModuleFileResource).relativePathToProjectRoot();
+			await window.navigator.clipboard.writeText(path);
+		}
+	};
+	const copyRelativePathToModule = async (resource: Resource) => {
+		const hasAbsolutePath = (resource as ModuleFileResource).absolutePath != null;
+		if (hasAbsolutePath) {
+			const path = (resource as ModuleFileResource).relativePathToModuleRoot();
 			await window.navigator.clipboard.writeText(path);
 		}
 	};
@@ -93,6 +112,18 @@ export const WorkAreaHeader = () => {
 			{label: 'Copy Path', click: 'copy-path', invoke: () => copyPath(resource)},
 			hasAbsolutePath
 				? {label: 'Copy Absolute Path', click: 'copy-absolute-path', invoke: () => copyAbsolutePath(resource)}
+				: null,
+			hasAbsolutePath
+				? {
+					label: 'Copy Relative Path to Project', click: 'copy-relative-path-to-project',
+					invoke: () => copyRelativePathToProject(resource)
+				}
+				: null,
+			hasAbsolutePath
+				? {
+					label: 'Copy Relative Path to Module', click: 'copy-relative-path-to-module',
+					invoke: () => copyRelativePathToModule(resource)
+				}
 				: null,
 			resource.renamable
 				? {type: 'separator'}

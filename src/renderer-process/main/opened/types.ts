@@ -22,6 +22,11 @@ export interface ModuleResource extends Resource {
 export interface ModuleFileResource extends ModuleResource {
 	file: ModuleFile;
 	absolutePath: () => string;
+	/** includes project and module */
+	relativePathToRoot: () => string;
+	/** include module */
+	relativePathToProjectRoot: () => string;
+	relativePathToModuleRoot: () => string;
 }
 
 export interface ModuleCommandResource extends ModuleFileResource {

@@ -54,7 +54,7 @@ export const JavascriptEditor = (props: JavascriptEditorProps) => {
 		}
 	});
 
-	return <MissedContent message={message}>
+	return <MissedContent resource={resource} message={message}>
 		<EditorPanel ref={ref}/>
 	</MissedContent>;
 };

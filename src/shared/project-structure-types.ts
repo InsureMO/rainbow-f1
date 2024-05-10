@@ -37,8 +37,11 @@ export enum ModuleFileType {
  */
 export interface ModuleFile {
 	basename: string;
-	/** name is relative path to module root */
+	/** absolute path */
 	path: string;
+	pathRelativeToRoot: string;
+	pathRelativeToProjectRoot: string;
+	pathRelativeToModuleRoot: string;
 	dir: boolean;
 	type: ModuleFileType;
 }

@@ -46,9 +46,13 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		}
 	}
 
-	protected readCommands(structure: O23ModuleStructure, packageFile: string, packageJson: NodeJsPackageJson) {
-		const file = {
-			basename: PathWorker.basename(packageFile), path: packageFile, dir: false, type: ModuleFileType.COMMAND
+	protected readCommands(projectPath: string, modulePath: string, structure: O23ModuleStructure, packageFile: string, packageJson: NodeJsPackageJson) {
+		const file: ModuleFile = {
+			basename: PathWorker.basename(packageFile), dir: false, type: ModuleFileType.COMMAND,
+			path: packageFile,
+			pathRelativeToRoot: packageFile.substring(PathWorker.dirname(projectPath).length + 1),
+			pathRelativeToProjectRoot: packageFile.substring(projectPath.length + 1),
+			pathRelativeToModuleRoot: packageFile.substring(modulePath.length + 1)
 		};
 		Object.entries(packageJson.scripts ?? {}).forEach(([key, value]) => {
 			if (isBlank(value)) {
@@ -76,7 +80,7 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		});
 	}
 
-	protected readEnvFiles(modulePath: string, structure: O23ModuleStructure) {
+	protected readEnvFiles(projectPath: string, modulePath: string, structure: O23ModuleStructure) {
 		// key is env file, value is items
 		// const loaded: Record<string, Mo> = {};
 		const allEnvFiles = Object.values(structure.commands).map(({envFiles}) => envFiles ?? []).flat();
@@ -85,7 +89,11 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 			const envPath = PathWorker.resolve(modulePath, file);
 			dotenv.config({processEnv: data, path: envPath});
 			envs[file] = {
-				basename: PathWorker.basename(file), path: envPath, dir: false, type: ModuleFileType.ENV,
+				basename: PathWorker.basename(file), dir: false, type: ModuleFileType.ENV,
+				path: envPath,
+				pathRelativeToRoot: envPath.substring(PathWorker.dirname(projectPath).length + 1),
+				pathRelativeToProjectRoot: envPath.substring(projectPath.length + 1),
+				pathRelativeToModuleRoot: envPath.substring(modulePath.length + 1),
 				items: Object.entries(data)
 					.map(([key, value]) => ({name: key, value}))
 			};
@@ -102,7 +110,8 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 			envs: {},
 			success: false
 		};
-		const modulePath = PathWorker.resolve(project.directory, module.name);
+		const projectPath = project.directory;
+		const modulePath = PathWorker.resolve(projectPath, module.name);
 		const filesScanned = FileSystemWorker.dir(modulePath, {recursive: true, relative: false});
 		if (!filesScanned.success) {
 			return {success: false, message: filesScanned.message, ...structure};
@@ -119,20 +128,20 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		}
 		// read commands, find build, test, start. o23 has more commands, find build and start standalone commands as well.
 		// typically, all following commands are defined for development.
-		this.readCommands(structure, packageFile, packageJson);
-		this.readEnvFiles(modulePath, structure);
+		this.readCommands(projectPath, modulePath, structure, packageFile, packageJson);
+		this.readEnvFiles(projectPath, modulePath, structure);
 		// find server pipeline files according to env
-		this.readServerPipelineFiles(modulePath, structure);
+		this.readServerPipelineFiles(projectPath, modulePath, structure);
 		// find scripts pipeline and db scripts files according to env
-		this.readScriptsPipelineFiles(modulePath, structure);
+		this.readScriptsPipelineFiles(projectPath, modulePath, structure);
 		// load source files
-		this.readSourceFiles(structure, filesScanned, (() => {
+		this.readSourceFiles(projectPath, modulePath, structure, filesScanned, (() => {
 			const sourcePath = PathWorker.resolve(modulePath, 'src');
 			const prefix = `${sourcePath}${PathWorker.separator()}`;
 			return (file: ScannedFile) => file.path.startsWith(prefix);
 		})());
 		// load node files
-		this.readNodeFiles(structure, filesScanned, (() => {
+		this.readNodeFiles(projectPath, modulePath, structure, filesScanned, (() => {
 			const prefix = `${modulePath}${PathWorker.separator()}`;
 			const prefixLength = prefix.length;
 			return (file: ScannedFile) => {
@@ -140,44 +149,56 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 			};
 		})());
 		// all files
-		this.readAllFiles(structure, filesScanned);
+		this.readAllFiles(projectPath, modulePath, structure, filesScanned);
 
 		structure.success = true;
 		return structure;
 	}
 
-	protected readAllFiles(structure: O23ModuleStructure, filesScanned: FileSystemFoldersResult) {
+	protected readAllFiles(projectPath: string, modulePath: string, structure: O23ModuleStructure, filesScanned: FileSystemFoldersResult) {
 		structure.files = filesScanned.ret.map(({path, dir}) => {
 			return {
-				basename: PathWorker.basename(path), path, dir,
+				basename: PathWorker.basename(path), dir,
+				path,
+				pathRelativeToRoot: path.substring(PathWorker.dirname(projectPath).length + 1),
+				pathRelativeToProjectRoot: path.substring(projectPath.length + 1),
+				pathRelativeToModuleRoot: path.substring(modulePath.length + 1),
 				type: dir ? ModuleFileType.DIRECTORY : this.guessFileType(path)
 			};
 		});
 	}
 
-	protected readNodeFiles(structure: O23ModuleStructure, filesScanned: FileSystemFoldersResult, accept: (file: ScannedFile) => boolean) {
+	protected readNodeFiles(projectPath: string, modulePath: string, structure: O23ModuleStructure, filesScanned: FileSystemFoldersResult, accept: (file: ScannedFile) => boolean) {
 		structure.nodeFiles = filesScanned.ret
 			.filter(accept)
 			.map(({path, dir}) => {
 				return {
-					basename: PathWorker.basename(path), path, dir,
+					basename: PathWorker.basename(path), dir,
+					path,
+					pathRelativeToRoot: path.substring(PathWorker.dirname(projectPath).length + 1),
+					pathRelativeToProjectRoot: path.substring(projectPath.length + 1),
+					pathRelativeToModuleRoot: path.substring(modulePath.length + 1),
 					type: dir ? ModuleFileType.DIRECTORY : this.guessFileType(path)
 				};
 			});
 	}
 
-	protected readSourceFiles(structure: O23ModuleStructure, filesScanned: FileSystemFoldersResult, accept: (file: ScannedFile) => boolean) {
+	protected readSourceFiles(projectPath: string, modulePath: string, structure: O23ModuleStructure, filesScanned: FileSystemFoldersResult, accept: (file: ScannedFile) => boolean) {
 		structure.sourceFiles = filesScanned.ret
 			.filter(accept)
 			.map(({path, dir}) => {
 				return {
-					basename: PathWorker.basename(path), path, dir,
+					basename: PathWorker.basename(path), dir,
+					path,
+					pathRelativeToRoot: path.substring(PathWorker.dirname(projectPath).length + 1),
+					pathRelativeToProjectRoot: path.substring(projectPath.length + 1),
+					pathRelativeToModuleRoot: path.substring(modulePath.length + 1),
 					type: dir ? ModuleFileType.DIRECTORY : this.guessFileType(path)
 				};
 			});
 	}
 
-	protected scanFiles(modulePath: string, directories: Array<string>): Array<ModuleFile> {
+	protected scanFiles(projectPath: string, modulePath: string, directories: Array<string>): Array<ModuleFile> {
 		return directories.map(directory => {
 			const scanned = FileSystemWorker.dir(PathWorker.resolve(modulePath, directory), {
 				recursive: true, relative: false
@@ -185,7 +206,11 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 			if (scanned.success) {
 				return (scanned.ret ?? []).map(({path, dir}) => {
 					return {
-						basename: PathWorker.basename(path), path, dir,
+						basename: PathWorker.basename(path), dir,
+						path,
+						pathRelativeToRoot: path.substring(PathWorker.dirname(projectPath).length + 1),
+						pathRelativeToProjectRoot: path.substring(projectPath.length + 1),
+						pathRelativeToModuleRoot: path.substring(modulePath.length + 1),
 						type: dir ? ModuleFileType.DIRECTORY : this.guessFileType(path)
 					};
 				});
@@ -196,7 +221,7 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		}).flat();
 	}
 
-	protected readServerPipelineFiles(modulePath: string, structure: Omit<O23ModuleStructure, 'success' | 'message'>) {
+	protected readServerPipelineFiles(projectPath: string, modulePath: string, structure: Omit<O23ModuleStructure, 'success' | 'message'>) {
 		// find server env files, command should be one of "start", "*:start" or "*-start"
 		const envFiles = Object.values(structure.commands)
 			.filter(({name}) => name === 'start' || name.endsWith(':start') || name.endsWith('-start'))
@@ -209,12 +234,17 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		})));
 		structure.server.files = [
 			...directories.map(directory => {
+				const path = PathWorker.resolve(modulePath, directory);
 				return {
 					basename: PathWorker.basename(directory),
-					path: PathWorker.resolve(modulePath, directory), dir: true, type: ModuleFileType.DIRECTORY
+					path,
+					pathRelativeToRoot: path.substring(PathWorker.dirname(projectPath).length + 1),
+					pathRelativeToProjectRoot: path.substring(projectPath.length + 1),
+					pathRelativeToModuleRoot: path.substring(modulePath.length + 1),
+					dir: true, type: ModuleFileType.DIRECTORY
 				};
 			}),
-			...this.scanFiles(modulePath, directories).map(file => {
+			...this.scanFiles(projectPath, modulePath, directories).map(file => {
 				if (file.type === ModuleFileType.YAML) {
 					file.type = ModuleFileType.O23_PIPELINE;
 				}
@@ -222,7 +252,7 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 			})];
 	}
 
-	protected readScriptsPipelineFiles(modulePath: string, structure: Omit<O23ModuleStructure, 'success' | 'message'>) {
+	protected readScriptsPipelineFiles(projectPath: string, modulePath: string, structure: Omit<O23ModuleStructure, 'success' | 'message'>) {
 		// find server env files, command should be one of "scripts", "*:scripts" or "*-scripts"
 		const envFiles = Object.values(structure.commands)
 			.filter(({name}) => name === 'scripts' || name.endsWith(':scripts') || name.endsWith('-scripts'))
@@ -235,12 +265,17 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		})));
 		structure.scripts.files = [
 			...directories.map(directory => {
+				const path = PathWorker.resolve(modulePath, directory);
 				return {
 					basename: PathWorker.basename(directory),
-					path: PathWorker.resolve(modulePath, directory), dir: true, type: ModuleFileType.DIRECTORY
+					path,
+					pathRelativeToRoot: path.substring(PathWorker.dirname(projectPath).length + 1),
+					pathRelativeToProjectRoot: path.substring(projectPath.length + 1),
+					pathRelativeToModuleRoot: path.substring(modulePath.length + 1),
+					dir: true, type: ModuleFileType.DIRECTORY
 				};
 			}),
-			...this.scanFiles(modulePath, directories).map(file => {
+			...this.scanFiles(projectPath, modulePath, directories).map(file => {
 				if (file.type === ModuleFileType.YAML) {
 					file.type = ModuleFileType.O23_PIPELINE;
 				}
@@ -254,12 +289,17 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		})));
 		structure.dbScripts.files = [
 			...dbScriptsDirectories.map(directory => {
+				const path = PathWorker.resolve(modulePath, directory);
 				return {
 					basename: PathWorker.basename(directory),
-					path: PathWorker.resolve(modulePath, directory), dir: true, type: ModuleFileType.DIRECTORY
+					path,
+					pathRelativeToRoot: path.substring(PathWorker.dirname(projectPath).length + 1),
+					pathRelativeToProjectRoot: path.substring(projectPath.length + 1),
+					pathRelativeToModuleRoot: path.substring(modulePath.length + 1),
+					dir: true, type: ModuleFileType.DIRECTORY
 				};
 			}),
-			...this.scanFiles(modulePath, dbScriptsDirectories)
+			...this.scanFiles(projectPath, modulePath, dbScriptsDirectories)
 		];
 	}
 }

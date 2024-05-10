@@ -1,4 +1,4 @@
-import {CssVars, DOM_KEY_WIDGET, UnwrappedButton} from '@rainbow-d9/n2';
+import {DOM_KEY_WIDGET, UnwrappedButton} from '@rainbow-d9/n2';
 import styled from 'styled-components';
 
 export const EditorNotSupportedContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-editor-not-supported'})`
@@ -56,6 +56,25 @@ export const EditorContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-a
     align-self: stretch;
     grid-template-columns: 1fr;
     overflow: hidden;
+`;
+export const EditorMissedContentReminder = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-editor-missed-content'})`
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: start;
+    padding: 0 16px;
+
+    > button {
+        padding: 0;
+    }
+`;
+export const EditorMissedContentMessage = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-editor-missed-content-message'})`
+    display: flex;
+    position: relative;
+    align-items: center;
+    min-height: var(--f1-row-height);
+    margin: 16px 0;
+    color: var(--f1-danger-color);
 `;
 export const EditorPanel = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-editor-panel'})`
     display: block;
