@@ -37,6 +37,7 @@ const createModuleNode = (rootData: ProjectRoot, module: F1ModuleStructure, fire
 		module: <M extends F1ModuleStructure>() => module as M,
 		marker, type: type(), segments: [{label: module.name, icon: <ModuleRootIcon/>}]
 	};
+	fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 	return {
 		value: castTo({...rootData, module}),
 		$ip2r: `${rootData.project.directory}/${module.name}/envs`, $ip2p: module.name,

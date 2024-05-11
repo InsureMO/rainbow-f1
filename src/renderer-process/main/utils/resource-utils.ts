@@ -30,25 +30,25 @@ export const MODULE_SOURCE_FILE_MARKER_PREFIX = '$$module-source-files-file$$';
 export const ADD_MODULE_MARKER = (project: F1Project) => `${ADD_MODULE_MARKER_PREFIX}-${project.directory}`;
 export const MODULE_MARKER = (module: F1ModuleStructure) => `${MODULE_MARKER_PREFIX}-${module.name}`;
 export const MODULE_COMMANDS_MARKER = (module: F1ModuleStructure) => `${MODULE_COMMANDS_MARKER_PREFIX}-${module.name}`;
-export const MODULE_COMMAND_MARKER = (module: F1ModuleStructure, command: ModuleCommand) => `${MODULE_COMMAND_MARKER_PREFIX}-${module.name}-${command.name}`;
+export const MODULE_COMMAND_MARKER = (module: F1ModuleStructure, command: ModuleCommand) => `${MODULE_COMMAND_MARKER_PREFIX}-$$${module.name}$$-${command.name}`;
 export const MODULE_ENVS_MARKER = (module: F1ModuleStructure) => `${MODULE_ENVS_MARKER_PREFIX}-${module.name}`;
-export const MODULE_ENV_MARKER = (module: F1ModuleStructure, env: ModuleEnv) => `${MODULE_ENV_MARKER_PREFIX}-${module.name}-${env.name}`;
-export const MODULE_ENV_COMMAND_MARKER = (module: F1ModuleStructure, env: ModuleEnv, command: ModuleCommand) => `${MODULE_ENV_COMMAND_MARKER_PREFIX}-${module.name}-${env.name}-${command.name}`;
+export const MODULE_ENV_MARKER = (module: F1ModuleStructure, env: ModuleEnv) => `${MODULE_ENV_MARKER_PREFIX}-$$${module.name}$$-${env.name}`;
+export const MODULE_ENV_COMMAND_MARKER = (module: F1ModuleStructure, env: ModuleEnv, command: ModuleCommand) => `${MODULE_ENV_COMMAND_MARKER_PREFIX}-$$${module.name}$$-${env.name}-${command.name}`;
 export const MODULE_O23_SERVER_PIPELINES_MARKER = (module: F1ModuleStructure) => `${MODULE_O23_SERVER_PIPELINES_MARKER_PREFIX}-${module.name}`;
-export const MODULE_O23_SERVER_PIPELINE_DIR_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_O23_SERVER_PIPELINE_DIR_MARKER_PREFIX}-${module.name}-${file.path}`;
-export const MODULE_O23_SERVER_PIPELINE_FILE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_O23_SERVER_PIPELINE_FILE_MARKER_PREFIX}-${module.name}-${file.path}`;
+export const MODULE_O23_SERVER_PIPELINE_DIR_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_O23_SERVER_PIPELINE_DIR_MARKER_PREFIX}-$$${module.name}$$-${file.path}`;
+export const MODULE_O23_SERVER_PIPELINE_FILE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_O23_SERVER_PIPELINE_FILE_MARKER_PREFIX}-$$${module.name}$$-${file.path}`;
 export const MODULE_O23_SCRIPTS_PIPELINES_MARKER = (module: F1ModuleStructure) => `${MODULE_O23_SCRIPTS_PIPELINES_MARKER_PREFIX}-${module.name}`;
-export const MODULE_O23_SCRIPTS_PIPELINE_DIR_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_O23_SCRIPTS_PIPELINE_DIR_MARKER_PREFIX}-${module.name}-${file.path}`;
-export const MODULE_O23_SCRIPTS_PIPELINE_FILE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_O23_SCRIPTS_PIPELINE_FILE_MARKER_PREFIX}-${module.name}-${file.path}`;
+export const MODULE_O23_SCRIPTS_PIPELINE_DIR_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_O23_SCRIPTS_PIPELINE_DIR_MARKER_PREFIX}-$$${module.name}$$-${file.path}`;
+export const MODULE_O23_SCRIPTS_PIPELINE_FILE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_O23_SCRIPTS_PIPELINE_FILE_MARKER_PREFIX}-$$${module.name}$$-${file.path}`;
 export const MODULE_O23_DB_SCRIPTS_MARKER = (module: F1ModuleStructure) => `${MODULE_O23_DB_SCRIPTS_MARKER_PREFIX}-${module.name}`;
-export const MODULE_O23_DB_SCRIPTS_DIR_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_O23_DB_SCRIPTS_DIR_MARKER_PREFIX}-${module.name}-${file.path}`;
-export const MODULE_O23_DB_SCRIPTS_FILE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_O23_DB_SCRIPTS_FILE_MARKER_PREFIX}-${module.name}-${file.path}`;
+export const MODULE_O23_DB_SCRIPTS_DIR_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_O23_DB_SCRIPTS_DIR_MARKER_PREFIX}-$$${module.name}$$-${file.path}`;
+export const MODULE_O23_DB_SCRIPTS_FILE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_O23_DB_SCRIPTS_FILE_MARKER_PREFIX}-$$${module.name}$$-${file.path}`;
 export const MODULE_NODE_FILES_MARKER = (module: F1ModuleStructure) => `${MODULE_NODE_FILES_MARKER_PREFIX}-${module.name}`;
-export const MODULE_NODE_FILES_DIR_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_NODE_DIR_MARKER_PREFIX}-${module.name}-${file.path}`;
-export const MODULE_NODE_FILES_FILE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_NODE_FILE_MARKER_PREFIX}-${module.name}-${file.path}`;
+export const MODULE_NODE_FILES_DIR_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_NODE_DIR_MARKER_PREFIX}-$$${module.name}$$-${file.path}`;
+export const MODULE_NODE_FILES_FILE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_NODE_FILE_MARKER_PREFIX}-$$${module.name}$$-${file.path}`;
 export const MODULE_SOURCE_FILES_MARKER = (module: F1ModuleStructure) => `${MODULE_SOURCE_FILES_MARKER_PREFIX}-${module.name}`;
-export const MODULE_SOURCE_FILES_DIR_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_SOURCE_DIR_MARKER_PREFIX}-${module.name}-${file.path}`;
-export const MODULE_SOURCE_FILES_FILE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_SOURCE_FILE_MARKER_PREFIX}-${module.name}-${file.path}`;
+export const MODULE_SOURCE_FILES_DIR_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_SOURCE_DIR_MARKER_PREFIX}-$$${module.name}$$-${file.path}`;
+export const MODULE_SOURCE_FILES_FILE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_SOURCE_FILE_MARKER_PREFIX}-$$${module.name}$$-${file.path}`;
 
 export const isRCConfigJsonFile = (file: ModuleFile) => {
 	return [

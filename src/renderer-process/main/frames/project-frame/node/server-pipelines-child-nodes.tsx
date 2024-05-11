@@ -21,6 +21,7 @@ export const createModuleO23ServerPipelineChildNodes = (rootData: ProjectRoot, f
 					...buildModuleFileAsResourceSegments(file)
 				];
 			});
+			fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 			return {
 				value: castTo({...rootData, module, file}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$o23-pipelines$$/$$server$$/$$${file.path}$$`,
@@ -43,6 +44,7 @@ export const createModuleO23ServerPipelineChildNodes = (rootData: ProjectRoot, f
 					...buildModuleFileAsResourceSegments(file)
 				];
 			});
+			fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 			return {
 				value: castTo({...rootData, module, file}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$o23-pipelines$$/$$server$$/$$${file.path}$$`,

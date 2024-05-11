@@ -57,6 +57,7 @@ const createCommandsNode = (rootData: ProjectRoot, module: O23ModuleStructure, f
 			{label: 'CLI Commands', icon: <ModuleCommandsIcon/>}
 		];
 	});
+	fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 	return {
 		value: castTo({...rootData, module}),
 		$ip2r: `${rootData.project.directory}/${module.name}/$$commands$$`, $ip2p: '$$commands$$',
@@ -77,6 +78,7 @@ const createEnvsNode = (rootData: ProjectRoot, module: O23ModuleStructure, fire:
 			{label: 'Environments', icon: <ModuleEnvsIcon/>}
 		];
 	});
+	fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 	return {
 		value: castTo({...rootData, module}),
 		$ip2r: `${rootData.project.directory}/${module.name}/$$envs$$`, $ip2p: '$$envs$$',
@@ -97,6 +99,7 @@ const createServerPipelinesNode = (rootData: ProjectRoot, module: O23ModuleStruc
 			{label: 'Server Pipelines', icon: <ModuleServerIcon/>}
 		];
 	});
+	fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 	return {
 		value: castTo({...rootData, module}),
 		$ip2r: `${rootData.project.directory}/${module.name}/$$o23-pipelines$$/$$server$$`, $ip2p: '$$server$$',
@@ -116,6 +119,7 @@ const createScriptsPipelinesNode = (rootData: ProjectRoot, module: O23ModuleStru
 			{label: 'Scripts Pipelines', icon: <ModuleScriptsIcon/>}
 		];
 	});
+	fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 	return {
 		value: castTo({...rootData, module}),
 		$ip2r: `${rootData.project.directory}/${module.name}/$$o23-pipelines$$/$$scripts$$`,
@@ -136,6 +140,7 @@ const createDBScriptsFilesNode = (rootData: ProjectRoot, module: O23ModuleStruct
 			{label: 'Database Scripts', icon: <ModuleDBScriptsIcon/>}
 		];
 	});
+	fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 	return {
 		value: castTo({...rootData, module}),
 		$ip2r: `${rootData.project.directory}/${module.name}/$$o23-db-scripts$$`, $ip2p: '$$o23-db-scripts$$',
@@ -155,6 +160,7 @@ const createSourceFilesNode = (rootData: ProjectRoot, module: O23ModuleStructure
 			{label: 'SRC', icon: <ModuleSourceFilesIcon/>}
 		];
 	});
+	fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 	return {
 		value: castTo({...rootData, module}),
 		$ip2r: `${rootData.project.directory}/${module.name}/$$source-files$$`, $ip2p: '$$source-files$$',
@@ -174,6 +180,7 @@ const createNodeFilesNode = (rootData: ProjectRoot, module: O23ModuleStructure, 
 			{label: 'NodeJS', icon: <ModuleNodeFilesIcon/>}
 		];
 	});
+	fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 	return {
 		value: castTo({...rootData, module}),
 		$ip2r: `${rootData.project.directory}/${module.name}/$$node-files$$`, $ip2p: '$$node-files$$',

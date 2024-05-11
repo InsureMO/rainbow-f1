@@ -58,6 +58,7 @@ export const createModuleEnvsChildNodes = (rootData: ProjectRoot, fire: Workbenc
 				relativePathToProjectRoot: () => `${env.pathRelativeToProjectRoot}`,
 				relativePathToModuleRoot: () => `${env.pathRelativeToModuleRoot}`
 			};
+			fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 			return {
 				value: castTo({...rootData, module, env}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$envs$$/${env.name}`, $ip2p: env.name,
@@ -90,6 +91,7 @@ export const createModuleEnvChildNodes = (rootData: ProjectRoot, fire: Workbench
 				relativePathToProjectRoot: () => `${command.pathRelativeToProjectRoot}::${command.name}`,
 				relativePathToModuleRoot: () => `${command.pathRelativeToModuleRoot}::${command.name}`
 			};
+			fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 			return {
 				value: castTo({...rootData, module, env, command}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$envs$$/${env.name}/${command.name}`,

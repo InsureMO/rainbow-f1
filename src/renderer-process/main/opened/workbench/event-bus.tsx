@@ -25,6 +25,8 @@ export enum WorkbenchEventTypes {
 	OPEN_SIDE_FRAME = 'open-side-frame', SIDE_FRAME_OPENED = 'side-frame-opened',
 	CLOSE_SIDE_FRAME = 'close-side-frame', SIDE_FRAME_CLOSED = 'side-frame-closed',
 	ASK_PROJECT = 'ask-project', ASK_PROJECT_STRUCTURE = 'ask-project-structure',
+	REGISTER_RESOURCE = 'register-resource', UNREGISTER_RESOURCE = 'unregister-resource',
+	ASK_RESOURCE = 'ask-resource', ASK_CHILD_RESOURCES = 'ask-child-resources',
 	RESOURCE_SELECTED = 'resource-selected',
 	OPEN_RESOURCE = 'open-resource', CLOSE_RESOURCE = 'close-resource', ASK_CLOSE_RESOURCE = 'ask-close-resource',
 	ASK_MODULE_FILE_CONTENT = 'ask-module-file-content',
@@ -68,6 +70,36 @@ export interface WorkbenchEventBus {
 	on(type: WorkbenchEventTypes.ASK_PROJECT_STRUCTURE, listener: (callback: (project: F1Project, structure: F1ProjectStructure) => void) => void): this;
 
 	off(type: WorkbenchEventTypes.ASK_PROJECT_STRUCTURE, listener: (callback: (project: F1Project, structure: F1ProjectStructure) => void) => void): this;
+
+	fire(type: WorkbenchEventTypes.REGISTER_RESOURCE, resource: Resource): this;
+
+	on(type: WorkbenchEventTypes.REGISTER_RESOURCE, listener: (resource: Resource) => void): this;
+
+	off(type: WorkbenchEventTypes.REGISTER_RESOURCE, listener: (resource: Resource) => void): this;
+
+	fire(type: WorkbenchEventTypes.UNREGISTER_RESOURCE, resource: Resource): this;
+
+	on(type: WorkbenchEventTypes.UNREGISTER_RESOURCE, listener: (resource: Resource) => void): this;
+
+	off(type: WorkbenchEventTypes.UNREGISTER_RESOURCE, listener: (resource: Resource) => void): this;
+
+	fire(type: WorkbenchEventTypes.ASK_RESOURCE, marker: string, callback: (resource?: Resource) => void): this;
+
+	on(type: WorkbenchEventTypes.ASK_RESOURCE, listener: (marker: string, callback: (resource?: Resource) => void) => void): this;
+
+	off(type: WorkbenchEventTypes.ASK_RESOURCE, listener: (marker: string, callback: (resource?: Resource) => void) => void): this;
+
+	fire(type: WorkbenchEventTypes.ASK_CHILD_RESOURCES, parent: {
+		prefix: string, moduleName?: string
+	}, callback: (resources: Array<Resource>) => void): this;
+
+	on(type: WorkbenchEventTypes.ASK_CHILD_RESOURCES, listener: (parent: {
+		prefix: string, moduleName?: string
+	}, callback: (resources: Array<Resource>) => void) => void): this;
+
+	off(type: WorkbenchEventTypes.ASK_CHILD_RESOURCES, listener: (parent: {
+		prefix: string, moduleName?: string
+	}, callback: (resources: Array<Resource>) => void) => void): this;
 
 	fire(type: WorkbenchEventTypes.RESOURCE_SELECTED, resource: Resource): this;
 

@@ -16,7 +16,7 @@ export interface ResourceLockStatusState {
 }
 
 export const useLockStatus = () => {
-	const {on, off, fire} = useWorkbenchEventBus();
+	const {on, off} = useWorkbenchEventBus();
 	const [statusState, setStatusState] = useState<ResourceLockStatusState>({});
 	useEffect(() => {
 		const onAskResourceLockStatus = (resource: Resource, onStatus: (locked: boolean, switchable: boolean) => void) => {

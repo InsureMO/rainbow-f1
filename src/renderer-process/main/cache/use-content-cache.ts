@@ -14,7 +14,7 @@ export interface ResourceCacheContents {
 }
 
 export const useContentCache = () => {
-	const {on, off, fire} = useWorkbenchEventBus();
+	const {on, off} = useWorkbenchEventBus();
 	const [contents] = useState<ResourceCacheContents>({});
 	useEffect(() => {
 		const onAskModuleFileContent = (resource: ModuleFileResource, onContent: (content: string) => void, onError: (message: string) => void) => {

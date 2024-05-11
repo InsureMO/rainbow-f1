@@ -20,6 +20,7 @@ export const createModuleDBScriptsChildNodes = (rootData: ProjectRoot, fire: Wor
 					...buildModuleFileAsResourceSegments(file)
 				];
 			});
+			fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 			return {
 				value: castTo({...rootData, module, file}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$$$o23-db-scripts$$$$/$$${file.path}$$`,
@@ -41,6 +42,7 @@ export const createModuleDBScriptsChildNodes = (rootData: ProjectRoot, fire: Wor
 					...buildModuleFileAsResourceSegments(file)
 				];
 			});
+			fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 			return {
 				value: castTo({...rootData, module, file}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$$$o23-db-scripts$$$$/$$${file.path}$$`,

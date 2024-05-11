@@ -26,6 +26,7 @@ const createO23ModuleSourceFileNodes = (rootData: ProjectRoot, module: O23Module
 					...buildModuleFileAsResourceSegments(file)
 				];
 			});
+			fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 			return {
 				value: castTo({...rootData, module, file}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$source-files$$/$$${file.path}$$`,
@@ -47,6 +48,7 @@ const createO23ModuleSourceFileNodes = (rootData: ProjectRoot, module: O23Module
 					...buildModuleFileAsResourceSegments(file)
 				];
 			});
+			fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 			return {
 				value: castTo({...rootData, module, file}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$source-files$$/$$${file.path}$$`,

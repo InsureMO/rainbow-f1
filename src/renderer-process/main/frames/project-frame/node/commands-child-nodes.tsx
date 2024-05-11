@@ -26,6 +26,7 @@ export const createModuleCommandsChildNodes = (rootData: ProjectRoot, fire: Work
 				relativePathToProjectRoot: () => `${cmd.pathRelativeToProjectRoot}::${cmd.name}`,
 				relativePathToModuleRoot: () => `${cmd.pathRelativeToModuleRoot}::${cmd.name}`
 			};
+			fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 			return {
 				value: castTo({...rootData, module, cmd}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$commands$$/${cmd.name}`, $ip2p: cmd.name,
