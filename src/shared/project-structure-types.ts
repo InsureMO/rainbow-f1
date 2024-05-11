@@ -62,6 +62,14 @@ export interface ModuleEnv extends ModuleFile {
 	commands: Array<ModuleCommand>;
 }
 
+export interface ModuleEnvConfigurationFile extends ModuleFile {
+	items: Array<O23SettingItem>;
+}
+
+export interface ModuleEnvConfigurations {
+	[key: string]: ModuleEnvConfigurationFile;
+}
+
 export interface F1ModuleStructure {
 	name: string;
 	type: F1ModuleType;
@@ -79,6 +87,8 @@ export interface F1NodeModuleStructure extends F1ModuleStructure {
 	/** files in root folder, which used by Node.js */
 	nodeFiles?: Array<ModuleFile>;
 	sourceFiles?: Array<ModuleFile>;
+	/** environment files */
+	envs: ModuleEnvConfigurations;
 }
 
 export interface D9ModuleStructure extends F1NodeModuleStructure {
@@ -102,20 +112,10 @@ export interface O23SettingItem {
 	value?: string;
 }
 
-export interface O23EnvConfigurationFile extends ModuleFile {
-	items: Array<O23SettingItem>;
-}
-
-export interface O23EnvConfigurations {
-	[key: string]: O23EnvConfigurationFile;
-}
-
 export interface O23ModuleStructure extends F1NodeModuleStructure {
 	dbScripts?: O23DBScriptsConfigurations;
 	server: O23ServerConfigurations;
 	scripts: O23ScriptsConfigurations;
-	/** environment files */
-	envs: O23EnvConfigurations;
 }
 
 export interface UnknownModuleStructure extends F1ModuleStructure {
