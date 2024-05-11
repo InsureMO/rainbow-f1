@@ -2,17 +2,8 @@ import {Undefinable} from '@rainbow-d9/n1';
 import {GlobalEventHandlers, TreeNodeDef} from '@rainbow-d9/n2';
 import {WorkbenchEventBus} from '../../../opened/workbench/event-bus';
 import {castTo} from '../../../utils';
-import {
-	ModuleEnvNodeDef,
-	ModuleNodeDef,
-	O23ModuleNodeDef,
-	ProjectRoot,
-	ProjectTreeNodeDef,
-	ProjectTreeNodeType
-} from '../types';
-import {createModuleCommandsChildNodes} from './commands-child-nodes';
+import {ModuleNodeDef, O23ModuleNodeDef, ProjectRoot, ProjectTreeNodeDef, ProjectTreeNodeType} from '../types';
 import {createModuleDBScriptsChildNodes} from './db-scripts-child-nodes';
-import {createModuleEnvChildNodes, createModuleEnvsChildNodes} from './envs-child-nodes';
 import {createModuleChildNodes} from './module-child-nodes';
 import {createModuleNodes} from './module-node';
 import {createModuleNodeFileNodes} from './node-files-child-nodes';
@@ -35,11 +26,11 @@ export const createDetective = (rootData: ProjectRoot, fire: WorkbenchEventBus['
 			case ProjectTreeNodeType.MODULE:
 				return createModuleChildNodes(rootData, fire)(castTo<ModuleNodeDef>(parentNode).value.module);
 			case ProjectTreeNodeType.MODULE_COMMANDS:
-				return createModuleCommandsChildNodes(rootData, fire)(castTo<ModuleNodeDef>(parentNode).value.module);
+				return parentNode.$children ?? [];
 			case ProjectTreeNodeType.MODULE_ENVS:
-				return createModuleEnvsChildNodes(rootData, fire)(castTo<ModuleNodeDef>(parentNode).value.module);
+				return parentNode.$children ?? [];
 			case ProjectTreeNodeType.MODULE_ENV:
-				return createModuleEnvChildNodes(rootData, fire)(castTo<ModuleEnvNodeDef>(parentNode).value.module, castTo<ModuleEnvNodeDef>(parentNode).value.env);
+				return parentNode.$children ?? [];
 			case ProjectTreeNodeType.MODULE_O23_SERVER_PIPELINES:
 				return createModuleO23ServerPipelineChildNodes(rootData, fire)(castTo<O23ModuleNodeDef>(parentNode).value.module);
 			case ProjectTreeNodeType.MODULE_O23_SERVER_PIPELINE_DIR:

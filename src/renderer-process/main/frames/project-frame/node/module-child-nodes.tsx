@@ -9,7 +9,7 @@ import {
 	ModuleServerIcon,
 	ModuleSourceFilesIcon
 } from '../../../../../assets/icons';
-import {F1ModuleStructure, O23ModuleStructure} from '../../../../../shared';
+import {F1ModuleStructure, ModuleCommand, ModuleEnv, O23ModuleStructure} from '../../../../../shared';
 import {PresentResourceSegment, ResourceType, VirtualNodeResource} from '../../../opened/types';
 import {WorkbenchEventBus, WorkbenchEventTypes} from '../../../opened/workbench/event-bus';
 import {
@@ -33,17 +33,25 @@ import {
 	ModuleO23ServerPipelinesNodeLabel,
 	ModuleSourceFilesNodeLabel
 } from '../label';
-import {ProjectRoot, ProjectTreeNodeDef, ProjectTreeNodeType} from '../types';
+import {
+	ModuleEnvCommandNodeDef,
+	ModuleEnvNodeDef,
+	ProjectRoot,
+	ProjectTreeNodeDef,
+	ProjectTreeNodeType
+} from '../types';
+import {createModuleCommandsChildNodes} from './commands-child-nodes';
+import {createModuleEnvsChildNodes} from './envs-child-nodes';
 
-const createVirtualNodeResource = (module: F1ModuleStructure, marker: string, segments: () => Array<PresentResourceSegment>): VirtualNodeResource => {
+const createVirtualNodeResource = (module: F1ModuleStructure, marker: string, type: VirtualNodeResource['type'], segments: () => Array<PresentResourceSegment>): VirtualNodeResource => {
 	return {
 		module: <M extends F1ModuleStructure>() => module as M,
-		marker, type: ResourceType.VIRTUAL, segments: segments()
+		marker, type, segments: segments()
 	};
 };
-const createCommandsNode = (rootData: ProjectRoot, module: O23ModuleStructure, fire: WorkbenchEventBus['fire']): ProjectTreeNodeDef => {
+const createCommandsNode = (rootData: ProjectRoot, module: O23ModuleStructure, findEnv: (command: ModuleCommand) => Undefinable<ModuleEnv>, fire: WorkbenchEventBus['fire']): ProjectTreeNodeDef => {
 	const marker = MODULE_COMMANDS_MARKER(module);
-	const resource = createVirtualNodeResource(module, marker, () => {
+	const resource = createVirtualNodeResource(module, marker, ResourceType.VIRTUAL_COMMANDS, () => {
 		return [
 			{label: module.name, icon: <ModuleRootIcon/>},
 			{label: 'CLI Commands', icon: <ModuleCommandsIcon/>}
@@ -57,12 +65,13 @@ const createCommandsNode = (rootData: ProjectRoot, module: O23ModuleStructure, f
 		$type: ProjectTreeNodeType.MODULE_COMMANDS,
 		click: async () => {
 			fire(WorkbenchEventTypes.RESOURCE_SELECTED, resource);
-		}
+		},
+		$children: createModuleCommandsChildNodes(rootData, fire)(module, findEnv)
 	};
 };
 const createEnvsNode = (rootData: ProjectRoot, module: O23ModuleStructure, fire: WorkbenchEventBus['fire']): ProjectTreeNodeDef => {
 	const marker = MODULE_ENVS_MARKER(module);
-	const resource = createVirtualNodeResource(module, marker, () => {
+	const resource = createVirtualNodeResource(module, marker, ResourceType.VIRTUAL_ENVS, () => {
 		return [
 			{label: module.name, icon: <ModuleRootIcon/>},
 			{label: 'Environments', icon: <ModuleEnvsIcon/>}
@@ -76,12 +85,13 @@ const createEnvsNode = (rootData: ProjectRoot, module: O23ModuleStructure, fire:
 		$type: ProjectTreeNodeType.MODULE_ENVS,
 		click: async () => {
 			fire(WorkbenchEventTypes.RESOURCE_SELECTED, resource);
-		}
+		},
+		$children: createModuleEnvsChildNodes(rootData, fire)(module)
 	};
 };
 const createServerPipelinesNode = (rootData: ProjectRoot, module: O23ModuleStructure, fire: WorkbenchEventBus['fire']): ProjectTreeNodeDef => {
 	const marker = MODULE_O23_SERVER_PIPELINES_MARKER(module);
-	const resource = createVirtualNodeResource(module, marker, () => {
+	const resource = createVirtualNodeResource(module, marker, ResourceType.VIRTUAL_SERVER_PIPELINES, () => {
 		return [
 			{label: module.name, icon: <ModuleRootIcon/>},
 			{label: 'Server Pipelines', icon: <ModuleServerIcon/>}
@@ -100,7 +110,7 @@ const createServerPipelinesNode = (rootData: ProjectRoot, module: O23ModuleStruc
 };
 const createScriptsPipelinesNode = (rootData: ProjectRoot, module: O23ModuleStructure, fire: WorkbenchEventBus['fire']): ProjectTreeNodeDef => {
 	const marker = MODULE_O23_SCRIPTS_PIPELINES_MARKER(module);
-	const resource = createVirtualNodeResource(module, marker, () => {
+	const resource = createVirtualNodeResource(module, marker, ResourceType.VIRTUAL_SCRIPTS_PIPELINES, () => {
 		return [
 			{label: module.name, icon: <ModuleRootIcon/>},
 			{label: 'Scripts Pipelines', icon: <ModuleScriptsIcon/>}
@@ -120,7 +130,7 @@ const createScriptsPipelinesNode = (rootData: ProjectRoot, module: O23ModuleStru
 };
 const createDBScriptsFilesNode = (rootData: ProjectRoot, module: O23ModuleStructure, fire: WorkbenchEventBus['fire']): ProjectTreeNodeDef => {
 	const marker = MODULE_O23_DB_SCRIPTS_MARKER(module);
-	const resource = createVirtualNodeResource(module, marker, () => {
+	const resource = createVirtualNodeResource(module, marker, ResourceType.VIRTUAL_DB_SCRIPTS, () => {
 		return [
 			{label: module.name, icon: <ModuleRootIcon/>},
 			{label: 'Database Scripts', icon: <ModuleDBScriptsIcon/>}
@@ -139,7 +149,7 @@ const createDBScriptsFilesNode = (rootData: ProjectRoot, module: O23ModuleStruct
 };
 const createSourceFilesNode = (rootData: ProjectRoot, module: O23ModuleStructure, fire: WorkbenchEventBus['fire']): ProjectTreeNodeDef => {
 	const marker = MODULE_SOURCE_FILES_MARKER(module);
-	const resource = createVirtualNodeResource(module, marker, () => {
+	const resource = createVirtualNodeResource(module, marker, ResourceType.VIRTUAL_SOURCE_FILES, () => {
 		return [
 			{label: module.name, icon: <ModuleRootIcon/>},
 			{label: 'SRC', icon: <ModuleSourceFilesIcon/>}
@@ -158,7 +168,7 @@ const createSourceFilesNode = (rootData: ProjectRoot, module: O23ModuleStructure
 };
 const createNodeFilesNode = (rootData: ProjectRoot, module: O23ModuleStructure, fire: WorkbenchEventBus['fire']): ProjectTreeNodeDef => {
 	const marker = MODULE_NODE_FILES_MARKER(module);
-	const resource = createVirtualNodeResource(module, marker, () => {
+	const resource = createVirtualNodeResource(module, marker, ResourceType.VIRTUAL_NODE_FILES, () => {
 		return [
 			{label: module.name, icon: <ModuleRootIcon/>},
 			{label: 'NodeJS', icon: <ModuleNodeFilesIcon/>}
@@ -176,11 +186,25 @@ const createNodeFilesNode = (rootData: ProjectRoot, module: O23ModuleStructure, 
 	};
 };
 const createO23ModuleChildNodes = (rootData: ProjectRoot, module: O23ModuleStructure, fire: WorkbenchEventBus['fire']): Array<ProjectTreeNodeDef> => {
+	const envsNode = createEnvsNode(rootData, module, fire);
+	const envCommands = (envsNode.$children ?? [])
+		.map(node => castTo<ModuleEnvNodeDef>(node).$children ?? [])
+		.flat()
+		.map(node => {
+			return {
+				env: castTo<ModuleEnvNodeDef>(node).value.env,
+				command: castTo<ModuleEnvCommandNodeDef>(node).value.command
+			};
+		})
+		.reduce((commands, {env, command}) => {
+			commands[command.name] = {env, command};
+			return commands;
+		}, {} as Record<string, { env: ModuleEnv, command: ModuleCommand }>);
 	return [
 		// commands
-		createCommandsNode(rootData, module, fire),
+		createCommandsNode(rootData, module, (command: ModuleCommand): Undefinable<ModuleEnv> => envCommands[command.name]?.env, fire),
 		// environments
-		createEnvsNode(rootData, module, fire),
+		envsNode,
 		// server pipelines
 		createServerPipelinesNode(rootData, module, fire),
 		// scripts pipelines

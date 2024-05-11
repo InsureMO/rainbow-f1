@@ -21,6 +21,7 @@ export const EnvCommandHeader = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-
     grid-column-gap: 16px;
     grid-row-gap: 8px;
     padding-bottom: 8px;
+    margin-bottom: 16px;
     border-bottom: var(--f1-border);
 
     > span[data-w=d9-caption] {
@@ -31,4 +32,10 @@ export const EnvCommandBody = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-ar
     display: grid;
     position: relative;
     align-content: start;
+
+    > span[data-w=d9-caption][data-role=command-body-title] {
+        font-size: 1.1em;
+        font-weight: 600;
+        color: var(--f1-font-color);
+    }
 `;

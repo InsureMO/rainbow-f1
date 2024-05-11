@@ -3,6 +3,7 @@ import {
 	F1ModuleStructure,
 	F1Project,
 	F1ProjectStructure,
+	ModuleCommand,
 	ModuleEnv,
 	ModuleFile,
 	O23ModuleStructure
@@ -61,4 +62,8 @@ export interface ModuleFileNodeDef extends Omit<ProjectTreeNodeDef, 'value'> {
 
 export interface ModuleEnvNodeDef extends Omit<ProjectTreeNodeDef, 'value'> {
 	value: ProjectRoot & { module: F1ModuleStructure; env: ModuleEnv };
+}
+
+export interface ModuleEnvCommandNodeDef extends Omit<ProjectTreeNodeDef, 'value'> {
+	value: ProjectRoot & { module: F1ModuleStructure; env: ModuleEnv; command: ModuleCommand };
 }

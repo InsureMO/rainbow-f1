@@ -3,30 +3,26 @@ import {ModuleCommandIcon, ModuleEnvIcon, ModuleEnvsIcon, ModuleRootIcon} from '
 import {F1ModuleStructure, ModuleCommand, ModuleEnv} from '../../../../../shared';
 import {ModuleCommandResource, ModuleEnvResource, ResourceType} from '../../../opened/types';
 import {WorkbenchEventBus, WorkbenchEventTypes} from '../../../opened/workbench/event-bus';
-import {castTo, MODULE_ENV_COMMAND_MARKER, MODULE_ENV_MARKER} from '../../../utils';
+import {castTo, isD9Module, isO23Module, MODULE_ENV_COMMAND_MARKER, MODULE_ENV_MARKER} from '../../../utils';
 import {ModuleEnvCommandNodeLabel, ModuleEnvNodeLabel} from '../label';
 import {ProjectRoot, ProjectTreeNodeDef, ProjectTreeNodeType} from '../types';
 
-const buildAsEnvResource = (module: F1ModuleStructure, env: ModuleEnv, marker: string): ModuleEnvResource => {
-	return {
-		module: <M extends F1ModuleStructure>() => module as M,
-		env, marker, type: ResourceType.ENV, file: env,
-		segments: [
-			{label: module.name, icon: <ModuleRootIcon/>},
-			{label: 'Environments', icon: <ModuleEnvsIcon/>},
-			{label: env.name, icon: <ModuleEnvIcon/>}
-		],
-		absolutePath: () => `${env.path}`,
-		relativePathToRoot: () => `${env.pathRelativeToRoot}`,
-		relativePathToProjectRoot: () => `${env.pathRelativeToProjectRoot}`,
-		relativePathToModuleRoot: () => `${env.pathRelativeToModuleRoot}`
-	};
+const getModuleCommands = (module: F1ModuleStructure) => {
+	switch (true) {
+		case isO23Module(module):
+			return ['start', 'scripts'];
+		case isD9Module(module):
+			return ['start'];
+		default:
+			return [];
+	}
 };
 export const createModuleEnvsChildNodes = (rootData: ProjectRoot, fire: WorkbenchEventBus['fire']) => (module: F1ModuleStructure): Array<ProjectTreeNodeDef> => {
 	const envs: Record<string, Array<ModuleCommand>> = {};
+	const commands = getModuleCommands(module);
 	Object.entries(module.commands ?? {}).forEach(([, command]) => {
 		const {name} = command;
-		if (name === 'start' || name === 'scripts') {
+		if (commands.includes(name)) {
 			envs.local = envs.local ?? [];
 			envs.local.push(command);
 		}
@@ -36,7 +32,7 @@ export const createModuleEnvsChildNodes = (rootData: ProjectRoot, fire: Workbenc
 			// treat debug as local
 			env = env === 'debug' ? 'local' : env;
 			const cmd = parts[parts.length - 1];
-			if (cmd === 'start' || cmd === 'scripts') {
+			if (commands.includes(cmd)) {
 				envs[env] = envs[env] ?? [];
 				envs[env].push(command);
 			}
@@ -49,7 +45,19 @@ export const createModuleEnvsChildNodes = (rootData: ProjectRoot, fire: Workbenc
 		}).map(([name, commands]) => ({name, commands} as ModuleEnv))
 		.map((env) => {
 			const marker = MODULE_ENV_MARKER(module, env);
-			const resource = buildAsEnvResource(module, env, marker);
+			const resource: ModuleEnvResource = {
+				module: <M extends F1ModuleStructure>() => module as M,
+				env, marker, type: ResourceType.ENV, file: env,
+				segments: [
+					{label: module.name, icon: <ModuleRootIcon/>},
+					{label: 'Environments', icon: <ModuleEnvsIcon/>},
+					{label: env.name, icon: <ModuleEnvIcon/>}
+				],
+				absolutePath: () => `${env.path}`,
+				relativePathToRoot: () => `${env.pathRelativeToRoot}`,
+				relativePathToProjectRoot: () => `${env.pathRelativeToProjectRoot}`,
+				relativePathToModuleRoot: () => `${env.pathRelativeToModuleRoot}`
+			};
 			return {
 				value: castTo({...rootData, module, env}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$envs$$/${env.name}`, $ip2p: env.name,
@@ -58,7 +66,8 @@ export const createModuleEnvsChildNodes = (rootData: ProjectRoot, fire: Workbenc
 				$type: ProjectTreeNodeType.MODULE_ENV,
 				click: async () => {
 					fire(WorkbenchEventTypes.RESOURCE_SELECTED, resource);
-				}
+				},
+				$children: createModuleEnvChildNodes(rootData, fire)(module, env)
 			};
 		});
 };
