@@ -1,7 +1,7 @@
 import React from 'react';
 import {ModuleCommandIcon, ModuleCommandsIcon, ModuleRootIcon} from '../../../../../assets/icons';
 import {F1ModuleStructure} from '../../../../../shared';
-import {ModuleCommandResource} from '../../../opened/types';
+import {ModuleCommandResource, ResourceType} from '../../../opened/types';
 import {WorkbenchEventBus, WorkbenchEventTypes} from '../../../opened/workbench/event-bus';
 import {castTo, MODULE_COMMAND_MARKER} from '../../../utils';
 import {ModuleCommandNodeLabel} from '../label';
@@ -13,13 +13,17 @@ export const createModuleCommandsChildNodes = (rootData: ProjectRoot, fire: Work
 	}).map(cmd => {
 		const marker = MODULE_COMMAND_MARKER(module, cmd);
 		const resource: ModuleCommandResource = {
-			command: cmd, marker, file: cmd,
+			module: <M extends F1ModuleStructure>() => module as M,
+			command: cmd, marker, type: ResourceType.COMMAND, file: cmd,
 			segments: [
 				{label: module.name, icon: <ModuleRootIcon/>},
 				{label: 'CLI Commands', icon: <ModuleCommandsIcon/>},
 				{label: cmd.name, icon: <ModuleCommandIcon/>}
 			],
-			absolutePath: () => `${cmd.path}::${cmd.name}`
+			absolutePath: () => `${cmd.path}::${cmd.name}`,
+			relativePathToRoot: () => `${cmd.pathRelativeToRoot}::${cmd.name}`,
+			relativePathToProjectRoot: () => `${cmd.pathRelativeToProjectRoot}::${cmd.name}`,
+			relativePathToModuleRoot: () => `${cmd.pathRelativeToModuleRoot}::${cmd.name}`
 		};
 		return {
 			value: castTo({...rootData, module, cmd}),

@@ -76,7 +76,7 @@ export const EditorMissedContentMessage = styled.div.attrs({[DOM_KEY_WIDGET]: 'd
     margin: 16px 0;
     color: var(--f1-danger-color);
 `;
-export const EditorPanel = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-editor-panel'})`
+export const CodeMirrorEditorPanel = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-code-mirror-editor-panel'})`
     display: block;
     position: relative;
     width: 100%;

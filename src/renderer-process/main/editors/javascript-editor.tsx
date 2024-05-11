@@ -10,7 +10,7 @@ import {ModuleFileResource} from '../opened/types';
 import {MissedContent} from './missed-content';
 import {TypescriptEslintPlugin} from './typescript-eslint-plugin';
 import {useCodeMirrorEditor} from './use-code-mirror-editor';
-import {EditorPanel} from './widgets';
+import {CodeMirrorEditorPanel} from './widgets';
 
 export interface JavascriptEditorProps {
 	resource: ModuleFileResource;
@@ -55,6 +55,6 @@ export const JavascriptEditor = (props: JavascriptEditorProps) => {
 	});
 
 	return <MissedContent resource={resource} message={message}>
-		<EditorPanel ref={ref}/>
+		<CodeMirrorEditorPanel ref={ref}/>
 	</MissedContent>;
 };

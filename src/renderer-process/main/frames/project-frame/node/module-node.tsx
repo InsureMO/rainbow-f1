@@ -1,8 +1,9 @@
 import React from 'react';
 import {ModuleRootIcon} from '../../../../../assets/icons';
 import {F1ModuleStructure, F1ProjectStructure} from '../../../../../shared';
+import {ModuleResource, ResourceType} from '../../../opened/types';
 import {WorkbenchEventBus, WorkbenchEventTypes} from '../../../opened/workbench/event-bus';
-import {ADD_MODULE, ADD_MODULE_MARKER, castTo, MODULE_MARKER} from '../../../utils';
+import {ADD_MODULE, ADD_MODULE_MARKER, castTo, isD9Module, isO23Module, MODULE_MARKER} from '../../../utils';
 import {AddModuleNodeLabel, ModuleRootNodeLabel} from '../label';
 import {ProjectRoot, ProjectTreeNodeDef, ProjectTreeNodeType} from '../types';
 
@@ -23,6 +24,19 @@ const createAddModuleNode = (rootData: ProjectRoot, fire: WorkbenchEventBus['fir
 const createModuleNode = (rootData: ProjectRoot, module: F1ModuleStructure, fire: WorkbenchEventBus['fire']): ProjectTreeNodeDef => {
 	// use module as value
 	const marker = MODULE_MARKER(module);
+	const type = (() => {
+		if (isO23Module(module)) {
+			return ResourceType.MODULE_O23;
+		} else if (isD9Module(module)) {
+			return ResourceType.MODULE_D9;
+		} else {
+			return ResourceType.MODULE_UNKNOWN;
+		}
+	});
+	const resource: ModuleResource = {
+		module: <M extends F1ModuleStructure>() => module as M,
+		marker, type: type(), segments: [{label: module.name, icon: <ModuleRootIcon/>}]
+	};
 	return {
 		value: castTo({...rootData, module}),
 		$ip2r: `${rootData.project.directory}/${module.name}/envs`, $ip2p: module.name,
@@ -30,9 +44,7 @@ const createModuleNode = (rootData: ProjectRoot, module: F1ModuleStructure, fire
 		label: <ModuleRootNodeLabel {...rootData} module={module}/>,
 		$type: ProjectTreeNodeType.MODULE,
 		click: async () => {
-			fire(WorkbenchEventTypes.RESOURCE_SELECTED, {
-				marker, segments: [{label: module.name, icon: <ModuleRootIcon/>}]
-			});
+			fire(WorkbenchEventTypes.RESOURCE_SELECTED, resource);
 		}
 	};
 };

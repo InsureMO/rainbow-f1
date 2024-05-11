@@ -1,6 +1,7 @@
 import React from 'react';
 import {ModuleRootIcon, ModuleSourceFilesIcon} from '../../../../../assets/icons';
 import {F1ModuleStructure, ModuleFile, O23ModuleStructure} from '../../../../../shared';
+import {ResourceType} from '../../../opened/types';
 import {WorkbenchEventBus, WorkbenchEventTypes} from '../../../opened/workbench/event-bus';
 import {
 	castTo,
@@ -18,6 +19,13 @@ const createO23ModuleSourceFileNodes = (rootData: ProjectRoot, module: O23Module
 		module, files: module.sourceFiles,
 		asDirNode: (file: ModuleFile) => {
 			const marker = MODULE_SOURCE_FILES_DIR_MARKER(module, file);
+			const resource = buildModuleFileAsResource(module, file, marker, ResourceType.SOURCE_FILES_DIR, () => {
+				return [
+					{label: module.name, icon: <ModuleRootIcon/>},
+					{label: 'SRC', icon: <ModuleSourceFilesIcon/>},
+					...buildModuleFileAsResourceSegments(file)
+				];
+			});
 			return {
 				value: castTo({...rootData, module, file}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$source-files$$/$$${file.path}$$`,
@@ -26,19 +34,13 @@ const createO23ModuleSourceFileNodes = (rootData: ProjectRoot, module: O23Module
 				label: <ModuleSourceDirNodeLabel {...rootData} module={module} file={file}/>,
 				$type: ProjectTreeNodeType.MODULE_SOURCE_DIR,
 				click: async () => {
-					fire(WorkbenchEventTypes.RESOURCE_SELECTED, buildModuleFileAsResource(file, marker, () => {
-						return [
-							{label: module.name, icon: <ModuleRootIcon/>},
-							{label: 'SRC', icon: <ModuleSourceFilesIcon/>},
-							...buildModuleFileAsResourceSegments(file)
-						];
-					}));
+					fire(WorkbenchEventTypes.RESOURCE_SELECTED, resource);
 				}
 			};
 		},
 		asFileNode: (file: ModuleFile) => {
 			const marker = MODULE_SOURCE_FILES_FILE_MARKER(module, file);
-			const resource = buildModuleFileAsResource(file, marker, () => {
+			const resource = buildModuleFileAsResource(module, file, marker, ResourceType.SOURCE_FILES_FILE, () => {
 				return [
 					{label: module.name, icon: <ModuleRootIcon/>},
 					{label: 'SRC', icon: <ModuleSourceFilesIcon/>},

@@ -1,6 +1,7 @@
-import {ModuleFileResource} from '../opened/types';
+import {ModuleCommandResource, ModuleFileResource, ResourceType} from '../opened/types';
 import {isJavascriptFile, isJsonFile, isSqlFile, isTypescriptFile, isYamlFile} from '../utils';
 import {EditModeSwitcher} from './edit-mode-switcher';
+import {EnvCommandEditor} from './env-command-editor';
 import {JavascriptEditor, JsonEditor, SqlEditor, YamlEditor} from './index';
 import {TypescriptEditor} from './typescript-editor';
 import {EditorContainer, EditorStatusBar, EditorStatusBarGrabber} from './widgets';
@@ -14,16 +15,28 @@ export const ModuleFileEditor = (props: ModuleFileEditorProps) => {
 	const {file} = resource;
 
 	let editor = null;
-	if (isSqlFile(file)) {
-		editor = <SqlEditor resource={resource}/>;
-	} else if (isYamlFile(file)) {
-		editor = <YamlEditor resource={resource}/>;
-	} else if (isJavascriptFile(file)) {
-		editor = <JavascriptEditor resource={resource}/>;
-	} else if (isTypescriptFile(file)) {
-		editor = <TypescriptEditor resource={resource}/>;
-	} else if (isJsonFile(file)) {
-		editor = <JsonEditor resource={resource}/>;
+	// check is sequential
+	switch (true) {
+		case resource.type === ResourceType.COMMAND:
+		case resource.type === ResourceType.ENV_COMMAND:
+			return <EnvCommandEditor resource={resource as ModuleCommandResource}/>;
+		case isSqlFile(file):
+			editor = <SqlEditor resource={resource}/>;
+			break;
+		case isYamlFile(file):
+			editor = <YamlEditor resource={resource}/>;
+			break;
+		case isJavascriptFile(file):
+			editor = <JavascriptEditor resource={resource}/>;
+			break;
+		case isTypescriptFile(file):
+			editor = <TypescriptEditor resource={resource}/>;
+			break;
+		case isJsonFile(file):
+			editor = <JsonEditor resource={resource}/>;
+			break;
+		default:
+		// do nothing, no editor found
 	}
 
 	return <>

@@ -1,6 +1,7 @@
 import React from 'react';
 import {ModuleRootIcon, ModuleScriptsIcon} from '../../../../../assets/icons';
 import {ModuleFile, O23ModuleStructure} from '../../../../../shared';
+import {ResourceType} from '../../../opened/types';
 import {WorkbenchEventBus, WorkbenchEventTypes} from '../../../opened/workbench/event-bus';
 import {castTo, MODULE_O23_SCRIPTS_PIPELINE_DIR_MARKER, MODULE_O23_SCRIPTS_PIPELINE_FILE_MARKER} from '../../../utils';
 import {ModuleO23ScriptsPipelineDirNodeLabel, ModuleO23ScriptsPipelineFileNodeLabel} from '../label';
@@ -13,7 +14,7 @@ export const createModuleO23ScriptsPipelineChildNodes = (rootData: ProjectRoot, 
 		module, files: module.scripts.files,
 		asDirNode: (file: ModuleFile) => {
 			const marker = MODULE_O23_SCRIPTS_PIPELINE_DIR_MARKER(module, file);
-			const resource = buildModuleFileAsResource(file, marker, () => {
+			const resource = buildModuleFileAsResource(module, file, marker, ResourceType.O23_SCRIPTS_PIPELINES_DIR, () => {
 				return [
 					{label: module.name, icon: <ModuleRootIcon/>},
 					{label: 'Scripts Pipelines', icon: <ModuleScriptsIcon/>},
@@ -35,7 +36,7 @@ export const createModuleO23ScriptsPipelineChildNodes = (rootData: ProjectRoot, 
 		},
 		asFileNode: (file: ModuleFile) => {
 			const marker = MODULE_O23_SCRIPTS_PIPELINE_FILE_MARKER(module, file);
-			const resource = buildModuleFileAsResource(file, marker, () => {
+			const resource = buildModuleFileAsResource(module, file, marker, ResourceType.O23_SCRIPTS_PIPELINES_FILE, () => {
 				return [
 					{label: module.name, icon: <ModuleRootIcon/>},
 					{label: 'Scripts Pipelines', icon: <ModuleScriptsIcon/>},

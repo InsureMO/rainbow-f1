@@ -7,7 +7,7 @@ import {basicSetup} from 'codemirror';
 import {ModuleFileResource} from '../opened/types';
 import {MissedContent} from './missed-content';
 import {useCodeMirrorEditor} from './use-code-mirror-editor';
-import {EditorPanel} from './widgets';
+import {CodeMirrorEditorPanel} from './widgets';
 
 export interface YamlEditorProps {
 	resource: ModuleFileResource;
@@ -32,6 +32,6 @@ export const YamlEditor = (props: YamlEditorProps) => {
 	});
 
 	return <MissedContent resource={resource} message={message}>
-		<EditorPanel ref={ref}/>
+		<CodeMirrorEditorPanel ref={ref}/>
 	</MissedContent>;
 };

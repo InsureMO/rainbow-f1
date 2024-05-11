@@ -1,7 +1,7 @@
 import React from 'react';
 import {ModuleCommandIcon, ModuleEnvIcon, ModuleEnvsIcon, ModuleRootIcon} from '../../../../../assets/icons';
 import {F1ModuleStructure, ModuleCommand, ModuleEnv} from '../../../../../shared';
-import {ModuleCommandResource, ModuleEnvResource} from '../../../opened/types';
+import {ModuleCommandResource, ModuleEnvResource, ResourceType} from '../../../opened/types';
 import {WorkbenchEventBus, WorkbenchEventTypes} from '../../../opened/workbench/event-bus';
 import {castTo, MODULE_ENV_COMMAND_MARKER, MODULE_ENV_MARKER} from '../../../utils';
 import {ModuleEnvCommandNodeLabel, ModuleEnvNodeLabel} from '../label';
@@ -9,13 +9,17 @@ import {ProjectRoot, ProjectTreeNodeDef, ProjectTreeNodeType} from '../types';
 
 const buildAsEnvResource = (module: F1ModuleStructure, env: ModuleEnv, marker: string): ModuleEnvResource => {
 	return {
-		env, marker, file: env,
+		module: <M extends F1ModuleStructure>() => module as M,
+		env, marker, type: ResourceType.ENV, file: env,
 		segments: [
 			{label: module.name, icon: <ModuleRootIcon/>},
 			{label: 'Environments', icon: <ModuleEnvsIcon/>},
 			{label: env.name, icon: <ModuleEnvIcon/>}
 		],
-		absolutePath: () => `${env.path}`
+		absolutePath: () => `${env.path}`,
+		relativePathToRoot: () => `${env.pathRelativeToRoot}`,
+		relativePathToProjectRoot: () => `${env.pathRelativeToProjectRoot}`,
+		relativePathToModuleRoot: () => `${env.pathRelativeToModuleRoot}`
 	};
 };
 export const createModuleEnvsChildNodes = (rootData: ProjectRoot, fire: WorkbenchEventBus['fire']) => (module: F1ModuleStructure): Array<ProjectTreeNodeDef> => {
@@ -45,6 +49,7 @@ export const createModuleEnvsChildNodes = (rootData: ProjectRoot, fire: Workbenc
 		}).map(([name, commands]) => ({name, commands} as ModuleEnv))
 		.map((env) => {
 			const marker = MODULE_ENV_MARKER(module, env);
+			const resource = buildAsEnvResource(module, env, marker);
 			return {
 				value: castTo({...rootData, module, env}),
 				$ip2r: `${rootData.project.directory}/${module.name}/$$envs$$/${env.name}`, $ip2p: env.name,
@@ -52,7 +57,7 @@ export const createModuleEnvsChildNodes = (rootData: ProjectRoot, fire: Workbenc
 				label: <ModuleEnvNodeLabel {...rootData} module={module} env={env}/>,
 				$type: ProjectTreeNodeType.MODULE_ENV,
 				click: async () => {
-					fire(WorkbenchEventTypes.RESOURCE_SELECTED, buildAsEnvResource(module, env, marker));
+					fire(WorkbenchEventTypes.RESOURCE_SELECTED, resource);
 				}
 			};
 		});
@@ -63,14 +68,18 @@ export const createModuleEnvChildNodes = (rootData: ProjectRoot, fire: Workbench
 		.map(command => {
 			const marker = MODULE_ENV_COMMAND_MARKER(module, env, command);
 			const resource: ModuleCommandResource = {
-				env, command, marker, file: command,
+				module: <M extends F1ModuleStructure>() => module as M,
+				env, command, marker, type: ResourceType.ENV_COMMAND, file: command,
 				segments: [
 					{label: module.name, icon: <ModuleRootIcon/>},
 					{label: 'Environments', icon: <ModuleEnvsIcon/>},
 					{label: env.name, icon: <ModuleEnvIcon/>},
 					{label: command.name, icon: <ModuleCommandIcon/>}
 				],
-				absolutePath: () => `${command.path}::${command.name}`
+				absolutePath: () => `${command.path}::${command.name}`,
+				relativePathToRoot: () => `${command.pathRelativeToRoot}::${command.name}`,
+				relativePathToProjectRoot: () => `${command.pathRelativeToProjectRoot}::${command.name}`,
+				relativePathToModuleRoot: () => `${command.pathRelativeToModuleRoot}::${command.name}`
 			};
 			return {
 				value: castTo({...rootData, module, env, command}),

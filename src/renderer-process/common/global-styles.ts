@@ -60,6 +60,8 @@ export const GlobalStyles: any = createGlobalStyle`
         --d9-input-height: var(--f1-row-height);
         // d9 caption
         --d9-caption-font-family: var(--f1-font-family);
+        // d9 section
+        --d9-section-header-border: 1px solid var(--d9-border-color);
         // d9 dialog
         --d9-dialog-margin-top: max(96px, 20vh);
         --d9-dialog-margin-left: calc(50vw - var(--d9-dialog-width) / 2 - 32px);

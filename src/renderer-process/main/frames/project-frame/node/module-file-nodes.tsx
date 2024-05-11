@@ -1,7 +1,7 @@
 import React from 'react';
 import {FolderIcon} from '../../../../../assets/icons';
 import {F1ModuleStructure, ModuleFile} from '../../../../../shared';
-import {ModuleFileResource, PresentResourceSegment} from '../../../opened/types';
+import {ModuleFileResource, PresentResourceSegment, ResourceType} from '../../../opened/types';
 import {castTo, icon} from '../../../utils';
 import {ModuleFileNodeDef, ProjectTreeNodeDef} from '../types';
 
@@ -69,9 +69,10 @@ export const buildModuleFileAsResourceSegments = (file: ModuleFile): Array<Prese
 		{label: last, icon: file.dir ? <FolderIcon/> : icon(file)}
 	];
 };
-export const buildModuleFileAsResource = (file: ModuleFile, marker: string, segments: () => Array<PresentResourceSegment>): ModuleFileResource => {
+export const buildModuleFileAsResource = (module: F1ModuleStructure, file: ModuleFile, marker: string, type: ResourceType, segments: () => Array<PresentResourceSegment>): ModuleFileResource => {
 	return {
-		file, marker, segments: segments(),
+		module: <M extends F1ModuleStructure>() => module as M,
+		file, marker, type, segments: segments(),
 		absolutePath: () => file.path,
 		relativePathToRoot: () => file.pathRelativeToRoot,
 		relativePathToProjectRoot: () => file.pathRelativeToProjectRoot,
