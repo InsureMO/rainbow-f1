@@ -69,6 +69,24 @@ export const EnvCommandVariable = styled.div.attrs({
         padding: 0 16px 0 8px;
         border-bottom: var(--f1-border);
         z-index: 1;
+
+        > div[data-w=d9-dropdown] {
+            padding-left: 0;
+            border-color: transparent;
+
+            &:hover, &:focus-within {
+                box-shadow: none;
+            }
+
+            span[data-w=d9-dropdown-label],
+            span[data-w=d9-dropdown-option] {
+                text-transform: capitalize;
+            }
+
+            span[data-w=d9-dropdown-option] {
+                font-weight: 400;
+            }
+        }
     }
 
     > span[data-w=d9-caption][data-role=command-variable-column-cell] {
