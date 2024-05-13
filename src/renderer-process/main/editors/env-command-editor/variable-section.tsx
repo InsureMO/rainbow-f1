@@ -10,11 +10,13 @@ export interface VariableSectionProps {
 
 export const VariableSection = (props: VariableSectionProps) => {
 	const {resource} = props;
-	const {env, command} = resource;
+	const {module: getModule, env, command} = resource;
 
 	if (env == null) {
 		return null;
 	}
+
+	const module = getModule();
 
 	return <EnvCommandVariable>
 		<UnwrappedCaption data-role="command-variable-title">Environment Variables</UnwrappedCaption>
@@ -24,7 +26,8 @@ export const VariableSection = (props: VariableSectionProps) => {
 		<UnwrappedCaption data-role="command-variable-column-header">Category</UnwrappedCaption>
 		{O23AppServerVariables.map((variable, index) => {
 			return <Fragment key={variable.name}>
-				<UnwrappedCaption data-role="command-variable-column-cell">
+				<UnwrappedCaption data-role="command-variable-column-cell"
+				                  data-cell-role="command-variable-cell-row-index">
 					{index + 1}.
 				</UnwrappedCaption>
 				<UnwrappedCaption data-role="command-variable-column-cell">

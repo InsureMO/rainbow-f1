@@ -76,7 +76,13 @@ export const EnvCommandVariable = styled.div.attrs({
         padding: 0 16px 0 8px;
         border-bottom: var(--f1-border);
 
+        &[data-cell-role=command-variable-cell-row-index] {
+            font-size: 0.7em;
+            opacity: 0.7;
+        }
+
         &[data-cell-role=command-variable-cell-category] {
+            opacity: 0.8;
             text-transform: capitalize;
         }
 

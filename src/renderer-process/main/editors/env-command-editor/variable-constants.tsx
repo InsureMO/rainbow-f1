@@ -99,5 +99,4 @@ export const O23AppServerLogVariables: Array<EnvVariableDef> = [
 export const O23AppServerVariables: Array<EnvVariableDef> = [
 	...O23AppServerBasicVariables,
 	...O23AppServerLogVariables
-
 ];
