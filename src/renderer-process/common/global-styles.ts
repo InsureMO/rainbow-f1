@@ -28,6 +28,7 @@ export const GlobalStyles: any = createGlobalStyle`
         --f1-hover-color: #eef6fd;
         --f1-disable-color: #ebebeb;
         --f1-invert-color: #fff;
+        --f1-odd-row-background-color: rgb(238, 241, 245);
         --f1-primary-shadow: 0 0 0 3px ${color('#5f88d6').alpha(0.4).toString()};
         --f1-primary-hover-shadow: 0 0 0 3px ${color('#5f88d6').alpha(0.2).toString()};
         --f1-dialog-shadow: 0 0 18px 6px ${color('#000').alpha(0.4).toString()};
@@ -72,6 +73,8 @@ export const GlobalStyles: any = createGlobalStyle`
         --d9-dialog-shadow: var(--f1-dialog-shadow);
         // d9 caption
         --d9-caption-font-color: var(--f1-label-color);
+        // d9 table
+        --d9-table-odd-row-background-color: var(--f1-odd-row-background-color);
         // d9 form cell invalid message
         --d9-form-cell-invalid-message-height: 22px;
         --d9-form-cell-invalid-message-padding: 4px;
