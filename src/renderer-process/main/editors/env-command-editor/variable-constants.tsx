@@ -56,6 +56,10 @@ export const O23BasicVariables: Array<EnvVariableDef> = [
 	{
 		name: 'CFG_APP_DATASOURCE_CONFIG', category: EnvVariableCategory.O23_TYPEORM,
 		type: EnvVariableValueType.BOOLEAN
+	},
+	{
+		name: 'CFG_TYPEORM_SQL_CACHE_ENABLED', category: EnvVariableCategory.O23_TYPEORM,
+		type: EnvVariableValueType.BOOLEAN
 	}
 ];
 export const O23TypeOrmVariablePrefix = 'CFG_TYPEORM_';
@@ -280,6 +284,16 @@ export const O23TypeOrmVariables: Array<EnvTypeOrmVariableDef> = [
 	},
 	{
 		name: 'KEPT_ON_GLOBAL', category: EnvVariableCategory.O23_TYPEORM,
+		type: EnvVariableValueType.BOOLEAN,
+		dialects: [EnvTypeOrmVariableDialect.ALL]
+	},
+	{
+		name: 'TIMESTAMP_FORMAT_READ', category: EnvVariableCategory.O23_TYPEORM,
+		type: EnvVariableValueType.BOOLEAN,
+		dialects: [EnvTypeOrmVariableDialect.ALL]
+	},
+	{
+		name: 'TIMESTAMP_FORMAT_WRITE', category: EnvVariableCategory.O23_TYPEORM,
 		type: EnvVariableValueType.BOOLEAN,
 		dialects: [EnvTypeOrmVariableDialect.ALL]
 	}
