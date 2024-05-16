@@ -1,7 +1,7 @@
 import {spawnSync} from 'child_process';
 import dotenv from 'dotenv';
 import log from 'electron-log/main';
-import {ModuleFileType, O23ModuleStructure, ProjectCliCommand} from '../../../shared';
+import {F1ModuleStructure, ModuleFileType, ProjectCliCommand} from '../../../shared';
 import {PathWorker} from '../path';
 
 export interface ModuleCreated {
@@ -103,7 +103,7 @@ export abstract class AbstractModuleProcessor {
 		return ModuleFileType.UNKNOWN;
 	}
 
-	protected readEnvFiles(modulePath: string, structure: O23ModuleStructure): ModuleEnvValues {
+	protected readEnvFiles(modulePath: string, structure: F1ModuleStructure): ModuleEnvValues {
 		// key is env file, value is items
 		// const loaded: Record<string, Mo> = {};
 		const allEnvFiles = Object.values(structure.commands).map(({envFiles}) => envFiles ?? []).flat();

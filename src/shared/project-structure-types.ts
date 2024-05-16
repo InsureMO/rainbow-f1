@@ -10,7 +10,7 @@ export enum ModuleFileType {
 	HTML = 'html',
 	CSS = 'css',
 	YAML = 'yaml',
-	ENV = 'env',
+	ENV_FILE = 'env.file',
 	SQL = 'sql',
 	README = 'readme',
 	WEBPACK_CONFIG = 'webpack.config',

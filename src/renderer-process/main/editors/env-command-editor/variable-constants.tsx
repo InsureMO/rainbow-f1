@@ -2,7 +2,6 @@ export enum EnvVariableCategory {
 	O23_BASIC = 'o23-basic',
 	O23_TYPEORM = 'o23-typeorm',
 	O23_SERVER_BASIC = 'o23-server-basic',
-	O23_SERVER = 'o23-server',
 	O23_SERVER_ERROR_LOG = 'o23-server-error-log',
 	O23_SERVER_COMBINED_LOG = 'o23-server-combined-log',
 	O23_SERVER_CONSOLE_LOG = 'o23-server-console-log',
@@ -42,11 +41,11 @@ export const AnyValueAccepted: EnvVariableValueValidator = () => ({success: true
 export const O23BasicVariables: Array<EnvVariableDef> = [
 	{name: 'CFG_APP_ENV_STRICT', category: EnvVariableCategory.O23_BASIC, type: EnvVariableValueType.BOOLEAN},
 	{
-		name: 'CFG_APP_ENV_REDRESS_TYPEORM_DATASOURCE', category: EnvVariableCategory.O23_TYPEORM,
+		name: 'CFG_APP_ENV_REDRESS_TYPEORM_DATASOURCE', category: EnvVariableCategory.O23_BASIC,
 		type: EnvVariableValueType.BOOLEAN
 	},
 	{
-		name: 'CFG_APP_ENV_REDRESS_TYPEORM_TRANSACTION', category: EnvVariableCategory.O23_TYPEORM,
+		name: 'CFG_APP_ENV_REDRESS_TYPEORM_TRANSACTION', category: EnvVariableCategory.O23_BASIC,
 		type: EnvVariableValueType.BOOLEAN
 	},
 	{
@@ -303,15 +302,18 @@ export const O23ServerBasicVariables: Array<EnvVariableDef> = [
 	{name: 'CFG_APP_VERSION', category: EnvVariableCategory.O23_SERVER_BASIC, type: EnvVariableValueType.TEXT},
 	{name: 'CFG_APP_PROVIDER', category: EnvVariableCategory.O23_SERVER_BASIC, type: EnvVariableValueType.TEXT},
 	{name: 'CFG_APP_BUILT_AT', category: EnvVariableCategory.O23_SERVER_BASIC, type: EnvVariableValueType.TEXT},
-	{name: 'CFG_APP_PORT', category: EnvVariableCategory.O23_SERVER, type: EnvVariableValueType.NUMBER},
-	{name: 'CFG_APP_CONTEXT', category: EnvVariableCategory.O23_SERVER, type: EnvVariableValueType.TEXT},
-	{name: 'CFG_APP_BODY_JSON_MAX_SIZE', category: EnvVariableCategory.O23_SERVER, type: EnvVariableValueType.TEXT},
+	{name: 'CFG_APP_PORT', category: EnvVariableCategory.O23_SERVER_BASIC, type: EnvVariableValueType.NUMBER},
+	{name: 'CFG_APP_CONTEXT', category: EnvVariableCategory.O23_SERVER_BASIC, type: EnvVariableValueType.TEXT},
 	{
-		name: 'CFG_APP_BODY_URLENCODED_MAX_SIZE', category: EnvVariableCategory.O23_SERVER,
+		name: 'CFG_APP_BODY_JSON_MAX_SIZE', category: EnvVariableCategory.O23_SERVER_BASIC,
 		type: EnvVariableValueType.TEXT
 	},
-	{name: 'CFG_APP_CORS_ENABLED', category: EnvVariableCategory.O23_SERVER, type: EnvVariableValueType.BOOLEAN},
-	{name: 'CFG_APP_CORS_OPTIONS', category: EnvVariableCategory.O23_SERVER, type: EnvVariableValueType.JSON}
+	{
+		name: 'CFG_APP_BODY_URLENCODED_MAX_SIZE', category: EnvVariableCategory.O23_SERVER_BASIC,
+		type: EnvVariableValueType.TEXT
+	},
+	{name: 'CFG_APP_CORS_ENABLED', category: EnvVariableCategory.O23_SERVER_BASIC, type: EnvVariableValueType.BOOLEAN},
+	{name: 'CFG_APP_CORS_OPTIONS', category: EnvVariableCategory.O23_SERVER_BASIC, type: EnvVariableValueType.JSON}
 ];
 export const O23ServerErrorLogVariables: Array<EnvVariableDef> = [
 	{

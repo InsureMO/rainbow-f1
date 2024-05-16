@@ -11,6 +11,7 @@ export const MODULE_COMMAND_MARKER_PREFIX = '$$module-command$$';
 export const MODULE_ENVS_MARKER_PREFIX = '$$module-envs$$';
 export const MODULE_ENV_MARKER_PREFIX = '$$module-env$$';
 export const MODULE_ENV_COMMAND_MARKER_PREFIX = '$$module-env-command$$';
+export const MODULE_ENV_FILE_MARKER_PREFIX = '$$module-env-file$$';
 export const MODULE_O23_SERVER_PIPELINES_MARKER_PREFIX = '$$module-o23-pipelines-server$$';
 export const MODULE_O23_SERVER_PIPELINE_DIR_MARKER_PREFIX = '$$module-o23-pipelines-server-dir$$';
 export const MODULE_O23_SERVER_PIPELINE_FILE_MARKER_PREFIX = '$$module-o23-pipelines-server-file$$';
@@ -34,6 +35,7 @@ export const MODULE_COMMAND_MARKER = (module: F1ModuleStructure, command: Module
 export const MODULE_ENVS_MARKER = (module: F1ModuleStructure) => `${MODULE_ENVS_MARKER_PREFIX}-${module.name}`;
 export const MODULE_ENV_MARKER = (module: F1ModuleStructure, env: ModuleEnv) => `${MODULE_ENV_MARKER_PREFIX}-$$${module.name}$$-${env.name}`;
 export const MODULE_ENV_COMMAND_MARKER = (module: F1ModuleStructure, env: ModuleEnv, command: ModuleCommand) => `${MODULE_ENV_COMMAND_MARKER_PREFIX}-$$${module.name}$$-${env.name}-${command.name}`;
+export const MODULE_ENV_FILE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_ENV_FILE_MARKER_PREFIX}-$$${module.name}$$-${file.path}`;
 export const MODULE_O23_SERVER_PIPELINES_MARKER = (module: F1ModuleStructure) => `${MODULE_O23_SERVER_PIPELINES_MARKER_PREFIX}-${module.name}`;
 export const MODULE_O23_SERVER_PIPELINE_DIR_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_O23_SERVER_PIPELINE_DIR_MARKER_PREFIX}-$$${module.name}$$-${file.path}`;
 export const MODULE_O23_SERVER_PIPELINE_FILE_MARKER = (module: F1ModuleStructure, file: ModuleFile) => `${MODULE_O23_SERVER_PIPELINE_FILE_MARKER_PREFIX}-$$${module.name}$$-${file.path}`;
