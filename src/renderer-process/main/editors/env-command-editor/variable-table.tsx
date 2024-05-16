@@ -5,7 +5,17 @@ import {F1ModuleStructure, ModuleCommand} from '../../../../shared';
 import {ModuleCommandResource} from '../../opened/types';
 import {isD9Module, isO23Module} from '../../utils';
 import {EnvValues} from './env-values-wrapper';
-import {EnvVariableCategory, EnvVariableDef, O23ScriptsVariables, O23ServerVariables} from './variable-constants';
+import {
+	EnvTypeOrmVariableDialect,
+	EnvVariableCategory,
+	EnvVariableDef,
+	EnvVariableValueType,
+	O23ScriptsVariables,
+	O23ServerVariables,
+	O23TypeOrmTypeVariableSuffix,
+	O23TypeOrmVariablePrefix,
+	O23TypeOrmVariables
+} from './variable-constants';
 import {EnvCommandVariable} from './widgets';
 
 const AllVariableCategory = '';
@@ -24,6 +34,54 @@ const askVariablesBase = (module: F1ModuleStructure, command: ModuleCommand): Ar
 	}
 };
 
+const findTypeOrmDataSourcesVariables = (values: EnvValues): Array<EnvVariableDef> => {
+	const datasources = Object.entries(values)
+		.filter(([key]) => key.startsWith(O23TypeOrmVariablePrefix) && key.endsWith(O23TypeOrmTypeVariableSuffix))
+		.map(([key, value]) => {
+			return {
+				name: key.substring(O23TypeOrmVariablePrefix.length).slice(0, 0 - O23TypeOrmTypeVariableSuffix.length),
+				type: (value?.[0]?.value) as unknown as EnvTypeOrmVariableDialect,
+				variables: []
+			};
+		});
+	// sort by name length, so that the longer name will be processed first
+	const used: Record<string, boolean> = {};
+	[...datasources]
+		.sort((ds1, ds2) => ds2.name.length - ds1.name.length)
+		.forEach(datasource => {
+			const {name, type: datasourceType} = datasource;
+			const predefined = O23TypeOrmVariables
+				.filter(({dialects}) => {
+					// predefined variable which for all dialects or for given type
+					return dialects.includes(EnvTypeOrmVariableDialect.ALL) || dialects.includes(datasourceType);
+				})
+				.map(({name: suffix, type, validate}) => {
+					const key = `${O23TypeOrmVariablePrefix}${name}_${suffix}`;
+					used[key] = true;
+					return {
+						name: key, category: `${EnvVariableCategory.O23_TYPEORM}-${datasourceType}-[${name}]`,
+						type, validate
+					} as EnvVariableDef;
+				});
+			// and not predefined, also need to be discovered
+			const extended = Object.keys(values)
+				.filter(key => key.startsWith(`${O23TypeOrmVariablePrefix}${name}_`))
+				.filter(key => used[key] == null)
+				.sort((k1, k2) => k1.localeCompare(k2, (void 0), {sensitivity: 'base'}))
+				.map(key => {
+					used[key] = true;
+					return {
+						name: key, category: `${EnvVariableCategory.O23_TYPEORM}-${datasourceType}-[${name}]`,
+						// always treated as text, and no validate available
+						type: EnvVariableValueType.TEXT
+					} as EnvVariableDef;
+				});
+
+			datasource.variables = [...predefined, ...extended];
+		});
+	return datasources.map(({variables}) => variables).flat();
+};
+
 export interface VariableTableProps {
 	module: F1ModuleStructure;
 	resource: ModuleCommandResource;
@@ -37,13 +95,17 @@ export const VariableTable = (props: VariableTableProps) => {
 	const [categoryFilter, setCategoryFilter] = useState<CategoryFilterState>({category: AllVariableCategory});
 
 	const allVariables = askVariablesBase(module, command);
-	const variables = allVariables.filter(({category}) => {
+	const variables = [
+		...allVariables,
+		...findTypeOrmDataSourcesVariables(values)
+	];
+	const displayVariables = variables.filter(({category}) => {
 		return VUtils.isEmpty(categoryFilter.category) || category === categoryFilter.category;
 	});
 
 	const categoryFilterOptions: DropdownOptions = [
 		{value: AllVariableCategory, label: 'All Category'},
-		...[...new Set(allVariables.map(variable => variable.category))]
+		...[...new Set(variables.map(variable => variable.category))]
 			.sort((c1, c2) => c1.localeCompare(c2, (void 0), {sensitivity: 'base'}))
 			.map(category => ({value: category, label: category.replace(/-/g, ' ').replace('o23 ', '')}))
 	];
@@ -61,7 +123,8 @@ export const VariableTable = (props: VariableTableProps) => {
 			                   onValueChange={onCategoryChanged}
 			                   clearable={false}/>
 		</UnwrappedCaption>
-		{variables.map((variable, index) => {
+		{displayVariables.map((variable, index) => {
+			const value = (values[variable.name] ?? [])[0]?.value ?? '';
 			return <Fragment key={variable.name}>
 				<UnwrappedCaption data-role="command-variable-column-cell"
 				                  data-cell-role="command-variable-cell-row-index">
@@ -71,6 +134,7 @@ export const VariableTable = (props: VariableTableProps) => {
 					{variable.name}
 				</UnwrappedCaption>
 				<UnwrappedCaption data-role="command-variable-column-cell">
+					{value}
 				</UnwrappedCaption>
 				<UnwrappedCaption data-role="command-variable-column-cell"
 				                  data-cell-role="command-variable-cell-category">

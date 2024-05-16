@@ -12,6 +12,8 @@ export enum EnvVariableCategory {
 	O23_SCRIPTS_PIPELINE = 'o23-scripts-pipeline',
 }
 
+export type EnvVariableCategoryExt = string;
+
 export enum EnvVariableValueType {
 	TEXT = 'text', NUMBER = 'number', BOOLEAN = 'boolean', JSON = 'json'
 }
@@ -26,7 +28,7 @@ export interface EnvVariableValue {
 
 export interface EnvVariableDef extends EnvVariableValue {
 	name: string;
-	category: EnvVariableCategory;
+	category: EnvVariableCategory | EnvVariableCategoryExt;
 }
 
 export enum EnvTypeOrmVariableDialect {
@@ -62,6 +64,7 @@ export const O23BasicVariables: Array<EnvVariableDef> = [
 	}
 ];
 export const O23TypeOrmVariablePrefix = 'CFG_TYPEORM_';
+export const O23TypeOrmTypeVariableSuffix = '_TYPE';
 export const O23TypeOrmVariables: Array<EnvTypeOrmVariableDef> = [
 	{
 		name: 'TYPE', category: EnvVariableCategory.O23_TYPEORM, type: EnvVariableValueType.TEXT,

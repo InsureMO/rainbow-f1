@@ -25,6 +25,8 @@ export const useContentCache = () => {
 				const {path} = file;
 				const {success, ret: content, message} = window.electron.fs.readFile(path);
 				if (success) {
+					// put into cache
+					contents[marker] = {content};
 					onContent(content);
 				} else {
 					onError(message);
