@@ -1,19 +1,32 @@
 import {PropValue, VUtils} from '@rainbow-d9/n1';
 import {DropdownOptions, UnwrappedCaption, UnwrappedDropdown} from '@rainbow-d9/n2';
 import {Fragment, useState} from 'react';
+import {F1ModuleStructure, ModuleCommand} from '../../../../shared';
 import {ModuleCommandResource} from '../../opened/types';
-import {EnvVariableCategory, O23ServerVariables} from './variable-constants';
+import {isD9Module, isO23Module} from '../../utils';
+import {EnvVariableCategory, EnvVariableDef, O23ScriptsVariables, O23ServerVariables} from './variable-constants';
 import {EnvCommandVariable} from './widgets';
 
 export interface VariableSectionProps {
 	resource: ModuleCommandResource;
 }
 
-export const AllVariableCategory = '';
+const AllVariableCategory = '';
 
-export interface CategoryFilterState {
+interface CategoryFilterState {
 	category: EnvVariableCategory | typeof AllVariableCategory;
 }
+
+const askVariablesBase = (module: F1ModuleStructure, command: ModuleCommand): Array<EnvVariableDef> => {
+	switch (true) {
+		case isO23Module(module):
+			return command.name.endsWith('start') ? [...O23ServerVariables] : [...O23ScriptsVariables];
+		case isD9Module(module):
+		// TODO GET D9 MODULE VARIABLE BASE
+		default:
+			return [];
+	}
+};
 
 export const VariableSection = (props: VariableSectionProps) => {
 	const {resource} = props;
@@ -25,7 +38,7 @@ export const VariableSection = (props: VariableSectionProps) => {
 	}
 
 	const module = getModule();
-	const allVariables = [...O23ServerVariables];
+	const allVariables = askVariablesBase(module, command);
 	const variables = allVariables.filter(({category}) => {
 		return VUtils.isEmpty(categoryFilter.category) || category === categoryFilter.category;
 	});

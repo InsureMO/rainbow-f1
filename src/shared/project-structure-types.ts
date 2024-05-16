@@ -57,17 +57,14 @@ export interface ModuleCommands {
 	[key: string]: ModuleCommand;
 }
 
+/**
+ * for now, command matches following rules will be treated as environment command:
+ * 1. is "start" or "scripts",
+ * 2. ends with ":start", "-start", ":scripts", "-scripts"
+ */
 export interface ModuleEnv extends ModuleFile {
 	name: string;
 	commands: Array<ModuleCommand>;
-}
-
-export interface ModuleEnvConfigurationFile extends ModuleFile {
-	items: Array<O23SettingItem>;
-}
-
-export interface ModuleEnvConfigurations {
-	[key: string]: ModuleEnvConfigurationFile;
 }
 
 export interface F1ModuleStructure {
@@ -87,8 +84,6 @@ export interface F1NodeModuleStructure extends F1ModuleStructure {
 	/** files in root folder, which used by Node.js */
 	nodeFiles?: Array<ModuleFile>;
 	sourceFiles?: Array<ModuleFile>;
-	/** environment files */
-	envs: ModuleEnvConfigurations;
 }
 
 export interface D9ModuleStructure extends F1NodeModuleStructure {

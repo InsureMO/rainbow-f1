@@ -1,12 +1,25 @@
 import {spawnSync} from 'child_process';
+import dotenv from 'dotenv';
 import log from 'electron-log/main';
-import {ModuleFileType, ProjectCliCommand} from '../../../shared';
+import {ModuleFileType, O23ModuleStructure, ProjectCliCommand} from '../../../shared';
 import {PathWorker} from '../path';
 
 export interface ModuleCreated {
 	success: boolean;
 	ret: boolean;
 	message?: ErrorMessage;
+}
+
+export interface ModuleEnvValue {
+	name: string;
+	value: string;
+}
+
+/**
+ * key is env path in command
+ */
+export interface ModuleEnvValues {
+	[key: string]: Array<ModuleEnvValue>;
 }
 
 export abstract class AbstractModuleProcessor {
@@ -88,5 +101,19 @@ export abstract class AbstractModuleProcessor {
 		}
 
 		return ModuleFileType.UNKNOWN;
+	}
+
+	protected readEnvFiles(modulePath: string, structure: O23ModuleStructure): ModuleEnvValues {
+		// key is env file, value is items
+		// const loaded: Record<string, Mo> = {};
+		const allEnvFiles = Object.values(structure.commands).map(({envFiles}) => envFiles ?? []).flat();
+		return Array.from(new Set(allEnvFiles)).reduce((envs, file) => {
+			const data: Record<string, string> = {};
+			const envPath = PathWorker.resolve(modulePath, file);
+			dotenv.config({processEnv: data, path: envPath});
+			envs[file] = Object.entries(data)
+				.map(([key, value]) => ({name: key, value}));
+			return envs;
+		}, {} as ModuleEnvValues);
 	}
 }

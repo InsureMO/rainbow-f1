@@ -1,4 +1,3 @@
-import dotenv from 'dotenv';
 import {
 	F1ModuleType,
 	F1Project,
@@ -14,7 +13,7 @@ import {
 } from '../../../shared';
 import {FileSystemWorker} from '../file-system';
 import {PathWorker} from '../path';
-import {AbstractModuleProcessor, ModuleCreated} from './abstract';
+import {AbstractModuleProcessor, ModuleCreated, ModuleEnvValues} from './abstract';
 
 class O23ModuleProcessor extends AbstractModuleProcessor {
 	protected computePluginArgs(module: O23ModuleSettings): Array<string> {
@@ -80,34 +79,12 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		});
 	}
 
-	protected readEnvFiles(projectPath: string, modulePath: string, structure: O23ModuleStructure) {
-		// key is env file, value is items
-		// const loaded: Record<string, Mo> = {};
-		const allEnvFiles = Object.values(structure.commands).map(({envFiles}) => envFiles ?? []).flat();
-		structure.envs = Array.from(new Set(allEnvFiles)).reduce((envs, file) => {
-			const data: Record<string, string> = {};
-			const envPath = PathWorker.resolve(modulePath, file);
-			dotenv.config({processEnv: data, path: envPath});
-			envs[file] = {
-				basename: PathWorker.basename(file), dir: false, type: ModuleFileType.ENV,
-				path: envPath,
-				pathRelativeToRoot: envPath.substring(PathWorker.dirname(projectPath).length + 1),
-				pathRelativeToProjectRoot: envPath.substring(projectPath.length + 1),
-				pathRelativeToModuleRoot: envPath.substring(modulePath.length + 1),
-				items: Object.entries(data)
-					.map(([key, value]) => ({name: key, value}))
-			};
-			return envs;
-		}, {} as O23ModuleStructure['envs']);
-	}
-
 	public async read(project: F1Project, module: O23ModuleSettings): Promise<O23ModuleStructure> {
 		const structure: O23ModuleStructure = {
 			name: module.name, type: F1ModuleType.O23,
 			files: [], nodeFiles: [], sourceFiles: [],
 			commands: {},
 			server: {files: []}, scripts: {files: []}, dbScripts: {files: []},
-			envs: {},
 			success: false
 		};
 		const projectPath = project.directory;
@@ -129,11 +106,11 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		// read commands, find build, test, start. o23 has more commands, find build and start standalone commands as well.
 		// typically, all following commands are defined for development.
 		this.readCommands(projectPath, modulePath, structure, packageFile, packageJson);
-		this.readEnvFiles(projectPath, modulePath, structure);
+		const envValues = this.readEnvFiles(modulePath, structure);
 		// find server pipeline files according to env
-		this.readServerPipelineFiles(projectPath, modulePath, structure);
+		this.readServerPipelineFiles(projectPath, modulePath, envValues, structure);
 		// find scripts pipeline and db scripts files according to env
-		this.readScriptsPipelineFiles(projectPath, modulePath, structure);
+		this.readScriptsPipelineFiles(projectPath, modulePath, envValues, structure);
 		// load source files
 		this.readSourceFiles(projectPath, modulePath, structure, filesScanned, (() => {
 			const sourcePath = PathWorker.resolve(modulePath, 'src');
@@ -221,15 +198,14 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 		}).flat();
 	}
 
-	protected readServerPipelineFiles(projectPath: string, modulePath: string, structure: Omit<O23ModuleStructure, 'success' | 'message'>) {
+	protected readServerPipelineFiles(projectPath: string, modulePath: string, envValues: ModuleEnvValues, structure: Omit<O23ModuleStructure, 'success' | 'message'>) {
 		// find server env files, command should be one of "start", "*:start" or "*-start"
 		const envFiles = Object.values(structure.commands)
 			.filter(({name}) => name === 'start' || name.endsWith(':start') || name.endsWith('-start'))
 			.map(({envFiles}) => envFiles)
 			.flat();
 		const directories = Array.from(new Set(Array.from(new Set(envFiles)).map(envFile => {
-			const {items} = structure.envs[envFile] ?? {};
-			const found = items?.find(({name}) => name === 'CFG_APP_INIT_PIPELINES_DIR');
+			const found = (envValues[envFile] ?? []).find(({name}) => name === 'CFG_APP_INIT_PIPELINES_DIR');
 			return (found?.value ?? 'server').trim();
 		})));
 		structure.server.files = [
@@ -252,15 +228,14 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 			})];
 	}
 
-	protected readScriptsPipelineFiles(projectPath: string, modulePath: string, structure: Omit<O23ModuleStructure, 'success' | 'message'>) {
+	protected readScriptsPipelineFiles(projectPath: string, modulePath: string, envValues: ModuleEnvValues, structure: Omit<O23ModuleStructure, 'success' | 'message'>) {
 		// find server env files, command should be one of "scripts", "*:scripts" or "*-scripts"
 		const envFiles = Object.values(structure.commands)
 			.filter(({name}) => name === 'scripts' || name.endsWith(':scripts') || name.endsWith('-scripts'))
 			.map(({envFiles}) => envFiles)
 			.flat();
 		const directories = Array.from(new Set(Array.from(new Set(envFiles)).map(envFile => {
-			const {items} = structure.envs[envFile] ?? {};
-			const found = items?.find(({name}) => name === 'CFG_APP_INIT_PIPELINES_DIR');
+			const found = (envValues[envFile] ?? []).find(({name}) => name === 'CFG_APP_INIT_PIPELINES_DIR');
 			return (found?.value ?? 'scripts').trim();
 		})));
 		structure.scripts.files = [
@@ -283,8 +258,7 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 			})
 		];
 		const dbScriptsDirectories = Array.from(new Set(Array.from(new Set(envFiles)).map(envFile => {
-			const {items} = structure.envs[envFile] ?? {};
-			const found = items?.find(({name}) => name === 'CFG_APP_DB_SCRIPTS_DIR');
+			const found = (envValues[envFile] ?? []).find(({name}) => name === 'CFG_APP_DB_SCRIPTS_DIR');
 			return (found?.value ?? 'db-scripts').trim();
 		})));
 		structure.dbScripts.files = [
