@@ -5,23 +5,20 @@ import {F1ModuleStructure, ModuleCommand} from '../../../../shared';
 import {ModuleCommandResource} from '../../opened/types';
 import {isD9Module, isO23Module} from '../../utils';
 import {EnvValues} from './env-values-wrapper';
+import {O23ScriptsVariables, O23ServerVariables} from './o23-variable-constants-server';
 import {
 	EnvTypeOrmVariableDialect,
-	EnvVariableCategory,
-	EnvVariableDef,
-	EnvVariableValueType,
-	O23ScriptsVariables,
-	O23ServerVariables,
 	O23TypeOrmTypeVariableSuffix,
 	O23TypeOrmVariablePrefix,
 	O23TypeOrmVariables
-} from './variable-constants';
+} from './variable-constants-typeorm';
+import {EnvVariableCategory, EnvVariableCategoryExt, EnvVariableDef, EnvVariableValueType} from './variable-types';
 import {EnvCommandVariable} from './widgets';
 
 const AllVariableCategory = '';
 
 interface CategoryFilterState {
-	category: EnvVariableCategory | typeof AllVariableCategory;
+	category: EnvVariableCategory | EnvVariableCategoryExt;
 }
 
 const askVariablesBase = (module: F1ModuleStructure, command: ModuleCommand): Array<EnvVariableDef> => {
