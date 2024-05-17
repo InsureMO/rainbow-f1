@@ -1,5 +1,6 @@
 import {EnvVariableCategory, EnvVariableDef, EnvVariableValueType} from './variable-types';
 
+export const O23ServerOrScriptsVariablePrefix = 'CFG_APP_';
 export const O23ServerBasicVariables: Array<EnvVariableDef> = [
 	{name: 'CFG_APP_NAME', category: EnvVariableCategory.O23_SERVER_BASIC, type: EnvVariableValueType.TEXT},
 	{name: 'CFG_APP_VERSION', category: EnvVariableCategory.O23_SERVER_BASIC, type: EnvVariableValueType.TEXT},
@@ -18,20 +19,18 @@ export const O23ServerBasicVariables: Array<EnvVariableDef> = [
 	{name: 'CFG_APP_CORS_ENABLED', category: EnvVariableCategory.O23_SERVER_BASIC, type: EnvVariableValueType.BOOLEAN},
 	{name: 'CFG_APP_CORS_OPTIONS', category: EnvVariableCategory.O23_SERVER_BASIC, type: EnvVariableValueType.JSON}
 ];
+export const O23ServerErrorLogVariablePrefix = 'CFG_LOGGER_ERROR_';
 export const O23ServerErrorLogVariables: Array<EnvVariableDef> = [
 	{
-		name: 'CFG_LOGGER_ERROR_FILE',
-		category: EnvVariableCategory.O23_SERVER_ERROR_LOG,
+		name: 'CFG_LOGGER_ERROR_FILE', category: EnvVariableCategory.O23_SERVER_ERROR_LOG,
 		type: EnvVariableValueType.TEXT
 	},
 	{
-		name: 'CFG_LOGGER_ERROR_LEVEL',
-		category: EnvVariableCategory.O23_SERVER_ERROR_LOG,
+		name: 'CFG_LOGGER_ERROR_LEVEL', category: EnvVariableCategory.O23_SERVER_ERROR_LOG,
 		type: EnvVariableValueType.TEXT
 	},
 	{
-		name: 'CFG_LOGGER_ERROR_JSON',
-		category: EnvVariableCategory.O23_SERVER_ERROR_LOG,
+		name: 'CFG_LOGGER_ERROR_JSON', category: EnvVariableCategory.O23_SERVER_ERROR_LOG,
 		type: EnvVariableValueType.TEXT
 	},
 	{
@@ -43,20 +42,18 @@ export const O23ServerErrorLogVariables: Array<EnvVariableDef> = [
 		type: EnvVariableValueType.BOOLEAN
 	},
 	{
-		name: 'CFG_LOGGER_ERROR_MAX_FILES',
-		category: EnvVariableCategory.O23_SERVER_ERROR_LOG,
+		name: 'CFG_LOGGER_ERROR_MAX_FILES', category: EnvVariableCategory.O23_SERVER_ERROR_LOG,
 		type: EnvVariableValueType.TEXT
 	},
 	{
-		name: 'CFG_LOGGER_ERROR_MAX_SIZE',
-		category: EnvVariableCategory.O23_SERVER_ERROR_LOG,
+		name: 'CFG_LOGGER_ERROR_MAX_SIZE', category: EnvVariableCategory.O23_SERVER_ERROR_LOG,
 		type: EnvVariableValueType.TEXT
 	}
 ];
+export const O23ServerCombineLogVariablePrefix = 'CFG_LOGGER_COMBINED_';
 export const O23ServerCombineLogVariables: Array<EnvVariableDef> = [
 	{
-		name: 'CFG_LOGGER_COMBINED_FILE',
-		category: EnvVariableCategory.O23_SERVER_COMBINED_LOG,
+		name: 'CFG_LOGGER_COMBINED_FILE', category: EnvVariableCategory.O23_SERVER_COMBINED_LOG,
 		type: EnvVariableValueType.TEXT
 	},
 	{
@@ -84,6 +81,7 @@ export const O23ServerCombineLogVariables: Array<EnvVariableDef> = [
 		type: EnvVariableValueType.TEXT
 	}
 ];
+export const O23ServerConsoleLogVariablePrefix = 'CFG_LOGGER_CONSOLE_';
 export const O23ServerConsoleLogVariables: Array<EnvVariableDef> = [
 	{
 		name: 'CFG_LOGGER_CONSOLE_ENABLED', category: EnvVariableCategory.O23_SERVER_CONSOLE_LOG,
@@ -94,7 +92,8 @@ export const O23ServerConsoleLogVariables: Array<EnvVariableDef> = [
 		type: EnvVariableValueType.TEXT
 	}
 ];
-export const O23ServerPipelineVariables: Array<EnvVariableDef> = [
+export const O23PipelineVariablePrefix = 'CFG_PIPELINE_';
+export const O23PipelineVariables: Array<EnvVariableDef> = [
 	{
 		name: 'CFG_APP_INIT_PIPELINES_DIR', category: EnvVariableCategory.O23_PIPELINE,
 		type: EnvVariableValueType.TEXT
@@ -110,17 +109,19 @@ export const O23ServerPipelineVariables: Array<EnvVariableDef> = [
 	{
 		name: 'CFG_PIPELINE_PERFORMANCE_LOG_ENABLED', category: EnvVariableCategory.O23_PIPELINE,
 		type: EnvVariableValueType.BOOLEAN
-	},
+	}
+];
+export const O23ServerPipelineVariables: Array<EnvVariableDef> = [
 	{
-		name: 'CFG_APP_EXAMPLES_ENABLED', category: EnvVariableCategory.O23_PIPELINE,
+		name: 'CFG_APP_EXAMPLES_ENABLED', category: EnvVariableCategory.O23_SERVER_PIPELINE,
 		type: EnvVariableValueType.BOOLEAN
 	},
 	{
-		name: 'CFG_APP_API_TEST', category: EnvVariableCategory.O23_PIPELINE,
+		name: 'CFG_APP_API_TEST', category: EnvVariableCategory.O23_SERVER_PIPELINE,
 		type: EnvVariableValueType.BOOLEAN
 	}
 ];
-export const O23ScriptsPipelineVariables: Array<EnvVariableDef> = [
+export const O23ScriptsBasicVariables: Array<EnvVariableDef> = [
 	{
 		name: 'CFG_APP_DB_SCRIPTS_DIR', category: EnvVariableCategory.O23_SCRIPTS_BASIC,
 		type: EnvVariableValueType.TEXT

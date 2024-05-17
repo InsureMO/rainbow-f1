@@ -1,6 +1,7 @@
 import {EnvVariableCategory, EnvVariableDef, EnvVariableValueType} from './variable-types';
 
-export const O23ServerPluginPrintPdf: Array<EnvVariableDef> = [
+export const O23ServerPluginPrintPdfVariablePrefix = 'CFG_PUPPETEER_';
+export const O23ServerPluginPrintPdfVariables: Array<EnvVariableDef> = [
 	{
 		name: 'CFG_PUPPETEER_EXECUTABLE_PATH', category: EnvVariableCategory.O23_SERVER_PLUGIN_PRINT_PDF,
 		type: EnvVariableValueType.TEXT,
@@ -72,7 +73,8 @@ export const O23ServerPluginPrintPdf: Array<EnvVariableDef> = [
 		description: 'Keep browser page after printed, enable this feature will disable headless mode automatically, also, recommend to disable browser cache. Only for debug purpose, never enable it in server.'
 	}
 ];
-export const O23ServerPluginPrintCsvAndExcel: Array<EnvVariableDef> = [
+export const O23ServerPluginPrintCsvVariablePrefix = 'CFG_CSV_';
+export const O23ServerPluginPrintCsvVariables: Array<EnvVariableDef> = [
 	{
 		name: 'CFG_CSV_TEMPORARY_FILE_KEEP', category: EnvVariableCategory.O23_SERVER_PLUGIN_PRINT_CSV,
 		type: EnvVariableValueType.BOOLEAN,
@@ -96,7 +98,10 @@ export const O23ServerPluginPrintCsvAndExcel: Array<EnvVariableDef> = [
 		type: EnvVariableValueType.TEXT,
 		defaultValue: '.csv-temporary-files',
 		description: 'Temporary file directory.'
-	},
+	}
+];
+export const O23ServerPluginPrintExcelVariablePrefix = 'CFG_EXCEL_';
+export const O23ServerPluginPrintExcelVariables: Array<EnvVariableDef> = [
 	{
 		name: 'CFG_EXCEL_TEMPORARY_FILE_KEEP', category: EnvVariableCategory.O23_SERVER_PLUGIN_PRINT_XLSX,
 		type: EnvVariableValueType.BOOLEAN,
@@ -110,8 +115,9 @@ export const O23ServerPluginPrintCsvAndExcel: Array<EnvVariableDef> = [
 		description: 'Temporary file directory.'
 	}
 ];
-export const O23ServerPluginPrintWord: Array<EnvVariableDef> = [];
-export const O23ServerPluginPrint: Array<EnvVariableDef> = [
+export const O23ServerPluginPrintWordVariablePrefix = 'CFG_WORD_';
+export const O23ServerPluginPrintWordVariables: Array<EnvVariableDef> = [];
+export const O23ServerPluginPrintVariables: Array<EnvVariableDef> = [
 	{
 		name: 'CFG_APP_PLUGINS_PRINT', category: EnvVariableCategory.O23_SERVER_PLUGIN_PRINT,
 		type: EnvVariableValueType.BOOLEAN,

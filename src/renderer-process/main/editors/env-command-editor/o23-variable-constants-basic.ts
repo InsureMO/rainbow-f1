@@ -1,5 +1,6 @@
 import {EnvVariableCategory, EnvVariableDef, EnvVariableValueType} from './variable-types';
 
+export const O23BasicVariablePrefix = 'CFG_APP_ENV_';
 export const O23BasicVariables: Array<EnvVariableDef> = [
 	{name: 'CFG_APP_ENV_STRICT', category: EnvVariableCategory.O23_BASIC, type: EnvVariableValueType.BOOLEAN},
 	{
