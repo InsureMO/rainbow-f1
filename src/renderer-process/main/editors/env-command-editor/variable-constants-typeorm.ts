@@ -9,8 +9,7 @@ export interface EnvTypeOrmVariableDef extends EnvVariableDef {
 }
 
 export const O23TypeOrmVariablePrefix = 'CFG_TYPEORM_';
-export const O23TypeOrmTypeVariableSuffix = '_TYPE';
-export const O23TypeOrmVariables: Array<EnvTypeOrmVariableDef> = [
+export const O23TypeOrmVariableSuffixes: Array<EnvTypeOrmVariableDef> = [
 	{
 		name: 'TYPE', category: EnvVariableCategory.O23_TYPEORM, type: EnvVariableValueType.TEXT,
 		dialects: [EnvTypeOrmVariableDialect.ALL]
@@ -243,5 +242,19 @@ export const O23TypeOrmVariables: Array<EnvTypeOrmVariableDef> = [
 		name: 'TIMESTAMP_FORMAT_WRITE', category: EnvVariableCategory.O23_TYPEORM,
 		type: EnvVariableValueType.BOOLEAN,
 		dialects: [EnvTypeOrmVariableDialect.ALL]
+	}
+];
+export const O23TypeOrmVariables: Array<EnvVariableDef> = [
+	{
+		name: 'CFG_APP_DATASOURCE_DEFAULT', category: EnvVariableCategory.O23_TYPEORM,
+		type: EnvVariableValueType.BOOLEAN
+	},
+	{
+		name: 'CFG_APP_DATASOURCE_CONFIG', category: EnvVariableCategory.O23_TYPEORM,
+		type: EnvVariableValueType.BOOLEAN
+	},
+	{
+		name: 'CFG_TYPEORM_SQL_CACHE_ENABLED', category: EnvVariableCategory.O23_TYPEORM,
+		type: EnvVariableValueType.BOOLEAN
 	}
 ];

@@ -1,4 +1,3 @@
-import {O23BasicVariables} from './o23-variable-constants-basic';
 import {EnvVariableCategory, EnvVariableDef, EnvVariableValueType} from './variable-types';
 
 export const O23ServerBasicVariables: Array<EnvVariableDef> = [
@@ -95,57 +94,35 @@ export const O23ServerConsoleLogVariables: Array<EnvVariableDef> = [
 		type: EnvVariableValueType.TEXT
 	}
 ];
-export const O23ServerLogVariables: Array<EnvVariableDef> = [
-	...O23ServerErrorLogVariables,
-	...O23ServerCombineLogVariables,
-	...O23ServerConsoleLogVariables
-];
 export const O23ServerPipelineVariables: Array<EnvVariableDef> = [
 	{
-		name: 'CFG_APP_INIT_PIPELINES_DIR', category: EnvVariableCategory.O23_SERVER_PIPELINE,
+		name: 'CFG_APP_INIT_PIPELINES_DIR', category: EnvVariableCategory.O23_PIPELINE,
 		type: EnvVariableValueType.TEXT
 	},
 	{
-		name: 'CFG_APP_EXCLUDED_PIPELINES_DIRS', category: EnvVariableCategory.O23_SERVER_PIPELINE,
+		name: 'CFG_APP_EXCLUDED_PIPELINES_DIRS', category: EnvVariableCategory.O23_PIPELINE,
 		type: EnvVariableValueType.TEXT
 	},
 	{
-		name: 'CFG_PIPELINE_DEBUG_LOG_ENABLED', category: EnvVariableCategory.O23_SERVER_PIPELINE,
+		name: 'CFG_PIPELINE_DEBUG_LOG_ENABLED', category: EnvVariableCategory.O23_PIPELINE,
 		type: EnvVariableValueType.BOOLEAN
 	},
 	{
-		name: 'CFG_PIPELINE_PERFORMANCE_LOG_ENABLED', category: EnvVariableCategory.O23_SERVER_PIPELINE,
+		name: 'CFG_PIPELINE_PERFORMANCE_LOG_ENABLED', category: EnvVariableCategory.O23_PIPELINE,
 		type: EnvVariableValueType.BOOLEAN
 	},
 	{
-		name: 'CFG_APP_EXAMPLES_ENABLED', category: EnvVariableCategory.O23_SERVER_PIPELINE,
+		name: 'CFG_APP_EXAMPLES_ENABLED', category: EnvVariableCategory.O23_PIPELINE,
 		type: EnvVariableValueType.BOOLEAN
 	},
 	{
-		name: 'CFG_APP_API_TEST', category: EnvVariableCategory.O23_SERVER_PIPELINE,
+		name: 'CFG_APP_API_TEST', category: EnvVariableCategory.O23_PIPELINE,
 		type: EnvVariableValueType.BOOLEAN
 	}
-];
-export const O23ServerVariables: Array<EnvVariableDef> = [
-	...O23BasicVariables,
-	...O23ServerBasicVariables,
-	...O23ServerLogVariables,
-	...O23ServerPipelineVariables
 ];
 export const O23ScriptsPipelineVariables: Array<EnvVariableDef> = [
 	{
 		name: 'CFG_APP_DB_SCRIPTS_DIR', category: EnvVariableCategory.O23_SCRIPTS_BASIC,
 		type: EnvVariableValueType.TEXT
-	},
-	{
-		name: 'CFG_APP_INIT_PIPELINES_DIR', category: EnvVariableCategory.O23_SCRIPTS_PIPELINE,
-		type: EnvVariableValueType.TEXT
-	},
-	{
-		name: 'CFG_APP_EXCLUDED_PIPELINES_DIRS', category: EnvVariableCategory.O23_SCRIPTS_PIPELINE,
-		type: EnvVariableValueType.TEXT
 	}
-];
-export const O23ScriptsVariables: Array<EnvVariableDef> = [
-	...O23ScriptsPipelineVariables
 ];
