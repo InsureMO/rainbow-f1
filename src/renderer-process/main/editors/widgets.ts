@@ -50,14 +50,14 @@ export const EditorResourceLocationSegment = styled.span.attrs({[DOM_KEY_WIDGET]
         margin-right: 8px;
     }
 `;
-export const EditorContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-editor-container'})`
+export const EditorContainer = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-editor-container'})`
     display: grid;
     position: relative;
     align-self: stretch;
     grid-template-columns: 1fr;
     overflow: hidden;
 `;
-export const EditorMissedContentReminder = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-editor-missed-content'})`
+export const EditorMissedContentReminder = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-editor-missed-content'})`
     display: flex;
     position: relative;
     flex-direction: column;
@@ -68,7 +68,7 @@ export const EditorMissedContentReminder = styled.div.attrs({[DOM_KEY_WIDGET]: '
         padding: 0;
     }
 `;
-export const EditorMissedContentMessage = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-editor-missed-content-message'})`
+export const EditorMissedContentMessage = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-editor-missed-content-message'})`
     display: flex;
     position: relative;
     align-items: center;
@@ -76,7 +76,7 @@ export const EditorMissedContentMessage = styled.div.attrs({[DOM_KEY_WIDGET]: 'd
     margin: 16px 0;
     color: var(--f1-danger-color);
 `;
-export const CodeMirrorEditorPanel = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-code-mirror-editor-panel'})`
+export const CodeMirrorEditorPanel = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-code-mirror-editor-panel'})`
     display: block;
     position: relative;
     width: 100%;
@@ -223,13 +223,13 @@ export const CodeMirrorEditorPanel = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-
         }
     }
 `;
-export const EditorStatusBar = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-editor-status-bar'})`
+export const EditorStatusBar = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-editor-status-bar'})`
     display: flex;
     position: relative;
     min-height: var(--f1-wb-work-area-status-height);
     border-top: var(--f1-border);
 `;
-export const EditorStatusBarGrabber = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-editor-status-bar-grabber'})`
+export const EditorStatusBarGrabber = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-editor-status-bar-grabber'})`
     display: block;
     position: relative;
     flex-grow: 1;

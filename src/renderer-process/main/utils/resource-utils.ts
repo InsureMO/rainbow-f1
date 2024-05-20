@@ -79,7 +79,6 @@ export const isYamlFile = (file: ModuleFile) => {
 export const isSqlFile = (file: ModuleFile) => {
 	return [ModuleFileType.SQL].includes(file.type);
 };
-
 export const isO23ServerPipelineFile = (marker: string) => {
 	return marker.startsWith(`${MODULE_O23_SERVER_PIPELINE_FILE_MARKER_PREFIX}-`);
 };
@@ -87,10 +86,15 @@ export const isO23ScriptsPipelineFile = (marker: string) => {
 	return marker.startsWith(`${MODULE_O23_SCRIPTS_PIPELINE_FILE_MARKER_PREFIX}-`);
 };
 
+export const isModuleEnvCommand = (marker: string) => {
+	return marker.startsWith(`${MODULE_COMMAND_MARKER_PREFIX}-`)
+		|| marker.startsWith(`${MODULE_ENV_COMMAND_MARKER_PREFIX}-`);
+};
 export const isResourceInitLocked = (resource: Resource) => {
 	const {marker} = resource;
 	// noinspection RedundantIfStatementJS
-	if (isO23ServerPipelineFile(marker) || isO23ScriptsPipelineFile(marker)) {
+	if (isO23ServerPipelineFile(marker) || isO23ScriptsPipelineFile(marker)
+		|| isModuleEnvCommand(marker)) {
 		return false;
 	} else {
 		return true;

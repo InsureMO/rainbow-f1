@@ -41,16 +41,15 @@ class PathWorker {
 	public resolve(...path: Array<string>): string {
 		return p.resolve(...path);
 	}
-
-	public concat(...path: Array<string>): string {
-		return p.join(...path);
-	}
 }
 
 const INSTANCE = (() => {
 	const worker = new PathWorker();
 	ipcMain.on(PathEvent.BASENAME, (event, path: string, suffix?: string): void => {
 		event.returnValue = worker.basename(path, suffix);
+	});
+	ipcMain.on(PathEvent.RESOLVE, (event, ...path: Array<string>): void => {
+		event.returnValue = worker.resolve(...path);
 	});
 	return worker;
 })();

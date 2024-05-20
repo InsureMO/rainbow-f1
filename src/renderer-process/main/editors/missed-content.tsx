@@ -8,11 +8,12 @@ import {EditorMissedContentMessage, EditorMissedContentReminder} from './widgets
 export interface MissedContentProps {
 	resource: Resource;
 	message?: string;
+	closable?: boolean;
 	children: ReactNode;
 }
 
 export const MissedContent = (props: MissedContentProps) => {
-	const {resource, message, children} = props;
+	const {resource, message, closable = true, children} = props;
 
 	const {fire} = useWorkbenchEventBus();
 
@@ -22,7 +23,9 @@ export const MissedContent = (props: MissedContentProps) => {
 		};
 		return <EditorMissedContentReminder>
 			<EditorMissedContentMessage>{message}</EditorMissedContentMessage>
-			<UnwrappedButton onClick={onCloseClicked} fill={ButtonFill.LINK}>Close This Editor</UnwrappedButton>
+			{closable
+				? <UnwrappedButton onClick={onCloseClicked} fill={ButtonFill.LINK}>Close This Editor</UnwrappedButton>
+				: null}
 		</EditorMissedContentReminder>;
 	} else {
 		return <>{children}</>;

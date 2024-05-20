@@ -45,6 +45,7 @@
 	"dependencies": {
 		"@codemirror/lang-sql": "^6.6.4",
 		"@codemirror/lang-yaml": "^6.1.1",
+		"@codemirror/legacy-modes": "^6.4.0",
 		"@rainbow-d9/n5": "1.1.27",
 		"color": "^4.2.3",
 		"dotenv": "^16.4.5",
@@ -63,7 +64,7 @@
 		"styled-components": "5.3.11"
 	},
 	"volta": {
-		"node": "18.19.0",
+		"node": "22.2.0",
 		"yarn": "1.22.21"
 	}
 }

@@ -11,6 +11,7 @@ export const O23EndpointSystemVariableSuffixes: Array<EnvVariableDef> = [
 		defaultValue: -1, description: 'Endpoint system global timeout, in seconds, `-1` represents no timeout.'
 	}
 ];
+export const O23EndpointSystemVariableSuffixNames = O23EndpointSystemVariableSuffixes.map(({name}) => `_${name}`);
 export const O23EndpointHttpVariableSuffixes: Array<EnvVariableDef> = [
 	{
 		name: 'URL', category: EnvVariableCategory.O23_ENDPOINT, type: EnvVariableValueType.TEXT,
@@ -25,3 +26,4 @@ export const O23EndpointHttpVariableSuffixes: Array<EnvVariableDef> = [
 		description: 'Endpoint request timeout, in seconds, use global timeout if this parameter doesn\'t present.'
 	}
 ];
+export const O23EndpointHttpVariableSuffixNames = O23EndpointHttpVariableSuffixes.map(({name}) => `_${name}`);

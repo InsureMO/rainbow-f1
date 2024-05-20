@@ -70,12 +70,12 @@ export const useResources = () => {
 		on(WorkbenchEventTypes.REGISTER_RESOURCE, onRegisterResource);
 		on(WorkbenchEventTypes.UNREGISTER_RESOURCE, onUnregisterResource);
 		on(WorkbenchEventTypes.ASK_RESOURCE, onAskResource);
-		on(WorkbenchEventTypes.ASK_CHILD_RESOURCES, onAskChildResources);
+		on(WorkbenchEventTypes.ASK_RESOURCES, onAskChildResources);
 		return () => {
 			off(WorkbenchEventTypes.REGISTER_RESOURCE, onRegisterResource);
 			off(WorkbenchEventTypes.UNREGISTER_RESOURCE, onUnregisterResource);
 			off(WorkbenchEventTypes.ASK_RESOURCE, onAskResource);
-			off(WorkbenchEventTypes.ASK_CHILD_RESOURCES, onAskChildResources);
+			off(WorkbenchEventTypes.ASK_RESOURCES, onAskChildResources);
 		};
 	}, [on, off]);
 };

@@ -9,7 +9,6 @@ export interface EnvCommandEditorProps {
 
 export const EnvCommandEditor = (props: EnvCommandEditorProps) => {
 	const {resource} = props;
-	const {module: getModule, env, command} = resource;
 
 	return <EnvCommandEditorPanel>
 		<CommandSection resource={resource}/>

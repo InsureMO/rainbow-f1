@@ -56,6 +56,7 @@ export namespace ElectronBridges {
 
 	export interface WindowElectronPath {
 		basename: (path: string, suffix?: string) => string;
+		resolve: (...path: Array<string>) => string;
 	}
 
 	export interface WindowElectronRecentProjects {

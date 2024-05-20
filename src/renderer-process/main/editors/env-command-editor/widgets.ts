@@ -2,19 +2,19 @@ import {DOM_KEY_WIDGET} from '@rainbow-d9/n2';
 import styled from 'styled-components';
 
 export const EnvCommandEditorPanel = styled.div.attrs({
-	[DOM_KEY_WIDGET]: 'd9-wb-work-area-end-command-editor-panel',
+	[DOM_KEY_WIDGET]: 'd9-wb-work-area-env-command-editor-panel',
 	'data-v-scroll': ''
 })`
     display: grid;
     position: relative;
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto auto 1fr;
     width: 100%;
     padding: 16px;
     align-self: stretch;
     overflow: hidden;
 `;
-export const EnvCommandBasic = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-end-command-editor-basic'})`
+export const EnvCommandBasic = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-area-env-command-editor-basic'})`
     display: grid;
     position: relative;
     grid-template-columns: auto 1fr auto;
@@ -37,75 +37,80 @@ export const EnvCommandBasic = styled.div.attrs({[DOM_KEY_WIDGET]: 'd9-wb-work-a
         padding-left: 6px;
     }
 `;
-export const EnvCommandVariable = styled.div.attrs({
-	[DOM_KEY_WIDGET]: 'd9-wb-work-area-end-command-editor-variable',
-	'data-v-scroll': ''
-})`
+export const EnvFilesHeader = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-env-command-files-header'})`
     display: grid;
     position: relative;
-    align-content: start;
-    grid-template-columns: auto auto 1fr auto;
-    overflow-x: hidden;
-    overflow-y: auto;
+    grid-template-columns: 1fr auto;
+    width: 100%;
+    align-items: center;
+    align-self: start;
+    background-image: linear-gradient(to bottom, transparent calc(var(--f1-wb-work-area-header-height) - var(--f1-border-width)), var(--f1-border-color) var(--f1-border-width));
+    background-size: 100% var(--f1-wb-work-area-header-height);
+`;
+export const EnvFilesHeaderTabs = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-env-command-files-tabs'})`
+    display: flex;
+    position: relative;
+    flex-wrap: wrap;
+    width: 100%;
+    //min-height: var(--f1-wb-work-area-header-height);
+    overflow: hidden;
+`;
+export const EnvFilesHeaderTab = styled.div.attrs<{ active?: boolean }>(({active}) => {
+	return {
+		[DOM_KEY_WIDGET]: 'f1-wb-work-area-env-command-file-tab',
+		style: {
+			'--active-bar-visible': active ? 'block' : (void 0)
+		}
+	};
+})<{ active?: boolean }>`
+    display: flex;
+    position: relative;
+    align-items: center;
+    height: var(--f1-wb-work-area-header-height);
+    padding: 0 8px;
+    cursor: pointer;
 
-    > span[data-w=d9-caption][data-role=command-variable-title] {
-        position: sticky;
-        top: 0;
-        font-size: 1.1em;
-        font-weight: 600;
-        color: var(--f1-font-color);
-        background-color: var(--f1-background-color);
-        grid-column: 1 / span 4;
-        height: calc(var(--f1-row-height) * 1.1);
-        z-index: 1;
+    &:after {
+        content: '';
+        display: var(--active-bar-visible, none);
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 3px;
+        border-radius: 1px;
+        background-color: var(--f1-primary-color);
     }
 
-    > span[data-w=d9-caption][data-role=command-variable-column-header] {
-        position: sticky;
-        top: calc(var(--f1-row-height) * 1.1);
-        font-weight: 600;
-        color: var(--f1-font-color);
-        background-color: var(--f1-background-color);
-        padding: 0 16px 0 8px;
-        border-bottom: var(--f1-border);
-        z-index: 1;
-
-        > div[data-w=d9-dropdown] {
-            padding-left: 0;
-            border-color: transparent;
-
-            &:hover, &:focus-within {
-                box-shadow: none;
-            }
-
-            span[data-w=d9-dropdown-label],
-            span[data-w=d9-dropdown-option] {
-                text-transform: capitalize;
-            }
-
-            span[data-w=d9-dropdown-option] {
-                font-weight: 400;
-            }
-        }
+    &:hover {
+        background-color: var(--f1-wb-work-area-header-hover-color);
     }
 
-    > span[data-w=d9-caption][data-role=command-variable-column-cell] {
-        color: var(--f1-font-color);
-        padding: 0 16px 0 8px;
-        border-bottom: var(--f1-border);
-
-        &[data-cell-role=command-variable-cell-row-index] {
-            font-size: 0.7em;
-            opacity: 0.7;
-        }
-
-        &[data-cell-role=command-variable-cell-category] {
-            opacity: 0.8;
-            text-transform: capitalize;
-        }
-
-        &:nth-child(8n + 6), &:nth-child(8n + 7), &:nth-child(8n + 8), &:nth-child(8n + 9) {
-            background-color: var(--f1-odd-row-background-color);
-        }
+    > svg {
+        height: calc(var(--f1-wb-work-area-header-height) * 0.4);
+        width: calc(var(--f1-wb-work-area-header-height) * 0.4);
+        margin-right: 8px;
     }
+`;
+export const EnvFilesHeaderTabTitle = styled.span.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-env-command-file-tab-title'})`
+    white-space: nowrap;
+`;
+export const EnvFileBody = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-env-command-files-body'})`
+    display: grid;
+    position: relative;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+    width: 100%;
+    align-items: center;
+    align-self: stretch;
+    overflow: hidden;
+`;
+export const EnvFileEditorWrapper = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-env-command-file-editor'})`
+    display: grid;
+    position: relative;
+    align-self: stretch;
+    grid-template-columns: 1fr;
+    border: var(--f1-border);
+    border-top: 0;
+    overflow: hidden;
 `;

@@ -19,7 +19,8 @@ export const ModuleFileEditor = (props: ModuleFileEditorProps) => {
 	switch (true) {
 		case resource.type === ResourceType.COMMAND:
 		case resource.type === ResourceType.ENV_COMMAND:
-			return <EnvCommandEditor resource={resource as ModuleCommandResource}/>;
+			editor = <EnvCommandEditor resource={resource as ModuleCommandResource}/>;
+			break;
 		case isSqlFile(file):
 			editor = <SqlEditor resource={resource}/>;
 			break;
