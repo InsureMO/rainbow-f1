@@ -108,6 +108,10 @@ export const VariableSection = (props: VariableSectionProps) => {
 		return null;
 	}
 
+	if (state.files.length === 0) {
+		return null;
+	}
+
 	const onClicked = (envFile: ModuleFileResource) => () => {
 		setState(state => ({...state, active: envFile}));
 	};
