@@ -6,7 +6,9 @@ export enum ResourceType {
 	MODULE_D9 = 'module-d9',
 	MODULE_UNKNOWN = 'module-unknown',
 	VIRTUAL_COMMANDS = 'virtual-commands',
+	VIRTUAL_NON_ENV_COMMANDS = 'virtual-non-env-commands',
 	VIRTUAL_ENVS = 'virtual-envs',
+	VIRTUAL_ENV_FILES = 'virtual-env-files',
 	VIRTUAL_SERVER_PIPELINES = 'virtual-server-pipelines',
 	VIRTUAL_SCRIPTS_PIPELINES = 'virtual-scripts-pipelines',
 	VIRTUAL_DB_SCRIPTS = 'virtual-db-scripts',
@@ -46,7 +48,8 @@ export interface ModuleResource extends Resource {
 }
 
 export interface VirtualNodeResource extends ModuleResource {
-	type: ResourceType.VIRTUAL_COMMANDS | ResourceType.VIRTUAL_ENVS
+	type: ResourceType.VIRTUAL_COMMANDS | ResourceType.VIRTUAL_NON_ENV_COMMANDS
+		| ResourceType.VIRTUAL_ENVS | ResourceType.VIRTUAL_ENV_FILES
 		| ResourceType.VIRTUAL_SERVER_PIPELINES | ResourceType.VIRTUAL_SCRIPTS_PIPELINES
 		| ResourceType.VIRTUAL_DB_SCRIPTS
 		| ResourceType.VIRTUAL_SOURCE_FILES | ResourceType.VIRTUAL_NODE_FILES;

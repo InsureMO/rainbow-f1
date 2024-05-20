@@ -1,5 +1,6 @@
+import {F1ModuleStructure} from '../../../../../shared';
 import {ContextMenuItem, showContextMenu} from '../../../../common/context-menu';
-import {ModuleFileResource} from '../../../opened/types';
+import {ModuleFileResource, PresentResourceSegment, VirtualNodeResource} from '../../../opened/types';
 
 export const copyResourcePath = (resource: ModuleFileResource) => {
 	const path = resource.segments.map(segment => segment.label).join('/');
@@ -46,5 +47,12 @@ export const onPipelineFileNodeContextMenu = (resource: ModuleFileResource) => {
 			{type: 'separator'},
 			{label: 'Rename', click: 'rename', invoke: () => renameResource(resource)}
 		].filter(x => x != null) as Array<ContextMenuItem>);
+	};
+};
+
+export const createVirtualNodeResource = (module: F1ModuleStructure, marker: string, type: VirtualNodeResource['type'], segments: () => Array<PresentResourceSegment>): VirtualNodeResource => {
+	return {
+		module: <M extends F1ModuleStructure>() => module as M,
+		marker, type, segments: segments()
 	};
 };

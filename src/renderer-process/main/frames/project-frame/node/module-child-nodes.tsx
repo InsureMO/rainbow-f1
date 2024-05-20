@@ -2,7 +2,6 @@ import React from 'react';
 import {
 	ModuleCommandsIcon,
 	ModuleDBScriptsIcon,
-	ModuleEnvFilesIcon,
 	ModuleEnvsIcon,
 	ModuleNodeFilesIcon,
 	ModuleRootIcon,
@@ -18,19 +17,15 @@ import {
 	ModuleFileType,
 	O23ModuleStructure
 } from '../../../../../shared';
-import {PresentResourceSegment, ResourceType, VirtualNodeResource} from '../../../opened/types';
+import {ResourceType} from '../../../opened/types';
 import {WorkbenchEventBus, WorkbenchEventTypes} from '../../../opened/workbench/event-bus';
 import {
 	castTo,
 	isD9Module,
 	isO23Module,
 	MODULE_COMMANDS_MARKER,
-	MODULE_ENV_FILES_DIR_MARKER,
-	MODULE_ENV_FILES_FILE_MARKER,
-	MODULE_ENV_FILES_MARKER,
 	MODULE_ENVS_MARKER,
 	MODULE_NODE_FILES_MARKER,
-	MODULE_NON_ENV_COMMANDS_MARKER,
 	MODULE_O23_DB_SCRIPTS_MARKER,
 	MODULE_O23_SCRIPTS_PIPELINES_MARKER,
 	MODULE_O23_SERVER_PIPELINES_MARKER,
@@ -39,12 +34,8 @@ import {
 import {
 	ModuleCommandsNodeLabel,
 	ModuleDBScriptsNodeLabel,
-	ModuleEnvFilesDirNodeLabel,
-	ModuleEnvFilesFileNodeLabel,
-	ModuleEnvFilesNodeLabel,
 	ModuleEnvsNodeLabel,
 	ModuleNodeFilesNodeLabel,
-	ModuleNonEnvCommandsNodeLabel,
 	ModuleO23ScriptsPipelinesNodeLabel,
 	ModuleO23ServerPipelinesNodeLabel,
 	ModuleSourceFilesNodeLabel
@@ -56,36 +47,16 @@ import {
 	ProjectTreeNodeDef,
 	ProjectTreeNodeType
 } from '../types';
-import {createModuleCommandsChildNodes} from './commands-child-nodes';
+import {createAllEnvFilesNode, createNonEnvCommandsNode} from './commands-child-nodes';
 import {createModuleEnvsChildNodes} from './envs-child-nodes';
-import {buildModuleFileAsResource, buildModuleFileAsResourceSegments, createModuleFileNodes} from './module-file-nodes';
+import {createVirtualNodeResource} from './utils';
 
-const createVirtualNodeResource = (module: F1ModuleStructure, marker: string, type: VirtualNodeResource['type'], segments: () => Array<PresentResourceSegment>): VirtualNodeResource => {
-	return {
-		module: <M extends F1ModuleStructure>() => module as M,
-		marker, type, segments: segments()
-	};
-};
 const createCommandsNode = (rootData: ProjectRoot, module: O23ModuleStructure, fire: WorkbenchEventBus['fire']): ProjectTreeNodeDef => {
 	const marker = MODULE_COMMANDS_MARKER(module);
 	const resource = createVirtualNodeResource(module, marker, ResourceType.VIRTUAL_COMMANDS, () => {
 		return [
 			{label: module.name, icon: <ModuleRootIcon/>},
 			{label: 'CLI Commands', icon: <ModuleCommandsIcon/>}
-		];
-	});
-	const otherCommandsResource = createVirtualNodeResource(module, marker, ResourceType.VIRTUAL_COMMANDS, () => {
-		return [
-			{label: module.name, icon: <ModuleRootIcon/>},
-			{label: 'CLI Commands', icon: <ModuleCommandsIcon/>},
-			{label: 'Others', icon: <ModuleCommandsIcon/>}
-		];
-	});
-	const allEnvFilesResource = createVirtualNodeResource(module, marker, ResourceType.VIRTUAL_COMMANDS, () => {
-		return [
-			{label: module.name, icon: <ModuleRootIcon/>},
-			{label: 'CLI Commands', icon: <ModuleCommandsIcon/>},
-			{label: 'Environment Files', icon: <ModuleEnvFilesIcon/>}
 		];
 	});
 	fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
@@ -149,82 +120,9 @@ const createCommandsNode = (rootData: ProjectRoot, module: O23ModuleStructure, f
 			// env nodes and commands
 			...(envsNode.$children ?? []),
 			// other commands which not belong to any env
-			{
-				value: castTo({...rootData, module}),
-				$ip2r: `${rootData.project.directory}/${module.name}/$$non-env-commands$$`,
-				$ip2p: '$$non-env-commands$$',
-				marker: MODULE_NON_ENV_COMMANDS_MARKER(module),
-				label: <ModuleNonEnvCommandsNodeLabel {...rootData} module={module}/>,
-				$type: ProjectTreeNodeType.MODULE_NON_ENV_COMMANDS,
-				click: async () => {
-					fire(WorkbenchEventTypes.RESOURCE_SELECTED, otherCommandsResource);
-				},
-				$children: createModuleCommandsChildNodes(rootData, fire)(module, findEnv)
-			} as ProjectTreeNodeDef,
+			createNonEnvCommandsNode(rootData, module, findEnv, fire),
 			// all env files
-			{
-				value: castTo({...rootData, module}),
-				$ip2r: `${rootData.project.directory}/${module.name}/$$env-files$$`,
-				$ip2p: '$$env-files$$',
-				marker: MODULE_ENV_FILES_MARKER(module),
-				label: <ModuleEnvFilesNodeLabel {...rootData} module={module}/>,
-				$type: ProjectTreeNodeType.MODULE_ENV_FILES,
-				click: async () => {
-					fire(WorkbenchEventTypes.RESOURCE_SELECTED, allEnvFilesResource);
-				},
-				$children: createModuleFileNodes({
-					module, files: allEnvFiles,
-					asDirNode: (file: ModuleFile) => {
-						const marker = MODULE_ENV_FILES_DIR_MARKER(module, file);
-						const resource = buildModuleFileAsResource(module, file, marker, ResourceType.ENV_FILE_DIR, () => {
-							return [
-								{label: module.name, icon: <ModuleRootIcon/>},
-								{label: 'CLI Commands', icon: <ModuleCommandsIcon/>},
-								{label: 'Environment Files', icon: <ModuleEnvFilesIcon/>},
-								...buildModuleFileAsResourceSegments(file)
-							];
-						});
-						fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
-						return {
-							value: castTo({...rootData, module, file}),
-							$ip2r: `${rootData.project.directory}/${module.name}/$$env-files-dir$$/$$${file.path}$$`,
-							$ip2p: file.path,
-							marker,
-							label: <ModuleEnvFilesDirNodeLabel {...rootData} module={module} file={file}/>,
-							$type: ProjectTreeNodeType.MODULE_ENV_FILES_DIR,
-							click: async () => {
-								fire(WorkbenchEventTypes.RESOURCE_SELECTED, resource);
-							}
-						};
-					},
-					asFileNode: (file: ModuleFile) => {
-						const marker = MODULE_ENV_FILES_FILE_MARKER(module, file);
-						const resource = buildModuleFileAsResource(module, file, marker, ResourceType.ENV_FILE, () => {
-							return [
-								{label: module.name, icon: <ModuleRootIcon/>},
-								{label: 'CLI Commands', icon: <ModuleCommandsIcon/>},
-								{label: 'Environment Files', icon: <ModuleEnvFilesIcon/>},
-								...buildModuleFileAsResourceSegments(file)
-							];
-						});
-						fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
-						return {
-							value: castTo({...rootData, module, file}),
-							$ip2r: `${rootData.project.directory}/${module.name}/$$env-files-file$$/$$${file.path}$$`,
-							$ip2p: file.path,
-							marker,
-							label: <ModuleEnvFilesFileNodeLabel {...rootData} module={module} file={file}/>,
-							$type: ProjectTreeNodeType.MODULE_ENV_FILES_FILE,
-							click: async () => {
-								fire(WorkbenchEventTypes.RESOURCE_SELECTED, resource);
-							},
-							dblClick: async () => {
-								fire(WorkbenchEventTypes.OPEN_RESOURCE, resource);
-							}
-						};
-					}
-				})
-			} as ProjectTreeNodeDef
+			createAllEnvFilesNode(rootData, module, allEnvFiles, fire)
 		]
 	};
 };
