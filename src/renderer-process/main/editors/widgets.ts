@@ -75,11 +75,16 @@ export const EditorMissedContentMessage = styled.div.attrs({[DOM_KEY_WIDGET]: 'f
     min-height: var(--f1-row-height);
     margin: 16px 0;
     color: var(--f1-danger-color);
+
+    & ~ div[data-w=f1-wb-work-area-code-mirror-editor-panel] {
+        display: none;
+    }
 `;
 export const CodeMirrorEditorPanel = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-code-mirror-editor-panel'})`
     display: block;
     position: relative;
     width: 100%;
+    flex-grow: 1;
     align-self: stretch;
     overflow: hidden;
 

@@ -55,24 +55,19 @@ export const useCodeMirrorEditor = (options: CodeMirrorEditorOptions): CodeMirro
 		});
 		const editor = new EditorView({state: editorState, parent: ref.current});
 		setState({editor, readOnly});
-		return () => {
-			editor.destroy();
-		};
-	}, []);
-	useEffect(() => {
-		if (state.editor == null) {
-			return;
-		}
 		fire(WorkbenchEventTypes.ASK_MODULE_FILE_CONTENT, resource,
 			(content: string) => {
-				const doc = state.editor.state.doc;
-				state.editor.dispatch({changes: {from: 0, to: doc.length, insert: content}});
+				const doc = editor.state.doc;
+				editor.dispatch({changes: {from: 0, to: doc.length, insert: content}});
 				setState(state => ({editor: state.editor, readOnly: state.readOnly}));
 			},
 			(message: string) => {
 				setState(state => ({editor: state.editor, readOnly: state.readOnly, message}));
 			});
-	}, [fire, resource, state.editor]);
+		return () => {
+			editor.destroy();
+		};
+	}, [fire, resource]);
 	useEffect(() => {
 		const onSwitchLock = (to: boolean) => (res: Resource) => {
 			if (resource !== res) {

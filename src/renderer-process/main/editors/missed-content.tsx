@@ -17,17 +17,19 @@ export const MissedContent = (props: MissedContentProps) => {
 
 	const {fire} = useWorkbenchEventBus();
 
-	if (isNotBlank(message)) {
-		const onCloseClicked = () => {
-			fire(WorkbenchEventTypes.ASK_CLOSE_RESOURCE, resource);
-		};
-		return <EditorMissedContentReminder>
-			<EditorMissedContentMessage>{message}</EditorMissedContentMessage>
-			{closable
-				? <UnwrappedButton onClick={onCloseClicked} fill={ButtonFill.LINK}>Close This Editor</UnwrappedButton>
-				: null}
-		</EditorMissedContentReminder>;
-	} else {
-		return <>{children}</>;
-	}
+	const onCloseClicked = () => {
+		fire(WorkbenchEventTypes.ASK_CLOSE_RESOURCE, resource);
+	};
+	return <EditorMissedContentReminder>
+		{isNotBlank(message)
+			? <>
+				<EditorMissedContentMessage>{message}</EditorMissedContentMessage>
+				{closable
+					?
+					<UnwrappedButton onClick={onCloseClicked} fill={ButtonFill.LINK}>Close This Editor</UnwrappedButton>
+					: null}
+			</>
+			: null}
+		{children}
+	</EditorMissedContentReminder>;
 };
