@@ -244,10 +244,6 @@ export const O23TypeOrmVariableSuffixes: Array<EnvTypeOrmVariableDef> = [
 		dialects: [EnvTypeOrmVariableDialect.ALL]
 	}
 ];
-// sort by length, since there might be some overlap in suffixes
-export const O23TypeOrmVariableSuffixNames = O23TypeOrmVariableSuffixes
-	.map(({name}, index) => ({suffix: `_${name}`, index}))
-	.sort(({suffix: s1}, {suffix: s2}) => s2.length - s1.length);
 export const O23TypeOrmVariables: Array<EnvVariableDef> = [
 	{
 		name: 'CFG_APP_DATASOURCE_DEFAULT', category: EnvVariableCategory.O23_TYPEORM,
