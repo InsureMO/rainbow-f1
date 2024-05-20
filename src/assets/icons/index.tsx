@@ -19,6 +19,7 @@ import {ModuleCommandsIcon} from './module-commands';
 import {ModuleDBScriptsIcon} from './module-db-scripts';
 import {ModuleEnvIcon} from './module-env';
 import {ModuleEnvFileIcon} from './module-env-file';
+import {ModuleEnvFilesIcon} from './module-env-files';
 import {ModuleEnvsIcon} from './module-envs';
 import {ModuleNodeFilesIcon} from './module-node-files';
 import {ModulePipelineIcon} from './module-pipeline';
@@ -76,6 +77,7 @@ Icons.Registrar.register({
 	f1ModuleRoot: () => <ModuleRootIcon/>,
 	f1ModuleEnvs: () => <ModuleEnvsIcon/>,
 	f1ModuleEnv: () => <ModuleEnvIcon/>,
+	f1ModuleEnvFiles: () => <ModuleEnvFilesIcon/>,
 	f1ModuleEnvFile: () => <ModuleEnvFileIcon/>,
 	f1ModuleServer: () => <ModuleServerIcon/>,
 	f1ModuleScripts: () => <ModuleScriptsIcon/>,
@@ -117,7 +119,8 @@ export {
 	LockIcon, UnlockIcon, EllipsisVerticalIcon,
 
 	ProjectRootIcon, ModuleRootIcon,
-	ModuleEnvsIcon, ModuleEnvIcon, ModuleEnvFileIcon, ModuleServerIcon, ModuleScriptsIcon, ModuleDBScriptsIcon,
+	ModuleEnvsIcon, ModuleEnvIcon, ModuleEnvFilesIcon, ModuleEnvFileIcon,
+	ModuleServerIcon, ModuleScriptsIcon, ModuleDBScriptsIcon,
 	ModuleCommandsIcon, ModuleCommandIcon,
 	ModuleNodeFilesIcon, ModuleSourceFilesIcon, ModulePipelinesIcon, ModulePipelineIcon,
 

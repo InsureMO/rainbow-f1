@@ -1,7 +1,16 @@
 import {ModuleCommandResource, ModuleFileResource, ResourceType} from '../opened/types';
-import {isJavascriptFile, isJsonFile, isSqlFile, isTypescriptFile, isYamlFile} from '../utils';
+import {
+	isEnvFile,
+	isJavascriptFile,
+	isJsonFile,
+	isSqlFile,
+	isTypescriptFile,
+	isYamlFile,
+	MODULE_ENV_FILES_FILE_MARKER
+} from '../utils';
 import {EditModeSwitcher} from './edit-mode-switcher';
 import {EnvCommandEditor} from './env-command-editor';
+import {EnvFileEditor} from './env-file-editor';
 import {JavascriptEditor, JsonEditor, SqlEditor, YamlEditor} from './index';
 import {TypescriptEditor} from './typescript-editor';
 import {EditorContainer, EditorStatusBar, EditorStatusBarGrabber} from './widgets';
@@ -35,6 +44,9 @@ export const ModuleFileEditor = (props: ModuleFileEditorProps) => {
 			break;
 		case isJsonFile(file):
 			editor = <JsonEditor resource={resource}/>;
+			break;
+		case isEnvFile(MODULE_ENV_FILES_FILE_MARKER(resource.module(), file)):
+			editor = <EnvFileEditor resource={resource}/>;
 			break;
 		default:
 		// do nothing, no editor found

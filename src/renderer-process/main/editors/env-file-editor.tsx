@@ -5,10 +5,10 @@ import {lintGutter} from '@codemirror/lint';
 import {EditorState} from '@codemirror/state';
 import {keymap} from '@codemirror/view';
 import {basicSetup} from 'codemirror';
-import {ModuleFileResource} from '../../opened/types';
-import {MissedContent} from '../missed-content';
-import {useCodeMirrorEditor} from '../use-code-mirror-editor';
-import {CodeMirrorEditorPanel} from '../widgets';
+import {ModuleFileResource} from '../opened/types';
+import {MissedContent} from './missed-content';
+import {useCodeMirrorEditor} from './use-code-mirror-editor';
+import {CodeMirrorEditorPanel} from './widgets';
 
 export interface EnvFileEditorProps {
 	resource: ModuleFileResource;
@@ -32,7 +32,7 @@ export const EnvFileEditor = (props: EnvFileEditorProps) => {
 		}
 	});
 
-	return <MissedContent resource={resource} message={message} closable={false}>
+	return <MissedContent resource={resource} message={message}>
 		<CodeMirrorEditorPanel ref={ref}/>
 	</MissedContent>;
 };

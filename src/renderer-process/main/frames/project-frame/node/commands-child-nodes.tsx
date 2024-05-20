@@ -12,13 +12,18 @@ export const createModuleCommandsChildNodes = (rootData: ProjectRoot, fire: Work
 		return Object.values(module.commands ?? {}).sort((c1, c2) => {
 			return c1.name.localeCompare(c2.name, (void 0), {sensitivity: 'base'});
 		}).map(cmd => {
+			const env = findEnv(cmd);
+			if (env != null) {
+				return null;
+			}
 			const marker = MODULE_COMMAND_MARKER(module, cmd);
 			const resource: ModuleCommandResource = {
 				module: <M extends F1ModuleStructure>() => module as M,
-				env: findEnv(cmd), command: cmd, marker, type: ResourceType.COMMAND, file: cmd,
+				command: cmd, marker, type: ResourceType.COMMAND, file: cmd,
 				segments: [
 					{label: module.name, icon: <ModuleRootIcon/>},
 					{label: 'CLI Commands', icon: <ModuleCommandsIcon/>},
+					{label: 'Others', icon: <ModuleCommandsIcon/>},
 					{label: cmd.name, icon: <ModuleCommandIcon/>}
 				],
 				absolutePath: () => `${cmd.path}::${cmd.name}`,
@@ -38,7 +43,7 @@ export const createModuleCommandsChildNodes = (rootData: ProjectRoot, fire: Work
 				dblClick: async () => {
 					fire(WorkbenchEventTypes.OPEN_RESOURCE, resource);
 				}
-			};
-		});
+			} as ProjectTreeNodeDef;
+		}).filter(x => x != null);
 	};
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import {ModuleCommandIcon, ModuleEnvIcon, ModuleEnvsIcon, ModuleRootIcon} from '../../../../../assets/icons';
+import {ModuleCommandIcon, ModuleCommandsIcon, ModuleEnvIcon, ModuleRootIcon} from '../../../../../assets/icons';
 import {F1ModuleStructure, ModuleCommand, ModuleEnv} from '../../../../../shared';
 import {ModuleCommandResource, ModuleEnvResource, ResourceType} from '../../../opened/types';
 import {WorkbenchEventBus, WorkbenchEventTypes} from '../../../opened/workbench/event-bus';
@@ -50,7 +50,7 @@ export const createModuleEnvsChildNodes = (rootData: ProjectRoot, fire: Workbenc
 				env, marker, type: ResourceType.ENV, file: env,
 				segments: [
 					{label: module.name, icon: <ModuleRootIcon/>},
-					{label: 'Environments', icon: <ModuleEnvsIcon/>},
+					{label: 'CLI Commands', icon: <ModuleCommandsIcon/>},
 					{label: env.name, icon: <ModuleEnvIcon/>}
 				],
 				absolutePath: () => `${env.path}`,
@@ -82,7 +82,7 @@ export const createModuleEnvChildNodes = (rootData: ProjectRoot, fire: Workbench
 				env, command, marker, type: ResourceType.ENV_COMMAND, file: command,
 				segments: [
 					{label: module.name, icon: <ModuleRootIcon/>},
-					{label: 'Environments', icon: <ModuleEnvsIcon/>},
+					{label: 'CLI Commands', icon: <ModuleCommandsIcon/>},
 					{label: env.name, icon: <ModuleEnvIcon/>},
 					{label: command.name, icon: <ModuleCommandIcon/>}
 				],

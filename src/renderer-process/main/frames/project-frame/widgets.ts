@@ -37,6 +37,8 @@ export const NodeLabel = styled(TreeNodeInnerLabel)`
     }
 
     > svg[data-icon=f1-module-node-files],
+    > svg[data-icon=f1-module-env-files],
+    > svg[data-icon=f1-module-env-file],
     > svg[data-icon=f1-typescript],
     > svg[data-icon=f1-javascript] {
         height: 16px;

@@ -3,9 +3,9 @@ import {ModuleEnvFileIcon} from '../../../../assets/icons';
 import {F1ModuleStructure, ModuleFile, ModuleFileType} from '../../../../shared';
 import {ModuleCommandResource, ModuleFileResource, Resource, ResourceType} from '../../opened/types';
 import {useWorkbenchEventBus, WorkbenchEventTypes} from '../../opened/workbench/event-bus';
-import {MODULE_ENV_FILE_MARKER} from '../../utils';
+import {MODULE_ENV_FILES_FILE_MARKER} from '../../utils';
 import {useWorkAreaEditorEventBus, WorkAreaEditorEventTypes} from '../event-bus';
-import {EnvFileEditor} from './env-file-editor';
+import {EnvFileInCommandEditor} from './env-file-in-command-editor';
 import {
 	EnvFileBody,
 	EnvFileEditorWrapper,
@@ -44,7 +44,7 @@ const asModuleFileResource = (module: F1ModuleStructure, resource: ModuleCommand
 		} as ModuleFile;
 	})();
 	return {
-		marker: MODULE_ENV_FILE_MARKER(module, file),
+		marker: MODULE_ENV_FILES_FILE_MARKER(module, file),
 		type: ResourceType.ENV_FILE,
 		segments: [], // segments ignored here
 		// @ts-ignore
@@ -133,7 +133,7 @@ export const VariableSection = (props: VariableSectionProps) => {
 			<EnvFileEditorWrapper>
 				{state.active == null
 					? null
-					: <EnvFileEditor resource={state.active}/>}
+					: <EnvFileInCommandEditor resource={state.active}/>}
 			</EnvFileEditorWrapper>
 		</EnvFileBody>
 	</>;

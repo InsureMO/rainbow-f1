@@ -27,9 +27,15 @@ export const createDetective = (rootData: ProjectRoot, fire: WorkbenchEventBus['
 				return createModuleChildNodes(rootData, fire)(castTo<ModuleNodeDef>(parentNode).value.module);
 			case ProjectTreeNodeType.MODULE_COMMANDS:
 				return parentNode.$children ?? [];
+			case ProjectTreeNodeType.MODULE_NON_ENV_COMMANDS:
+				return parentNode.$children ?? [];
 			case ProjectTreeNodeType.MODULE_ENVS:
 				return parentNode.$children ?? [];
 			case ProjectTreeNodeType.MODULE_ENV:
+				return parentNode.$children ?? [];
+			case ProjectTreeNodeType.MODULE_ENV_FILES:
+				return parentNode.$children ?? [];
+			case ProjectTreeNodeType.MODULE_ENV_FILES_DIR:
 				return parentNode.$children ?? [];
 			case ProjectTreeNodeType.MODULE_O23_SERVER_PIPELINES:
 				return createModuleO23ServerPipelineChildNodes(rootData, fire)(castTo<O23ModuleNodeDef>(parentNode).value.module);

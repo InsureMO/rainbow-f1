@@ -23,7 +23,7 @@ export const createModuleDBScriptsChildNodes = (rootData: ProjectRoot, fire: Wor
 			fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 			return {
 				value: castTo({...rootData, module, file}),
-				$ip2r: `${rootData.project.directory}/${module.name}/$$$$o23-db-scripts$$$$/$$${file.path}$$`,
+				$ip2r: `${rootData.project.directory}/${module.name}/$$o23-db-scripts$$/$$${file.path}$$`,
 				$ip2p: file.path,
 				marker,
 				label: <ModuleDBScriptsDirNodeLabel {...rootData} module={module} file={file}/>,
@@ -45,7 +45,7 @@ export const createModuleDBScriptsChildNodes = (rootData: ProjectRoot, fire: Wor
 			fire(WorkbenchEventTypes.REGISTER_RESOURCE, resource);
 			return {
 				value: castTo({...rootData, module, file}),
-				$ip2r: `${rootData.project.directory}/${module.name}/$$$$o23-db-scripts$$$$/$$${file.path}$$`,
+				$ip2r: `${rootData.project.directory}/${module.name}/$$o23-db-scripts$$/$$${file.path}$$`,
 				$ip2p: file.path,
 				marker,
 				label: <ModuleDBScriptsFileNodeLabel {...rootData} module={module} file={file}/>,

@@ -15,6 +15,7 @@ export enum ResourceType {
 	COMMAND = 'command',
 	ENV = 'env',
 	ENV_COMMAND = 'env-command',
+	ENV_FILE_DIR = 'env-file-dir',
 	ENV_FILE = 'env-file',
 	O23_SERVER_PIPELINES_DIR = 'o23-server-pipelines-dir',
 	O23_SERVER_PIPELINES_FILE = 'o23-server-pipelines-file',

@@ -1,6 +1,7 @@
 import {
 	BabelIcon,
 	EslintIcon,
+	ModuleEnvFileIcon,
 	ModulePipelineIcon,
 	NestJsIcon,
 	PackageJsonIcon,
@@ -46,6 +47,8 @@ export const icon = (file: ModuleFile) => {
 			return <BabelIcon/>;
 		case ModuleFileType.TS_CONFIG:
 			return <TypescriptConfigIcon/>;
+		case ModuleFileType.ENV_FILE:
+			return <ModuleEnvFileIcon/>;
 		default:
 			return <SourceFileIcon/>;
 	}
