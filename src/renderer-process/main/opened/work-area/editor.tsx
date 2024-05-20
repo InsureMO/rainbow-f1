@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
+import {ResourceEditor} from '../../editors';
 import {Resource} from '../types';
 import {useWorkbenchEventBus, WorkbenchEventTypes} from '../workbench/event-bus';
-import {ResourceEditor} from '../../editors';
 import {WorkAreaEditorContainer} from './widgets';
 
 export const WorkAreaEditor = () => {

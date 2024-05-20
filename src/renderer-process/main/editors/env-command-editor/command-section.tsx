@@ -1,15 +1,56 @@
 import {VUtils} from '@rainbow-d9/n1';
 import {ButtonInk, UnwrappedButton, UnwrappedCaption, UnwrappedInput} from '@rainbow-d9/n2';
-import {ModuleCommandResource} from '../../opened/types';
+import {useEffect, useState} from 'react';
+import {ModuleCommandResource, Resource} from '../../opened/types';
+import {useWorkbenchEventBus, WorkbenchEventTypes} from '../../opened/workbench/event-bus';
+import {useWorkAreaEditorEventBus, WorkAreaEditorEventTypes} from '../event-bus';
 import {EnvCommandBasic} from './widgets';
 
 export interface CommandSectionProps {
 	resource: ModuleCommandResource;
 }
 
+export interface CommandSectionState {
+	locked: boolean;
+}
+
 export const CommandSection = (props: CommandSectionProps) => {
 	const {resource} = props;
 	const {env, command} = resource;
+
+	const {fire: fireWorkbench} = useWorkbenchEventBus();
+	const {on, off, fire} = useWorkAreaEditorEventBus();
+	const [state, setState] = useState<CommandSectionState>({locked: true});
+	useEffect(() => {
+		// since the edit/read mode switcher is outside, and operate resource is given command resource
+		// so here delegate the status to active env file resource
+		if (resource.env != null) {
+			fireWorkbench(WorkbenchEventTypes.ASK_RESOURCE_LOCK_STATUS, resource, (locked: boolean) => {
+				if (locked === state.locked) {
+					return;
+				}
+				setState(state => ({...state, locked}));
+			});
+		}
+		const onLockContent = (locked: Resource) => {
+			if (resource !== locked || state.locked) {
+				return;
+			}
+			setState(state => ({...state, locked: true}));
+		};
+		const onUnlockContent = (unlocked: Resource) => {
+			if (resource !== unlocked || !state.locked) {
+				return;
+			}
+			setState(state => ({...state, locked: false}));
+		};
+		on(WorkAreaEditorEventTypes.LOCK_CONTENT, onLockContent);
+		on(WorkAreaEditorEventTypes.UNLOCK_CONTENT, onUnlockContent);
+		return () => {
+			off(WorkAreaEditorEventTypes.LOCK_CONTENT, onLockContent);
+			off(WorkAreaEditorEventTypes.UNLOCK_CONTENT, onUnlockContent);
+		};
+	}, [on, off, fire, resource, state.locked]);
 
 	// change command name is rename, change env is refactor-move
 	// we don't need to handle these two cases here, therefore, inputs are readonly
@@ -30,7 +71,8 @@ export const CommandSection = (props: CommandSectionProps) => {
 				<UnwrappedCaption data-column="1">Environment</UnwrappedCaption>
 				<UnwrappedInput value={env.name} onValueChange={VUtils.noop} $pp="envName" readOnly={true}/>
 				<UnwrappedCaption data-column="1">Environment Files</UnwrappedCaption>
-				<UnwrappedInput value={envFiles.join(',')} onValueChange={onEnvFilesChanged} $pp="envFiles"/>
+				<UnwrappedInput value={envFiles.join(',')} onValueChange={onEnvFilesChanged} $pp="envFiles"
+				                readOnly={state.locked}/>
 			</>
 			: null}
 		<UnwrappedCaption data-column="1">CLI</UnwrappedCaption>

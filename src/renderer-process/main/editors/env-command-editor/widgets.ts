@@ -94,6 +94,7 @@ export const EnvFilesHeaderTab = styled.div.attrs<{ active?: boolean }>(({active
 `;
 export const EnvFilesHeaderTabTitle = styled.span.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-env-command-file-tab-title'})`
     white-space: nowrap;
+    padding-right: 8px;
 `;
 export const EnvFileBody = styled.div.attrs({[DOM_KEY_WIDGET]: 'f1-wb-work-area-env-command-files-body'})`
     display: grid;

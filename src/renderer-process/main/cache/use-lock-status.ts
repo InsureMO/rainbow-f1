@@ -17,7 +17,7 @@ export interface ResourceLockStatusState {
 
 export const useLockStatus = () => {
 	const {on, off} = useWorkbenchEventBus();
-	const [statusState, setStatusState] = useState<ResourceLockStatusState>({});
+	const [statusState] = useState<ResourceLockStatusState>({});
 	useEffect(() => {
 		const onAskResourceLockStatus = (resource: Resource, onStatus: (locked: boolean, switchable: boolean) => void) => {
 			const {marker} = resource;
@@ -25,7 +25,7 @@ export const useLockStatus = () => {
 			if (status == null) {
 				const locked = isResourceInitLocked(resource);
 				const switchable = isResourceLockStatusSwitchable(resource);
-				setStatusState(state => ({...state, [marker]: {locked, switchable}}));
+				statusState[marker] = {locked, switchable};
 				onStatus(locked, switchable);
 			} else {
 				onStatus(status.locked, status.switchable);
@@ -33,13 +33,8 @@ export const useLockStatus = () => {
 		};
 		const onSwitchResourceLockStatus = (resource: Resource, locked: boolean) => {
 			const {marker} = resource;
-			const status = statusState[marker];
-			if (status == null) {
-				// theoretically, never happen
-				setStatusState(state => ({...state, [marker]: {locked, switchable: true}}));
-			} else if (status.switchable) {
-				setStatusState(state => ({...state, [marker]: {locked, switchable: true}}));
-			}
+			// given resource lock status might be un-switchable, but here set it to switchable
+			statusState[marker] = {locked, switchable: true};
 		};
 		on(WorkbenchEventTypes.ASK_RESOURCE_LOCK_STATUS, onAskResourceLockStatus);
 		on(WorkbenchEventTypes.SWITCH_RESOURCE_LOCK_STATUS, onSwitchResourceLockStatus);
@@ -47,5 +42,5 @@ export const useLockStatus = () => {
 			off(WorkbenchEventTypes.ASK_RESOURCE_LOCK_STATUS, onAskResourceLockStatus);
 			off(WorkbenchEventTypes.SWITCH_RESOURCE_LOCK_STATUS, onSwitchResourceLockStatus);
 		};
-	}, []);
+	}, [statusState]);
 };

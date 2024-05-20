@@ -103,7 +103,8 @@ export const isResourceInitLocked = (resource: Resource) => {
 export const isResourceLockStatusSwitchable = (resource: Resource) => {
 	const {marker} = resource;
 	// noinspection RedundantIfStatementJS
-	if (isO23ServerPipelineFile(marker) || isO23ScriptsPipelineFile(marker)) {
+	if (isO23ServerPipelineFile(marker) || isO23ScriptsPipelineFile(marker)
+		|| isModuleEnvCommand(marker)) {
 		return true;
 	} else {
 		return false;
