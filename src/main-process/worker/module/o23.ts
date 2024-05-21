@@ -204,10 +204,14 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 			.filter(({name}) => name === 'start' || name.endsWith(':start') || name.endsWith('-start'))
 			.map(({envFiles}) => envFiles)
 			.flat();
-		const directories = Array.from(new Set(Array.from(new Set(envFiles)).map(envFile => {
-			const found = (envValues[envFile] ?? []).find(({name}) => name === 'CFG_APP_INIT_PIPELINES_DIR');
-			return (found?.value ?? 'server').trim();
-		})));
+		const directories = Object.keys(envFiles.reduce((dirs, envFile) => {
+			((envValues[envFile] ?? []).find(({name}) => name === 'CFG_APP_INIT_PIPELINES_DIR')?.value?.trim() || 'server').trim()
+				.split(',')
+				.map(dir => dir.trim())
+				.filter(dir => dir.length !== 0)
+				.forEach(dir => dirs[dir] = true);
+			return dirs;
+		}, {} as Record<string, true>));
 		structure.server.files = [
 			...directories.map(directory => {
 				const path = PathWorker.resolve(modulePath, directory);
@@ -234,10 +238,14 @@ class O23ModuleProcessor extends AbstractModuleProcessor {
 			.filter(({name}) => name === 'scripts' || name.endsWith(':scripts') || name.endsWith('-scripts'))
 			.map(({envFiles}) => envFiles)
 			.flat();
-		const directories = Array.from(new Set(Array.from(new Set(envFiles)).map(envFile => {
-			const found = (envValues[envFile] ?? []).find(({name}) => name === 'CFG_APP_INIT_PIPELINES_DIR');
-			return (found?.value ?? 'scripts').trim();
-		})));
+		const directories = Object.keys(envFiles.reduce((dirs, envFile) => {
+			((envValues[envFile] ?? []).find(({name}) => name === 'CFG_APP_INIT_PIPELINES_DIR')?.value?.trim() || 'scripts').trim()
+				.split(',')
+				.map(dir => dir.trim())
+				.filter(dir => dir.length !== 0)
+				.forEach(dir => dirs[dir] = true);
+			return dirs;
+		}, {} as Record<string, true>));
 		structure.scripts.files = [
 			...directories.map(directory => {
 				const path = PathWorker.resolve(modulePath, directory);

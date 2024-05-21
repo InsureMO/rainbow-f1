@@ -119,6 +119,14 @@ export const O23ServerPipelineVariables: Array<EnvVariableDef> = [
 	{
 		name: 'CFG_APP_API_TEST', category: EnvVariableCategory.O23_SERVER_PIPELINE,
 		type: EnvVariableValueType.BOOLEAN
+	},
+	{
+		name: 'CFG_APP_D9_DB', category: EnvVariableCategory.O23_SERVER_PIPELINE,
+		type: EnvVariableValueType.BOOLEAN
+	},
+	{
+		name: 'CFG_APP_PIPELINES_DB', category: EnvVariableCategory.O23_SERVER_PIPELINE,
+		type: EnvVariableValueType.BOOLEAN
 	}
 ];
 export const O23ScriptsBasicVariables: Array<EnvVariableDef> = [
