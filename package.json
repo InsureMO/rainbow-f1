@@ -46,7 +46,7 @@
 		"@codemirror/lang-sql": "^6.6.4",
 		"@codemirror/lang-yaml": "^6.1.1",
 		"@codemirror/legacy-modes": "^6.4.0",
-		"@rainbow-d9/n5": "1.1.27",
+		"@rainbow-d9/n5": "1.1.29",
 		"color": "^4.2.3",
 		"dotenv": "^16.4.5",
 		"electron-log": "^5.1.1",
